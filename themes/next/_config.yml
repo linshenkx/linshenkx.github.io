@@ -118,15 +118,14 @@ darkmode: false
 # External url should start with http:// or https://
 menu:
   home: / || fa fa-home
+  about: /about/ || fa fa-user
+  productions: /productions/ || fas fa-store
   archives: /archives/ || fa fa-archive
 #  productions: /my/production.html || fas fa-store
-  productions: /productions/ || fas fa-store
-
-  about: /about/ || fa fa-user
   tags: /tags/ || fa fa-tags
   categories: /categories/ || fa fa-th
-  schedule: /schedule/ || fa fa-calendar
-  commonweal: https://www.baidu.com/ || fa fa-heartbeat
+#  schedule: /schedule/ || fa fa-calendar
+#  commonweal: https://www.baidu.com/ || fa fa-heartbeat
 
 # Enable / Disable menu icons / item badges.
 menu_settings:
@@ -180,6 +179,7 @@ site_state: true
 # Key is the link label showing to end users.
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
+  CSDN: https://blog.csdn.net/alinyua || fab fa-csdn
   GitHub: https://github.com/linshenkx || fab fa-github
   #E-Mail: mailto:yourname@gmail.com || fa fa-envelope
   #Weibo: https://weibo.com/yourname || fab fa-weibo
@@ -205,6 +205,7 @@ links_settings:
 
 links:
 #  Title: http://yoursite.com
+  作品介绍页: /productions/
   web数据库管理终端: http://119.29.144.243:18080
 # Table of Contents in the Sidebar
 # Front-matter variable (unsupport wrap expand_all).
@@ -215,7 +216,7 @@ toc:
   # If true, all words will placed on next lines if header width longer then sidebar width.
   wrap: false
   # If true, all level of TOC in a post will be displayed, rather than the activated part of it.
-  expand_all: false
+  expand_all: true
   # Maximum heading depth of generated toc.
   max_depth: 6
 

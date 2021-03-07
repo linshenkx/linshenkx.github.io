@@ -1,15 +1,13 @@
 ---
-title: 测试修改
-date: 2021-02-18 00:29:54
-top: true
+title: CDH部署笔记
+date: 2020-10-28 00:29:54
+categories: 大数据
+top: false
 tags:  
-   - 测试2
+   - CDH
 ---
-[toc]
-介绍介绍
+本文为个人安装CDH时记录，不具普适性，仅供参考。建议对比官方文档阅读。
 <!-- more -->
-
-
 ## 一 依赖检查
 以centos7为例
 ### 1. 软件
