@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/bear_polar_32px.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/bear_polar_16px.png">
@@ -269,7 +269,7 @@
 
       
         <p>最近遇到一个需求：要使用azkaban对接客户的CDH集群，CDH用的是oozie，azkaban只能部署在我们客户端的机器上，所以需要在客户机上手动搭建CDH的hadoop环境。操作很简单，过程比较麻烦，这里记录一下。</p>
-<a id="more"></a>
+<span id="more"></span>
 <h2 id="一-获取所需CDH-rpm包"><a href="#一-获取所需CDH-rpm包" class="headerlink" title="一 获取所需CDH rpm包"></a>一 获取所需CDH rpm包</h2><h3 id="1-搭建本地CDH-package仓库"><a href="#1-搭建本地CDH-package仓库" class="headerlink" title="1. 搭建本地CDH package仓库"></a>1. 搭建本地CDH package仓库</h3><p>说明：CDH有两种本地仓库配置方式，package和parcel。官方是推荐使用package，我推荐两种都配置好，CDH还是用parcel。package方式可用于获取rpm包。<br><a target="_blank" rel="noopener" href="https://docs.cloudera.com/documentation/enterprise/6/latest/topics/cm_ig_create_local_package_repo.html">https://docs.cloudera.com/documentation/enterprise/6/latest/topics/cm_ig_create_local_package_repo.html</a><br>yum包的下载建议使用idm的站点抓取功能，不要用wget下载</p>
 <h3 id="2-使用-yumdownloader-获取rpm包"><a href="#2-使用-yumdownloader-获取rpm包" class="headerlink" title="2. 使用 yumdownloader 获取rpm包"></a>2. 使用 yumdownloader 获取rpm包</h3><p>这一步需要在docker容器环境下进行，这样环境很纯粹，获取到到rpm包更完整，参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/alinyua/article/details/108071365">https://blog.csdn.net/alinyua/article/details/108071365</a></p>
 <figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> yum install yum-utils -y</span></span><br><span class="line">mkdir cdh-packages &amp;&amp; cd cdh-packages </span><br><span class="line">yumdownloader --resolve  hadoop-client hbase hive-hbase spark-core</span><br><span class="line">cd .. &amp;&amp; tar -zcf cdh-packages.tar.gz cdh-packages</span><br></pre></td></tr></table></figure>

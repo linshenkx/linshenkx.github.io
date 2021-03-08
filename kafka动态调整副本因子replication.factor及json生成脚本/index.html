@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/bear_polar_32px.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/bear_polar_16px.png">
@@ -272,7 +272,7 @@
 
       
         <p>kafka默认的副本因子default.replication.factor是1，即无额外副本，如果在创建topic时没有指定副本数，则无高可用性。</p>
-<a id="more"></a>
+<span id="more"></span>
 <h3 id="1-说明"><a href="#1-说明" class="headerlink" title="1. 说明"></a>1. 说明</h3><p>kafka默认的副本因子default.replication.factor是1，即无额外副本，如果在创建topic时没有指定副本数，则无高可用性。该参数在topic创建时生效，topic创建后无法直接对topic级别的副本数进行修改，但官方提供了在partition级别增加副本数的功能，用于集群添加节点的情况。<br>详情参考官方文档：<a target="_blank" rel="noopener" href="https://kafka.apache.org/documentation/#basic_ops_increase_replication_factor">https://kafka.apache.org/documentation/#basic_ops_increase_replication_factor</a></p>
 <p>简单来说就是使用json文件描述该topic每一个partition的情况，每一个partition包含副本分布的描述。然后使用 kafka-reassign-partitions.sh 执行安装json文件完成再分配任务即可。</p>
 <h3 id="2-json生成脚本"><a href="#2-json生成脚本" class="headerlink" title="2. json生成脚本"></a>2. json生成脚本</h3><p>这里提供json的生成脚本，参考自：<a target="_blank" rel="noopener" href="https://github.com/dkurzaj/generate-kafka-replication-factor-json/blob/master/generate-kafka-replication-factor-json.sh">https://github.com/dkurzaj/generate-kafka-replication-factor-json/blob/master/generate-kafka-replication-factor-json.sh</a></p>
@@ -286,6 +286,7 @@
 <p>使用verify代替execute即可查看执行进度<br><img src="https://img-blog.csdnimg.cn/20200819094400579.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70#pic_center" alt="verify"></p>
 <h3 id="4-改进方向"><a href="#4-改进方向" class="headerlink" title="4. 改进方向"></a>4. 改进方向</h3><p>目前的shell脚本生成的partition副本分布固定为 BROKER_IDS ，适用于节点数和副本数相同的情况，如果有10节点而只要3副本就不行，生成的json会使副本集中的3个节点。<br>不过一般还是建议修改默认副本数或者创建topic时执行副本数而非使用这个脚本，如果是集群添加节点的情况，建议还是使用专业的带负载平衡功能的kafka管理系统。</p>
 <h3 id="5-建议设置参数"><a href="#5-建议设置参数" class="headerlink" title="5. 建议设置参数"></a>5. 建议设置参数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">offsets.topic.replication.factor=3</span><br><span class="line">transaction.state.log.replication.factor=3</span><br><span class="line">transaction.state.log.min.isr=3</span><br><span class="line">default.replication.factor=3</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
 
     </div>
 

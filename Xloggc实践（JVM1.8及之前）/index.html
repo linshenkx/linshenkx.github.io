@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/bear_polar_32px.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/bear_polar_16px.png">
@@ -271,7 +271,7 @@
 
       
         <p>Java服务器调优免不了要对gc日志进行分析，我一般是上传gc日志文件到GCEasy进行处理的，上传的文件有大小限制。另外默认的gc日志打印还会存在重启后丢失的问题。综上，我们希望gc日志文件在不能丢失（但允许超过一定时间或大小被清理掉）的情况下控制gc日志的大小或者按时间切割，即像Java日志框架那样的效果。Java9对jvm的日志系统进行了比较大的升级，可以比较好的实现这些需求，但大部分服务端的Java软件还只支持Jdk8，本文记录作者自己的相关配置。</p>
-<a id="more"></a>
+<span id="more"></span>
 <h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>首先推荐看两篇gceasy的博客文章，网上对UseGCLogFileRotation的相关讨论很多都来自于这里：<br><a target="_blank" rel="noopener" href="https://blog.gceasy.io/2016/11/15/rotating-gc-log-files/">https://blog.gceasy.io/2016/11/15/rotating-gc-log-files/</a><br><a target="_blank" rel="noopener" href="https://blog.gceasy.io/2019/01/29/try-to-avoid-xxusegclogfilerotation/">https://blog.gceasy.io/2019/01/29/try-to-avoid-xxusegclogfilerotation/</a></p>
 <p>简单来说，UseGCLogFileRotation 可以控制gc日志文件大小，且按日期分片切割<br>缺点是：</p>
 <ol>
@@ -290,6 +290,7 @@
 </ol>
 <h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>（使用两个gc日志文件，每个文件最大为1k）：<br>每一个批次都有一个current后缀的日志文件标识当前写入，同一批次的日志文件用从0开始的序号后缀隔开，通常current应该在序号最大的位置，如果不是则说明存在循环打印的情况。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-Xmx60M -Xms60M -XX:+PrintGCDetails  -XX:+PrintGCDateStamps  -Xloggc:gc-%t.log  -XX:+UseGCLogFileRotation  -XX:NumberOfGCLogFiles=2  -XX:GCLogFileSize=1K</span><br></pre></td></tr></table></figure>
+
 
 <p><img src="https://img-blog.csdnimg.cn/20200820003502171.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70#pic_center" alt="日志示例"></p>
 

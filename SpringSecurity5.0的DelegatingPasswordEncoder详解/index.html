@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/bear_polar_32px.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/bear_polar_16px.png">
@@ -269,7 +269,7 @@
 
       
         <p>本文参考自Spring Security 5.0.4.RELEASE  的官方文档,结合源码介绍了DelegatingPasswordEncoder,对其工作过程进行分析并解决其中遇到的问题.包括<code>There is no PasswordEncoder mapped for the id &quot;null&quot;</code>的非法参数异常的正确处理方法</p>
-<a id="more"></a>
+<span id="more"></span>
 <p>##PasswordEncoder<br>首先要理解<strong>DelegatingPasswordEncoder</strong>的作用和存在意义,明白官方为什么要使用它来取代原先的<strong>NoOpPasswordEncoder</strong></p>
 <p><strong>DelegatingPasswordEncoder</strong>和<strong>NoOpPasswordEncoder</strong>都是<code>PasswordEncoder</code>接口的实现类,根据官方的定义,Spring Security的<strong>PasswordEncoder</strong>接口用于执行密码的单向转换，以便安全地存储密码。</p>
 <p>关于密码存储的演变历史这里我不多做介绍,简单来说就是现在数据库存储的密码基本都是经过编码的,而<strong>决定如何编码</strong>以及<strong>判断未编码的字符序列和编码后的字符串是否匹配</strong>就是PassswordEncoder的责任.</p>
@@ -306,6 +306,7 @@
 <p>这个可以简单地理解为,遇到新密码,<strong>DelegatingPasswordEncoder</strong>会委托给<strong>BCryptPasswordEncoder</strong>(encodingId为*bcryp**)进行加密,同时,对历史上使用<strong>ldap</strong>,<strong>MD4</strong>,<strong>MD5</strong>等等加密算法的密码认证保持兼容(如果数据库里的密码使用的是<strong>MD5</strong>算法,那使用matches方法认证仍可以通过,但新密码会使<strong>bcrypt</strong>进行储存),十分神奇,原理后面会讲</p>
 <h5 id="定制构造"><a href="#定制构造" class="headerlink" title="定制构造"></a>定制构造</h5><p>接下来是定制构造,其实和工厂方法是一样的,一般情况下推荐直接使用工厂方法,这里给一个小例子</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">String idForEncode = <span class="string">&quot;bcrypt&quot;</span>;</span><br><span class="line">Map encoders = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">encoders.put(idForEncode, <span class="keyword">new</span> BCryptPasswordEncoder());</span><br><span class="line">encoders.put(<span class="string">&quot;noop&quot;</span>, NoOpPasswordEncoder.getInstance());</span><br><span class="line">encoders.put(<span class="string">&quot;pbkdf2&quot;</span>, <span class="keyword">new</span> Pbkdf2PasswordEncoder());</span><br><span class="line">encoders.put(<span class="string">&quot;scrypt&quot;</span>, <span class="keyword">new</span> SCryptPasswordEncoder());</span><br><span class="line">encoders.put(<span class="string">&quot;sha256&quot;</span>, <span class="keyword">new</span> StandardPasswordEncoder());</span><br><span class="line"></span><br><span class="line">PasswordEncoder passwordEncoder =</span><br><span class="line">    <span class="keyword">new</span> DelegatingPasswordEncoder(idForEncode, encoders);</span><br></pre></td></tr></table></figure>
+
 <h4 id="2-密码存储格式"><a href="#2-密码存储格式" class="headerlink" title="2 密码存储格式"></a>2 密码存储格式</h4><p>密码的标准存储格式是:</p>
 <blockquote>
 <p>{id}encodedPassword</p>
