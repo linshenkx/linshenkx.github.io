@@ -1,10 +1,13 @@
 ---
 title: HBCK2修复RIT实践笔记
 date: 2020-04-16 01:40:39
-categories: 大数据
+categories: 
+   - [大数据,HBASE]
+   - [bug]
 top: false
 tags:
-- hbase
+   - 'hbase'
+   - "debug"
 ---
 本文记录了作者使用HBCK2工具对线上HBase发生RIT状态的处理，仅供参考，若有疵漏，还望指正。
 网络上关于HBCK2的文章很少，基本都是复制粘贴自田竞云(小米)的这一篇：[HBase指南 | HBase 2.0之修复工具HBCK2运维指南](https://mp.weixin.qq.com/s/GVMWwB1WsKcdvZGfvX1lcA?spm=a2c4e.11153940.blogcont683107.11.49d762a815MegW)

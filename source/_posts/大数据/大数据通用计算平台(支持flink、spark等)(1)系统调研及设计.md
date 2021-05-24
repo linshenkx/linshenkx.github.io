@@ -1,14 +1,13 @@
 ---
 title: 大数据通用计算平台(支持flink、spark等)(1)系统调研及设计
-categories: 大数据
+categories: [大数据]
 top: true
 date: 2021-01-09 21:08:41
 tags: 
     - flink
     - spark
 ---
-项目源于对flink_sql流计算任务的实际使用需求，最初目标是设计一个系统可以在线提交sql生成flink流式计算任务，并进行监控监测。
-后延申至支持在线jar包提交的方式，同时支持批式计算任务。并以模块化开发的思路，引入对spark的支持。
+项目源于对flink_sql流计算任务的实际使用需求，最初目标是设计一个系统可以在线提交sql生成flink流式计算任务，并进行监控监测。 后延申至支持在线jar包提交的方式，同时支持批式计算任务。并以模块化开发的思路，引入对spark的支持。
 <!-- more -->
 ### 一 简介
 #### 1 系统介绍
@@ -36,12 +35,11 @@ tags:
 2. 其中standalone即独立集群模式建设维护成本高，且重复建设易造成资源浪费（如flink一套、spark一套）。
    不过standalone往往可以实现更多的特性，如spark的spark.master.rest.enabled配置项就只支持standalone模式，
    而且大部分时候开发者只会用其中一个平台，并不存在重复建设的情况。
-   这里处于开发成本考虑，先不作实现，后续考虑支持。
-3. 各个计算框架基本都出了对k8s的支持，但文档来看还并不成熟，实际生产环境使用的还较少，先观望，后续考虑支持。
+   这里出于开发成本考虑，先不作实现，后续考虑支持。
+3. 各个计算框架基本都出了对k8s的支持，但文档来看还并不成熟，实际生产环境使用还较少，先观望，后续考虑支持。
 4. Mesos我不熟
 根据排除法，就只剩下yarn作为底层计算框架了。
 优点是成熟、稳定，经过大规模检验，基本生产环境都是用yarn，而且不同的计算框架都可以共用一套yarn计算平台。
-   
 
 ##### 2. 提交部署方式的选择
 1. 在确定底层运行平台使用yarn之后，提交部署方式主要就剩下cluster、client两种了（此处使用spark的说法）
@@ -51,7 +49,6 @@ tags:
 另外需注意，application方式得在flink高版本（1.11+）才有。
 3. 另外，flink还有个session模式，简单理解为上面的是一任务一集群，这个是多任务一集群，适合轻量级使用，自带web端jar包提交，方便快捷。
 但不建议生产环境使用，很容易一个任务崩就导致集群崩溃。
-   
 
 ##### 3. sql任务的实现
 将sql保存为文件，使用约定好的jar程序进行解析，即将sql任务转化为jar任务。其他类型的任务同理。
@@ -68,13 +65,11 @@ yarn-application方式官方不支持，网上有的一般是session模式的，
 flink的web界面确实有jar包提交功能，但首先要把flink跑起来，即session模式，这里不使用。
 3. 命令行提交
 默认的提交方法，万能的。
-   
 
 ##### 监控实现？
 1. 提交yarn的时候指定tag，根据tag进行搜索，获取任务的appId，进行任务追踪
 2. yarn层根据appId和yarn的rest接口跟踪任务在yarn上的状态
 3. flink层根据appId可以组成出flink的web监控页面，同时flink提供了web界面所需的各项数据的rest接口，可以二次开发
-
 
 ##### 任务管理？
 flink任务的停止可以直接调用其rest接口
@@ -102,7 +97,6 @@ standalone已经可以通过spark.master.rest.enabled来用了，但yarn还不�
 其实没什么大问题，还是推荐使用的，任务提交我们已经通过脚本方式实现了，这里就没必要再引入livy了，毕竟是个单独的web服务器，也挺重的。
    
 既然如此就还是走yarn的api去kill吧。
-   
 
 ### 三 设计思路
 项目以分为三个类型工程
@@ -110,18 +104,44 @@ standalone已经可以通过spark.master.rest.enabled来用了，但yarn还不�
 2. module : 计算平台处理工程。对接不同的底层计算平台，如flink和spark
 3. plugin : 独立插件工程。本质为自定义功能jar包，封装特定任务，按约定进行解析处理。如flink-sql的jar包封装。
 
+#### core工程
 core是计算平台的核心。对不同类型的任务进行封装，对外提供统一的api。并在数据库中记录、跟踪任务信息。
-主要的api有： start、stop、delete、getLog、getStatus
-start需传入任务配置json，根据任务类型的不同交由不同的module工程去解析处理。
-start、stop、delete 都需调用具体的module工程进行实现。
-getLog、getStatus本质上只是读取数据库，而数据库的信息维护和同步也依赖各个module工程。
+从功能设计来看主要类有：
+- controller：对外接口类
+  对外提供start、stop、delete、getLog、getStatus等api
+  start需传入任务配置json，根据任务类型的不同交由不同的module工程的JobServer去解析处理。
+  start、stop、delete 也需调用不同的JobServer进行实现。
+  getLog、getStatus本质上只是读取数据库，而数据库的信息维护和同步也依赖各个module工程。
+- jobInfo: 任务信息类
+  对不同任务的统一封装，拥有以下属性
+  deployMode 任务类型：FLINK_SQL、FLINK_JAR、SPARK_SQL、SPARK_JAR等
+  runConfig 运行时配置，json，不同类型任务不同
+  runInfo 运行时信息，json，不同类型任务不同，如flink任务包含yarn运行信息和flink的jobId、savepoint信息等
+  runLog 任务运行日志,text，用以记录任务的基本操作记录以及状态更改记录等（不包含业务日志，不属于监控范围）
+  status 任务运行状态，基于yarn的job status进行抽象。各个类型任务可以有自身的状态标识，但必须实现特定接口以转化为顶层标准status。
+- JobServer: 任务处理核心抽象接口
+  定义了 start、stop、delete、checkAllJobStatus、checkJobStatus(String jobInfoId)等接口并由各个模块自行实现
+- SchedulerTask：定时任务类
+  定时调用各个模块的checkStatus接口，用以检测任务真实运行状态，维护数据库任务信息真实性有效性，防止已停任务仍在运行
 
-为了统一不同类型的任务，任务对象的设计有几个特别字段
-deployMode即任务类型：FLINK_SQL、FLINK_JAR、SPARK_SQL、SPARK_JAR等
-runConfig运行时配置，json，不同类型任务不同
-runInfo运行时信息，json，不同类型任务不同，如flink任务包含yarn运行信息和flink的jobId、savepoint信息等
-runLog任务运行日志,text，用以记录任务的基本操作记录以及状态更改记录等（不包含业务日志，不属于监控范围）
-status任务运行状态，基于yarn的job status进行抽象。各个类型任务可以有自身的状态标识，但必须实现特定接口以转化为顶层标准status。
+另外我还把命令行执行模块、yarn功能管理模块放到了这里。  
+命令行执行要包含日志记录、异步处理、异常处理、多命令同会话执行，还是比较麻烦的，踩了一些坑，以后再开一篇分享一下。
+本来的设想就是把yarn作为基础运行平台，所以对yarn的操作也统一到了这里。
+#### module工程
+一个deployMode对应一个JobServer实现类，相同类型的JobServer可共用一个module工程，如FLINK_SQL和FLINK_JAR
+各个module工程以其JobServer实现类为核心，拥有自己的runConfig、runInfo、status实体类
+除此之外，根据需求，还可以有自身的定时任务类，如Flink可定时执行savepoint操作
+#### plugin工程
+plugin工程本质上为特殊任务类型的支持实现。
+这里以FLINK_SQL工程为例。
 
-定时状态同步
-定时调用各个模块的checkStatus接口，用以检测任务真实运行状态，维护数据库任务信息真实性有效性，防止已停任务仍在运行
+Flink原生的sql只支持shell执行，且需在session模式中运行，
+使用上也不算十分方便，需要先在配置文件中写好各种连接配置，下载好各种connector的jar包。
+作为测试用倒还可以，语句可以直接修改，不用重新打包，但性能、可靠性都存疑，本质上难以在生产环境中应用。
+而Jar包执行是绝对通用的，sql的功能基本都可以通过flink的executeSql来执行，理论上对sql脚本进行解析，一句句转成用executeSql来调用即可。
+不过也有一些坑，比分说hive-catalog的相关配置，我觉得flink关于hive的设计是比较别扭的，hive一方面是作为元数据仓库使用，一方面又可以作为数据源连接，另外flink还支持hive作为sql方言使用。
+而hive的连接也相对复杂一些，需要先准备hive-conf配置文件，其jar包的位置也应该是放到flink的classpath下，而不是用户的fat-jar。注意，这一点和connector是不一样的。
+对于元数据仓库catalog、方言dialect这些特殊sql语句，都需要识别出来调用专门代码实现，而不能直接使用executeSql
+
+sql脚本应该通过文件作为参数传递给Jar包进行读取，其他类型的任务同理，无非是把sql脚本换成scala脚本、shell脚本之类的
+具体做法是将sql写为本地临时文件，通过flink的yarn.ship-files参数分发到Jar包运行容器里面，sql文件路径作为Jar包启动参数即可。

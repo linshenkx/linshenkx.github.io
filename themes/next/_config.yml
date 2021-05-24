@@ -206,13 +206,13 @@ links_settings:
 links:
 #  Title: http://yoursite.com
   作品介绍页: /productions/
-  web数据库管理终端: http://119.29.144.243:18080
+  web数据库管理终端(登录：test/test): http://119.29.144.243:18080
 # Table of Contents in the Sidebar
 # Front-matter variable (unsupport wrap expand_all).
 toc:
   enable: true
   # Automatically add list number to toc.
-  number: true
+  number: false
   # If true, all words will placed on next lines if header width longer then sidebar width.
   wrap: false
   # If true, all level of TOC in a post will be displayed, rather than the activated part of it.
