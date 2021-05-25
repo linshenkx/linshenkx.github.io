@@ -1,10 +1,12 @@
 ---
 title: Kubernetes应用中使用TLS(SSL)证书的两种方法及实践
+id: kubernetes-tls-ssl-certificates
 date: 2020-08-27 23:55:09
-categories: Kubernetes
+categories: 
+- [Kubernetes]
 top: false
 tags:
-- Kubernetes
+- k8s
 ---
 在k8s应用注入自签发的TLS/SSL证书有两种思路：1.使用certificates.k8s.io API 进行签发。2. 直接利用自己的CA证书进行签发。一般推荐第二种方法，本文记录了两种方法的完整实践并最后将其转换为JAVA的使用格式。
 <!-- more -->
