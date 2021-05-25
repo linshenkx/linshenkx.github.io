@@ -1,6 +1,7 @@
 ---
 title: Kubernetes应用中使用TLS(SSL)证书的两种方法及实践
 id: kubernetes-tls-ssl-certificates
+permalink: kubernetes-tls-ssl-certificates/
 date: 2020-08-27 23:55:09
 categories: 
 - [Kubernetes]
