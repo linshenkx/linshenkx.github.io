@@ -165,8 +165,9 @@ wsl.conf配置参考：https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config
     ```
 ### 三 IDEA开发和总结
 经过测试，常规SpringBoot工程，在Windows目录下的，可以使用WSL环境进行debug、部署
+对于纯maven工程，支持也还好
 
-但对应gradle工程（非spring），则无法完成gradle初始化，无论工程是否是在WSL中都不行
+但对于纯gradle工程（非spring），则无法完成gradle初始化，无论工程是否是在WSL中都不行
 设置JDK是WSL，但将Gradle路径指定为WSL却一直不行，说路径有问题，只能使用默认的Gradle。
 根据issue的说法，建议将Windows的gradle path设置为WSL的路径，不过我没有试，我觉得这单纯就是官方的bug。
 官方issue：https://youtrack.jetbrains.com/issues/IDEA?q=wsl
