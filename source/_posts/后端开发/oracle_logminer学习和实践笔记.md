@@ -1,5 +1,7 @@
 ---
 title: oracle_logminer学习和实践笔记
+id: oracle_logminer
+permalink: oracle_logminer/
 date: 2020-09-24 17:03:16
 categories: 后端开发
 top: false

@@ -1,9 +1,10 @@
 ---
 title: WSL2配置与结合IDEA2021使用体验
+id: wsl2_idea2021
+permalink: wsl2_idea2021/
 date: 2021-04-13 22:54:20
 categories: 程序员杂记
 top: false
-permalink: WSL2_IDEA2021/
 tags:
     - 生产力
     - WSL
@@ -26,90 +27,7 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
  wsl --set-default-version 2
 ```
 #### 2 安装windows terminal
-在应用商店下载安装，自行美化即可
-参考：
-```json
-{
-    "$schema": "https://aka.ms/terminal-profiles-schema",
-    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-    "profiles":
-    {
-        "defaults":
-        {
-            // Put settings here that you want to apply to all profiles
-			                //以下是新增加的配置项
-                "closeOnExit" : true,
-                "colorScheme" : "AdventureTime",     //颜色主题名称,就是schemes下面的每个实例的 name 值
-                "cursorColor" : "#ffffff",           //光标颜色
-                "cursorShape" : "filledBox",         //光标类型  可选 bar empytBox filledBox vintage
-                "fontFace" : "Consolas",       //字体名称  安装字体时的字体名称
-                "fontSize" : 12,                     //字体大小
-                "historySize" : 8001,
-                 //"icon" : "D:\\image\\phone.jpg",     //程序的小图标，也就是在标题栏和新建中显示的图标地址
-                 //"backgroundImage": "D:\\image\\bga.jpg",  //配置背景图片地址
-                "acrylicOpacity" : 0.6,             //不透明度，值越大，背景就越浓，否则就越淡
-                 //"backgroundImageOpacity": 0.25,      //背景图片的透明度
-                "padding" : "0, 0, 0, 0",
-                "snapOnInput" : true,
-                "useAcrylic" : true        //是否开启毛玻璃特效，值为false的时候就没有毛玻璃特效
-                 //"tabTitle" : "chessYu"   //标签名称
-        },
-        "list":
-        [
-            {
-                // Make changes here to the powershell.exe profile
-                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-                "name": "Windows PowerShell",
-                "commandline": "powershell.exe",
-                "hidden": false
-            },
-            {
-                // Make changes here to the cmd.exe profile
-                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-                "name": "cmd",
-                "commandline": "cmd.exe",
-                "hidden": false
-            },
-            {
-                "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
-                "hidden": false,
-                "name": "Ubuntu",
-				  "startingDirectory" : "//wsl$/Ubuntu/home",
-                "source": "Windows.Terminal.Wsl"
-            }
-        ]
-    },
-
-    // Add custom color schemes to this array
-    "schemes": [
-        {
-            "name": "AdventureTime",
-            "black": "#050404",
-            "red": "#bd0013",
-            "green": "#4ab118",
-            "yellow": "#e7741e",
-            "blue": "#0f4ac6",
-            "purple": "#665993",
-            "cyan": "#70a598",
-            "white": "#f8dcc0",
-            "brightBlack": "#4e7cbf",
-            "brightRed": "#fc5f5a",
-            "brightGreen": "#9eff6e",
-            "brightYellow": "#efc11a",
-            "brightBlue": "#1997c6",
-            "brightPurple": "#9b5953",
-            "brightCyan": "#c8faf4",
-            "brightWhite": "#f6f5fb",
-            "background": "#1f1d45",
-            "foreground": "#f8dcc0"
-          }
-	],
-
-    // Add any keybinding overrides to this array.
-    // To unbind a default keybinding, set the command to "unbound"
-    "keybindings": []
-}
-```
+在应用商店下载安装，自行美化即可，新版本已可直接通过选项配置，不需要直接操作配置文件
 ### 二 配置ubuntu
 #### 1 安装ubuntu
 在应用商店搜索下载ubuntu，当前版本为：20.04.2，下载完打开图标进行安装

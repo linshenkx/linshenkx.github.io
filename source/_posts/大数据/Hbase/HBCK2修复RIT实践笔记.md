@@ -1,5 +1,7 @@
 ---
 title: HBCK2修复RIT实践笔记
+id: hbck2_rit
+permalink: hbck2_rit/
 date: 2020-04-16 01:40:39
 categories: 
    - [大数据,HBASE]

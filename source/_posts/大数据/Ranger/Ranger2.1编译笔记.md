@@ -1,33 +1,57 @@
 ---
-title: Ranger2.1
-id: kubernetes-tls-ssl-certificates
-permalink: kubernetes-tls-ssl-certificates/
-date: 2020-08-27 23:55:09
+title: Ranger2.1编译笔记
+id: ranger-compile
+permalink: ranger-compile/
+date: 2021-06-21 20:55:09
+top: false
+tags:
 categories:
-- [Kubernetes]
-  top: false
-  tags:
-- k8s
+- ranger
 ---
-在k8s应用注入自签发的TLS/SSL证书有两种思路：1.使用certificates.k8s.io API 进行签发。2. 直接利用自己的CA证书进行签发。一般推荐第二种方法，本文记录了两种方法的完整实践并最后将其转换为JAVA的使用格式。
+本文记录了 ranger2.1版本的编译过程，与遇到的一些bug的解决方法。
 <!-- more -->
+## 准备
+### 1 外部工具依赖
+需要linux环境，保证python命令可用，如果只装了python3，推荐
+```shell
+apt install -y python-is-python3
 
-## 编译
-需要linux环境，保证python命令可用，如果只装了python3，推荐apt install -y python-is-python3
+```
+另外还需要安装gcc
+```shell
 apt install gcc -y
 
+```
+### 2 排除kylin模块
 kylin2.6.4依赖calcite-linq4j-1.16.0-kylin-r2
 这个jar包在外部maven仓库是找不到的，导致build失败，参考：
 https://issues.apache.org/jira/browse/RANGER-2994
 https://issues.apache.org/jira/browse/RANGER-2999
+
 因为是kylin本身的依赖问题，不是ranger的锅，这里谴责一下kylin然后对其选择性放弃
 放弃方法：在pom.xml将其所有的module注释掉，如下
 ```xml
 <!--                <module>plugin-kylin</module>-->
 <!--                <module>ranger-kylin-plugin-shim</module>-->
 ```
+### 3 ranger-examples-distro错误
+参考：https://github.com/apache/ranger/pull/71
+根据issue，修改 sampleapp.xml 和 plugin-sampleapp.xml
 
+### 4 ranger client
+官方的rangerClient有bug，新版本已修复，但还没发布，需要自行编译
+步骤：
+1. 参考官方仓库 ranger/intg/src/main/java 工程，可直接搬运过来，原来的目录要先删掉
+2. 将 ranger/intg/pom.xml 中 ranger-plugins-common 的版本从${project.version} 改为2.1.0（即公网仓库能找到的最新版本）
 
+## 执行编译
+### 1 编译各个组件 tar.gz包
+在ranger工程下执行，执行成功可以在target下看到包
+```shell
+mvn clean compile package assembly:assembly -DskipTests -DskipJSTests -Dpmd.skip=true
+
+```
+日志参考：
 ```log
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Summary for ranger 2.1.1-SNAPSHOT:
@@ -98,3 +122,9 @@ https://issues.apache.org/jira/browse/RANGER-2999
 [INFO] Finished at: 2021-05-27T15:47:58+08:00
 [INFO] ------------------------------------------------------------------------
 ```
+### 2 编译 ranger_client jar包
+在ranger/intg下执行
+```shell
+mvn clean compile package install -DskipTests
+```
+可以在 ranger/intg/target 看到生成后的jar包

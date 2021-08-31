@@ -1,5 +1,7 @@
 ---
 title: 空间索引 S2 学习指南及Java工具类实践
+id: google_spatial_search_s2
+permalink: google_spatial_search_s2/
 date: 2020-04-29 01:23:21
 categories: 后端开发
 top: false

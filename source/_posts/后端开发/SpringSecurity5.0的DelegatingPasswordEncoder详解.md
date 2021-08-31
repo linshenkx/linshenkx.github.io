@@ -1,5 +1,7 @@
 ---
 title: SpringSecurity5.0的DelegatingPasswordEncoder详解
+id: DelegatingPasswordEncoder
+permalink: DelegatingPasswordEncoder/
 date: 2018-05-07 14:30:32
 categories: 后端开发
 top: false

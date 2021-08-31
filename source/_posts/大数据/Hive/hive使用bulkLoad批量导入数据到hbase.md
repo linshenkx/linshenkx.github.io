@@ -1,5 +1,7 @@
 ---
 title: hive使用bulkLoad批量导入数据到hbase
+id: hive_bulkLoad_hbase
+permalink: hive_bulkLoad_hbase/
 date: 2020-11-23 22:49:02
 categories: 大数据
 top: false

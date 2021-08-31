@@ -1,5 +1,7 @@
 ---
 title: hive编写udf实践记录
+id: hive_udf
+permalink: hive_udf/
 date: 2020-11-10 23:47:22
 categories: 大数据
 top: false

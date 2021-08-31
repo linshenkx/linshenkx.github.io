@@ -1,5 +1,7 @@
 ---
 title: 深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践
+id: spring_enum
+permalink: spring_enum/
 date: 2019-01-14 09:54:10
 categories: 后端开发
 top: true

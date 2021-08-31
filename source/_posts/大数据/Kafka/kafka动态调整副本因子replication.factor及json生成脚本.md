@@ -1,5 +1,7 @@
 ---
 title: kafka动态调整副本因子replication.factor及json生成脚本
+id: kafka_replication_factor
+permalink: kafka_replication_factor/
 date: 2020-08-19 09:54:58
 categories: 大数据
 top: false

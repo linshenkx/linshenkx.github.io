@@ -1,5 +1,7 @@
 ---
 title: CDH部署笔记
+id: cdh_server_env_deploy
+permalink: cdh_server_env_deploy/
 date: 2020-10-28 00:29:54
 categories: 大数据
 top: false

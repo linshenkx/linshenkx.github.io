@@ -1,5 +1,7 @@
 ---
 title: Xloggc实践（JVM1.8及之前）
+id: Xloggc
+permalink: Xloggc/
 date: 2020-08-20 00:55:34
 categories: 后端开发
 top: false

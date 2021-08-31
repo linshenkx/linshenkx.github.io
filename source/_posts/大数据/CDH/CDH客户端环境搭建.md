@@ -1,5 +1,7 @@
 ---
 title: CDH客户端环境搭建
+id: cdh_client_env_deploy
+permalink: cdh_client_env_deploy/
 date: 2020-11-10 21:51:20
 categories: 大数据
 top: false

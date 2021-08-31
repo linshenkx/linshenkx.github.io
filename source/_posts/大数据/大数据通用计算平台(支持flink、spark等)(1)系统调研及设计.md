@@ -1,5 +1,7 @@
 ---
 title: 大数据通用计算平台(支持flink、spark等)(1)系统调研及设计
+id: bigdata_compute_platform
+permalink: bigdata_compute_platform/
 categories: [大数据]
 top: true
 date: 2021-01-09 21:08:41
