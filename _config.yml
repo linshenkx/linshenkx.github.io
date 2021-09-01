@@ -107,7 +107,7 @@ theme: next
 deploy:
   - type: git
     repo: https://github.com/linshenkx/linshenkx.github.io
-    branch: master
+    branch: gh-pages
   - type: git
     repo: https://gitee.com/linshenkx/linshenkx
     branch: master
