@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bear_polar_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bear_polar_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WSL2配置与结合IDEA2021使用体验">
+<meta property="og:url" content="https://linshenkx.github.io/wsl2_idea2021/index.html">
+<meta property="og:site_name" content="且炼时光">
+<meta property="og:description" content="最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-13T14:54:20.000Z">
+<meta property="article:modified_time" content="2021-09-01T08:02:17.799Z">
+<meta property="article:author" content="林泽浩">
+<meta property="article:tag" content="生产力">
+<meta property="article:tag" content="WSL">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://linshenkx.github.io/wsl2_idea2021/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>WSL2配置与结合IDEA2021使用体验 | 且炼时光</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">且炼时光</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">韶华未褪，且炼时光</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-productions">
+
+    <a href="/productions/" rel="section"><i class="fas fa-store fa-fw"></i>作品展示</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/wsl2_idea2021/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="林泽浩">
+      <meta itemprop="description" content="林泽浩的个人小站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且炼时光">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WSL2配置与结合IDEA2021使用体验
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-13 22:54:20" itemprop="dateCreated datePublished" datetime="2021-04-13T22:54:20+08:00">2021-04-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-01 16:02:17" itemprop="dateModified" datetime="2021-09-01T16:02:17+08:00">2021-09-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%9D%82%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">程序员杂记</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。<br>倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。</p>
+<span id="more"></span>
+<h3 id="一-配置WSL"><a href="#一-配置WSL" class="headerlink" title="一 配置WSL"></a>一 配置WSL</h3><p>按惯例，先给出官方文档地址，基础性操作参考这个： <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/">https://docs.microsoft.com/zh-cn/windows/wsl/</a></p>
+<h4 id="1-开启wsl"><a href="#1-开启wsl" class="headerlink" title="1 开启wsl"></a>1 开启wsl</h4><p>参考：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/install-win10">https://docs.microsoft.com/zh-cn/windows/wsl/install-win10</a></p>
+<h5 id="1-安装「适用于-Linux-的-Windows-子系统」和「虚拟机平台」这两个可选组件"><a href="#1-安装「适用于-Linux-的-Windows-子系统」和「虚拟机平台」这两个可选组件" class="headerlink" title="1 安装「适用于 Linux 的 Windows 子系统」和「虚拟机平台」这两个可选组件"></a>1 安装「适用于 Linux 的 Windows 子系统」和「虚拟机平台」这两个可选组件</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart</span><br><span class="line">dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart</span><br></pre></td></tr></table></figure>
+<h5 id="2-重启"><a href="#2-重启" class="headerlink" title="2 重启"></a>2 重启</h5><h5 id="3-配置默认使用wsl2"><a href="#3-配置默认使用wsl2" class="headerlink" title="3 配置默认使用wsl2"></a>3 配置默认使用wsl2</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl --set-default-version 2</span><br></pre></td></tr></table></figure>
+<h4 id="2-安装windows-terminal"><a href="#2-安装windows-terminal" class="headerlink" title="2 安装windows terminal"></a>2 安装windows terminal</h4><p>在应用商店下载安装，自行美化即可，新版本已可直接通过选项配置，不需要直接操作配置文件</p>
+<h3 id="二-配置ubuntu"><a href="#二-配置ubuntu" class="headerlink" title="二 配置ubuntu"></a>二 配置ubuntu</h3><h4 id="1-安装ubuntu"><a href="#1-安装ubuntu" class="headerlink" title="1 安装ubuntu"></a>1 安装ubuntu</h4><p>在应用商店搜索下载ubuntu，当前版本为：20.04.2，下载完打开图标进行安装<br>安装过程会提示输入一个默认用户和对应密码，注意不能用root（已存在）</p>
+<h4 id="2-修改默认用户为root"><a href="#2-修改默认用户为root" class="headerlink" title="2 修改默认用户为root"></a>2 修改默认用户为root</h4><h5 id="1-查看当前wsl列表："><a href="#1-查看当前wsl列表：" class="headerlink" title="1 查看当前wsl列表："></a>1 查看当前wsl列表：</h5><p>   之所以要这一步是因为如果装了多个版本的ubuntu，其标识可能不一样<br>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl -l </span><br></pre></td></tr></table></figure></p>
+<h5 id="2-修改对应wsl默认用户"><a href="#2-修改对应wsl默认用户" class="headerlink" title="2 修改对应wsl默认用户"></a>2 修改对应wsl默认用户</h5>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Ubuntu config --default-user root</span><br></pre></td></tr></table></figure>
+<h4 id="3-将linux根目录映射到win10磁盘"><a href="#3-将linux根目录映射到win10磁盘" class="headerlink" title="3 将linux根目录映射到win10磁盘"></a>3 将linux根目录映射到win10磁盘</h4><p>在win10文件地址栏输入 \wsl$ ，可以看到已安装的wsl文件系统，如 Ubuntu<br>右键-映射网络驱动器，选择要映射的盘符即可。<br>另外注意，可以用<code>explorer.exe . </code>命令使用windows文件资源管理器打开当前路径</p>
+<h4 id="4-配置-terminal-打开默认路径"><a href="#4-配置-terminal-打开默认路径" class="headerlink" title="4 配置 terminal 打开默认路径"></a>4 配置 terminal 打开默认路径</h4><p>在 terminal 配置文件中，找到Ubuntu配置项，添加如下配置即可<br>startingDirectory” : “//wsl$/Ubuntu/home”</p>
+<h4 id="5-更新镜像源"><a href="#5-更新镜像源" class="headerlink" title="5 更新镜像源"></a>5 更新镜像源</h4><h5 id="1-查看具体版本"><a href="#1-查看具体版本" class="headerlink" title="1 查看具体版本"></a>1 查看具体版本</h5>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/lsb-release</span><br></pre></td></tr></table></figure>
+<h5 id="2-到https-mirrors-tuna-tsinghua-edu-cn-help-ubuntu-复制最新的镜像"><a href="#2-到https-mirrors-tuna-tsinghua-edu-cn-help-ubuntu-复制最新的镜像" class="headerlink" title="2 到https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/复制最新的镜像"></a>2 到<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/%E5%A4%8D%E5%88%B6%E6%9C%80%E6%96%B0%E7%9A%84%E9%95%9C%E5%83%8F">https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/复制最新的镜像</a></h5><p>   阿里的支持傻瓜式操作，但经常打不开，就算了<br>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">备份：</span></span><br><span class="line">mv /etc/apt/sources.list /etc/apt/sources.list.backup</span><br><span class="line"><span class="meta">#</span><span class="bash">编辑：</span></span><br><span class="line">vi /etc/apt/sources.list</span><br></pre></td></tr></table></figure></p>
+<h5 id="3-更新"><a href="#3-更新" class="headerlink" title="3 更新"></a>3 更新</h5>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get update -y &amp;&amp; apt-get upgrade -y</span><br></pre></td></tr></table></figure>
+<h4 id="6-配置代理"><a href="#6-配置代理" class="headerlink" title="6 配置代理"></a>6 配置代理</h4><p>在 /etc/profile 最后加：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">host_ip=$(cat /etc/resolv.conf |grep &quot;nameserver&quot; |cut -f 2 -d &quot; &quot;)</span><br><span class="line">export ALL_PROXY=&quot;http://$host_ip:7890&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="7-禁止添加Windows-PATH"><a href="#7-禁止添加Windows-PATH" class="headerlink" title="7 禁止添加Windows-PATH"></a>7 禁止添加Windows-PATH</h4><p>为了避免开发环境冲突，需关闭Windows-PATH<br>wsl.conf配置参考：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config">https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config</a><br>新建 /etc/wsl.conf，添加以下内容：<br>    <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 不加载Windows中的PATH内容</span></span><br><span class="line">[interop]</span><br><span class="line">appendWindowsPath = false</span><br></pre></td></tr></table></figure></p>
+<h3 id="三-IDEA开发和总结"><a href="#三-IDEA开发和总结" class="headerlink" title="三 IDEA开发和总结"></a>三 IDEA开发和总结</h3><p>经过测试，常规SpringBoot工程，在Windows目录下的，可以使用WSL环境进行debug、部署<br>对于纯maven工程，支持也还好</p>
+<p>但对于纯gradle工程（非spring），则无法完成gradle初始化，无论工程是否是在WSL中都不行<br>设置JDK是WSL，但将Gradle路径指定为WSL却一直不行，说路径有问题，只能使用默认的Gradle。<br>根据issue的说法，建议将Windows的gradle path设置为WSL的路径，不过我没有试，我觉得这单纯就是官方的bug。<br>官方issue：<a target="_blank" rel="noopener" href="https://youtrack.jetbrains.com/issues/IDEA?q=wsl">https://youtrack.jetbrains.com/issues/IDEA?q=wsl</a><br>另外，对于WSL下工程的git，idea似乎也无法识别</p>
+<p>总之，IDEA（2021.1）的WSL2支持尚不成熟，但是也已经初步支持，还可以自动下载、选择WSL环境的JDK<br>可以作为日常开发的辅助支持，但目前仍不建议全面迁移过去</p>
+<p>对我来说，WSL的开发应用场景主要在于：<br>大数据功能开发：之前简单的hdfs操作都需要在windows中配置hadoop相关的环境变量，而且各种版本或兼容性问题，很麻烦，以后这些直接丢wsl里面<br>大数据组件编译：很多组件并不是纯Java代码，可能还需要一些脚本，这些有平台依赖性的，很可能因为windows而导致编译失败<br>脚本开发：在windows新建的sh脚本在拿去linux系统之前都要先转换一下格式，以后直接作为wsl系统下文件新建，就不用考虑这些乱七八糟的问题</p>
+<p>最终目标是以后把所有的工程都迁移到wsl下，开发相关全部使用wsl环境</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>林泽浩
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://linshenkx.github.io/wsl2_idea2021/" title="WSL2配置与结合IDEA2021使用体验">https://linshenkx.github.io/wsl2_idea2021/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/" rel="tag"># 生产力</a>
+              <a href="/tags/WSL/" rel="tag"># WSL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/bigdata_compute_platform/" rel="prev" title="大数据通用计算平台(支持flink、spark等)(1)系统调研及设计">
+      <i class="fa fa-chevron-left"></i> 大数据通用计算平台(支持flink、spark等)(1)系统调研及设计
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/ranger-compile/" rel="next" title="Ranger2.1编译笔记">
+      Ranger2.1编译笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+ 
+   <div>
+     <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+   </div>
+ 
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80-%E9%85%8D%E7%BD%AEWSL"><span class="nav-text">一 配置WSL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%BC%80%E5%90%AFwsl"><span class="nav-text">1 开启wsl</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85%E3%80%8C%E9%80%82%E7%94%A8%E4%BA%8E-Linux-%E7%9A%84-Windows-%E5%AD%90%E7%B3%BB%E7%BB%9F%E3%80%8D%E5%92%8C%E3%80%8C%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%B9%B3%E5%8F%B0%E3%80%8D%E8%BF%99%E4%B8%A4%E4%B8%AA%E5%8F%AF%E9%80%89%E7%BB%84%E4%BB%B6"><span class="nav-text">1 安装「适用于 Linux 的 Windows 子系统」和「虚拟机平台」这两个可选组件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E9%87%8D%E5%90%AF"><span class="nav-text">2 重启</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E9%85%8D%E7%BD%AE%E9%BB%98%E8%AE%A4%E4%BD%BF%E7%94%A8wsl2"><span class="nav-text">3 配置默认使用wsl2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85windows-terminal"><span class="nav-text">2 安装windows terminal</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C-%E9%85%8D%E7%BD%AEubuntu"><span class="nav-text">二 配置ubuntu</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85ubuntu"><span class="nav-text">1 安装ubuntu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E7%94%A8%E6%88%B7%E4%B8%BAroot"><span class="nav-text">2 修改默认用户为root</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8Dwsl%E5%88%97%E8%A1%A8%EF%BC%9A"><span class="nav-text">1 查看当前wsl列表：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E4%BF%AE%E6%94%B9%E5%AF%B9%E5%BA%94wsl%E9%BB%98%E8%AE%A4%E7%94%A8%E6%88%B7"><span class="nav-text">2 修改对应wsl默认用户</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%B0%86linux%E6%A0%B9%E7%9B%AE%E5%BD%95%E6%98%A0%E5%B0%84%E5%88%B0win10%E7%A3%81%E7%9B%98"><span class="nav-text">3 将linux根目录映射到win10磁盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E9%85%8D%E7%BD%AE-terminal-%E6%89%93%E5%BC%80%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84"><span class="nav-text">4 配置 terminal 打开默认路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E6%9B%B4%E6%96%B0%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-text">5 更新镜像源</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%85%B7%E4%BD%93%E7%89%88%E6%9C%AC"><span class="nav-text">1 查看具体版本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%88%B0https-mirrors-tuna-tsinghua-edu-cn-help-ubuntu-%E5%A4%8D%E5%88%B6%E6%9C%80%E6%96%B0%E7%9A%84%E9%95%9C%E5%83%8F"><span class="nav-text">2 到https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;help&#x2F;ubuntu&#x2F;复制最新的镜像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%9B%B4%E6%96%B0"><span class="nav-text">3 更新</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86"><span class="nav-text">6 配置代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E7%A6%81%E6%AD%A2%E6%B7%BB%E5%8A%A0Windows-PATH"><span class="nav-text">7 禁止添加Windows-PATH</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89-IDEA%E5%BC%80%E5%8F%91%E5%92%8C%E6%80%BB%E7%BB%93"><span class="nav-text">三 IDEA开发和总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="林泽浩"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">林泽浩</p>
+  <div class="site-description" itemprop="description">林泽浩的个人小站</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/alinyua" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;alinyua" rel="noopener" target="_blank"><i class="fab fa-csdn fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/linshenkx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;linshenkx" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      作品链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/productions/" title="&#x2F;productions&#x2F;">作品介绍页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://119.29.144.243:18080/" title="http:&#x2F;&#x2F;119.29.144.243:18080" rel="noopener" target="_blank">web数据库管理终端(登录：test/test)</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">林泽浩</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">40k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">36 分钟</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"./live2d_models/崩坏学院2/Kiro/model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"react":{"opacity":1},"log":false});</script></body>
+</html>
