@@ -99,6 +99,9 @@ ignore:
 
 # Extensions
 ## Plugins: https://hexo.io/plugins/
+Plugins: hexo-generator-feed
+  hexo generate
+
 ## Themes: https://hexo.io/themes/
 theme: next
 
@@ -146,3 +149,16 @@ live2d:
     show: false 							# 是否在手机端显示
   react:
     opacity: 1 							# 设置模型透明度
+feed:
+  enable: true
+  type: atom
+  path: atom.xml
+  limit: 20
+  hub:
+  content:
+  content_limit: 140
+  content_limit_delim: ' '
+  order_by: -date
+  icon: icon.png
+  autodiscovery: true
+  template:
