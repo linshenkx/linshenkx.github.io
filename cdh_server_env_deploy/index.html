@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bear_polar_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bear_polar_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文为个人安装CDH时记录，不具普适性，仅供参考。建议对比官方文档阅读。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CDH部署笔记">
+<meta property="og:url" content="https://linshenkx.github.io/cdh_server_env_deploy/index.html">
+<meta property="og:site_name" content="且炼时光">
+<meta property="og:description" content="本文为个人安装CDH时记录，不具普适性，仅供参考。建议对比官方文档阅读。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-27T16:29:54.000Z">
+<meta property="article:modified_time" content="2021-09-01T08:02:17.793Z">
+<meta property="article:author" content="林泽浩">
+<meta property="article:tag" content="CDH">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://linshenkx.github.io/cdh_server_env_deploy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CDH部署笔记 | 且炼时光</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">且炼时光</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">韶华未褪，且炼时光</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-productions">
+
+    <a href="/productions/" rel="section"><i class="fas fa-store fa-fw"></i>作品展示</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/cdh_server_env_deploy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="林泽浩">
+      <meta itemprop="description" content="林泽浩的个人小站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且炼时光">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CDH部署笔记
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-28 00:29:54" itemprop="dateCreated datePublished" datetime="2020-10-28T00:29:54+08:00">2020-10-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-01 16:02:17" itemprop="dateModified" datetime="2021-09-01T16:02:17+08:00">2021-09-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文为个人安装CDH时记录，不具普适性，仅供参考。建议对比官方文档阅读。</p>
+<span id="more"></span>
+<h2 id="一-依赖检查"><a href="#一-依赖检查" class="headerlink" title="一 依赖检查"></a>一 依赖检查</h2><p>以centos7为例</p>
+<h3 id="1-软件"><a href="#1-软件" class="headerlink" title="1. 软件"></a>1. 软件</h3><p><a target="_blank" rel="noopener" href="https://docs.cloudera.com/documentation/enterprise/6/release-notes/topics/rg_os_requirements.html">https://docs.cloudera.com/documentation/enterprise/6/release-notes/topics/rg_os_requirements.html</a></p>
+<h4 id="0-常用软件安装"><a href="#0-常用软件安装" class="headerlink" title="0. 常用软件安装"></a>0. 常用软件安装</h4><p>此步骤非必须</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y bind-utils</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-python"><a href="#1-python" class="headerlink" title="1. python"></a>1. python</h4><p>使用2.7版本或以上版本，但不支持3<br>centos7 中默认已包含，如果有多版本需设置PYSPARK_PYTHON和<br>PYSPARK_DRIVER_PYTHON环境变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看版本</span></span><br><span class="line">python --version</span><br></pre></td></tr></table></figure>
+<h4 id="2-Perl"><a href="#2-Perl" class="headerlink" title="2. Perl"></a>2. Perl</h4><p>一般已安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看版本</span></span><br><span class="line">perl -v</span><br></pre></td></tr></table></figure>
+<h4 id="3-python-psycopg2"><a href="#3-python-psycopg2" class="headerlink" title="3. python-psycopg2"></a>3. python-psycopg2</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 要先安装epel-release，，这个包包含了 EPEL 源的 gpg 密钥和软件源信息，该软件包会自动配置yum的软件仓库</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 否则下一步会提示：没有可用软件包 pip-python</span></span><br><span class="line">yum -y install epel-release</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装pip</span></span><br><span class="line">yum -y install python-pip</span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用pip 安装 psycopg2</span></span><br><span class="line">pip install psycopg2==2.7.5 --ignore-installed</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-网络"><a href="#2-网络" class="headerlink" title="2. 网络"></a>2. 网络</h3><h4 id="禁用ipv6"><a href="#禁用ipv6" class="headerlink" title="禁用ipv6"></a>禁用ipv6</h4><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/225d040d0b66">https://www.jianshu.com/p/225d040d0b66</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w net.ipv6.conf.all.disable_ipv6=1</span><br><span class="line">sysctl -w net.ipv6.conf.default.disable_ipv6=1</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br><span class="line">netstat -lnpt</span><br></pre></td></tr></table></figure>
+<h4 id="配置hostname"><a href="#配置hostname" class="headerlink" title="配置hostname"></a>配置hostname</h4><p><a target="_blank" rel="noopener" href="https://docs.cloudera.com/documentation/enterprise/6/latest/topics/configure_network_names.html">https://docs.cloudera.com/documentation/enterprise/6/latest/topics/configure_network_names.html</a><br>用全称域名，如：paas-201.adp.com 而不是 paas-201</p>
+<ol>
+<li><p>配置hostname</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo hostnamectl set-hostname foo-1.example.com</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>编辑/ets/hosts(集群统一)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.1.1.1  foo-1.example.com  foo-1</span><br><span class="line">2.2.2.2  foo-2.example.com  foo-2</span><br><span class="line">3.3.3.3  foo-3.example.com  foo-3</span><br><span class="line">4.4.4.4  foo-4.example.com  foo-4</span><br></pre></td></tr></table></figure></li>
+<li><p>编辑/etc/sysconfig/network</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;HOSTNAME=$HOSTNAME&quot; &gt;&gt;/etc/sysconfig/network</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 保存规则</span></span><br><span class="line">sudo iptables-save &gt; ~/firewall.rules</span><br><span class="line"><span class="meta">#</span><span class="bash"> 关闭</span></span><br><span class="line">sudo systemctl disable firewalld</span><br><span class="line">sudo systemctl stop firewalld</span><br></pre></td></tr></table></figure>
+<h3 id="3-关闭SELinux"><a href="#3-关闭SELinux" class="headerlink" title="3. 关闭SELinux"></a>3. 关闭SELinux</h3><p>查看是否已经关闭</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">getenforce</span><br></pre></td></tr></table></figure>
+<p>关闭方法：<br>修改/etc/selinux/config<br>SELINUX=permissive<br>并执行 setenforce 0  立即生效</p>
+<h3 id="4-启用ntp"><a href="#4-启用ntp" class="headerlink" title="4. 启用ntp"></a>4. 启用ntp</h3><p>安装后用以下命令进行验证</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl status chronyd.service </span><br><span class="line">chronyc sources -v </span><br><span class="line">chronyc sourcestats -v</span><br></pre></td></tr></table></figure>
+<h2 id="二-安装"><a href="#二-安装" class="headerlink" title="二 安装"></a>二 安装</h2><h3 id="一-配置本地仓库"><a href="#一-配置本地仓库" class="headerlink" title="一. 配置本地仓库"></a>一. 配置本地仓库</h3><p><a target="_blank" rel="noopener" href="https://docs.cloudera.com/documentation/enterprise/6/latest/topics/cm_ig_create_local_package_repo.html">https://docs.cloudera.com/documentation/enterprise/6/latest/topics/cm_ig_create_local_package_repo.html</a></p>
+<h4 id="1-配置web服务器"><a href="#1-配置web服务器" class="headerlink" title="1. 配置web服务器"></a>1. 配置web服务器</h4></li>
+<li><p>安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install httpd</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>需保证/var/www磁盘空间足够，建议挂载，这里假设 /home/www 有足够的空间</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mv /var/www /var/www2</span><br><span class="line">mkdir /home/www</span><br><span class="line">ln -s /home/www /var/www</span><br><span class="line">mv /var/www2/* /var/www/</span><br><span class="line">rm -rf /var/www2</span><br><span class="line">ls /home/www</span><br></pre></td></tr></table></figure></li>
+<li><p>启动</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start httpd</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="2-下载文件-clouderaManager和cdh）"><a href="#2-下载文件-clouderaManager和cdh）" class="headerlink" title="2. 下载文件(clouderaManager和cdh）"></a>2. 下载文件(clouderaManager和cdh）</h4></li>
+<li><p>clouderaManager<br>下载：<a target="_blank" rel="noopener" href="https://archive.cloudera.com/cm6/6.3.1/repo-as-tarball/cm6.3.1-redhat7.tar.gz">https://archive.cloudera.com/cm6/6.3.1/repo-as-tarball/cm6.3.1-redhat7.tar.gz</a></p>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /var/www/html/cloudera-repos/cm6</span><br><span class="line">tar xvfz cm6.3.1-redhat7.tar.gz -C /var/www/html/cloudera-repos/cm6 --strip-components=1</span><br><span class="line">sudo chmod -R ugo+rX /var/www/html/cloudera-repos/cm6</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>cdh</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /var/www/html/cloudera-repos</span><br><span class="line">sudo wget --recursive --no-parent --no-host-directories https://archive.cloudera.com/cdh6/6.3.2/redhat7/ -P /var/www/html/cloudera-repos</span><br><span class="line"></span><br><span class="line">sudo wget --recursive --no-parent --no-host-directories https://archive.cloudera.com/gplextras6/6.3.2/redhat7/ -P /var/www/html/cloudera-repos</span><br><span class="line"></span><br><span class="line">sudo chmod -R ugo+rX /var/www/html/cloudera-repos/cdh6</span><br><span class="line">sudo chmod -R ugo+rX /var/www/html/cloudera-repos/gplextras6</span><br></pre></td></tr></table></figure>
+
+<p>访问 http://<host>/cloudera-repos/ ，应该可以看到下载的文件</p>
+<h4 id="3-配置使用本地存储库"><a href="#3-配置使用本地存储库" class="headerlink" title="3. 配置使用本地存储库"></a>3. 配置使用本地存储库</h4><p>创建/etc/yum.repos.d/cloudera-repo.repo<br>内容如下：</p>
+<p>[cloudera-repo]<br>name=cloudera-repo<br>baseurl=<a target="_blank" rel="noopener" href="http://paas-241/cloudera-repos/cm6">http://paas-241/cloudera-repos/cm6</a><br>enabled=1<br>gpgcheck=0</p>
+<h3 id="三-安装CDH"><a href="#三-安装CDH" class="headerlink" title="三. 安装CDH"></a>三. 安装CDH</h3><h4 id="1-安装java"><a href="#1-安装java" class="headerlink" title="1. 安装java"></a>1. 安装java</h4> <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y oracle-j2sdk1.8</span><br></pre></td></tr></table></figure>
+<h4 id="2-安装CM"><a href="#2-安装CM" class="headerlink" title="2. 安装CM"></a>2. 安装CM</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y cloudera-manager-daemons cloudera-manager-agent cloudera-manager-server</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-安装数据库"><a href="#3-安装数据库" class="headerlink" title="3. 安装数据库"></a>3. 安装数据库</h4><p>假设使用mysql且已安装</p>
+<p>在cm服务器上：</p>
+<h5 id="1-安装jdbc驱动"><a href="#1-安装jdbc驱动" class="headerlink" title="1. 安装jdbc驱动"></a>1. 安装jdbc驱动</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.46.tar.gz</span><br><span class="line"></span><br><span class="line">tar zxvf mysql-connector-java-5.1.46.tar.gz</span><br><span class="line"></span><br><span class="line">sudo mkdir -p /usr/share/java/</span><br><span class="line"></span><br><span class="line">cd mysql-connector-java-5.1.46</span><br><span class="line"></span><br><span class="line">sudo cp mysql-connector-java-5.1.46-bin.jar  /usr/share/java/mysql-connector-java.jar</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="2-创建数据库并授权"><a href="#2-创建数据库并授权" class="headerlink" title="2. 创建数据库并授权"></a>2. 创建数据库并授权</h5><p>登录mysql进行配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -h 192.168.100.200 -p</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>执行以下命令：假设数据库为cdh 授权用户为root，密码为anyonedev<br> <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> DATABASE cdh <span class="keyword">DEFAULT</span> <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8 <span class="keyword">DEFAULT</span> <span class="keyword">COLLATE</span> utf8_general_ci;</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">ON</span> cdh.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;anyonedev&#x27;</span>;</span><br><span class="line"><span class="keyword">SHOW</span> DATABASES;</span><br><span class="line"><span class="keyword">SHOW</span> GRANTS <span class="keyword">FOR</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h5 id="3-执行创建脚本"><a href="#3-执行创建脚本" class="headerlink" title="3. 执行创建脚本"></a>3. 执行创建脚本</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/opt/cloudera/cm/schema/scm_prepare_database.sh -h 192.168.100.200 mysql cdh root anyonedev</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="四-启动"><a href="#四-启动" class="headerlink" title="四 启动"></a>四 启动</h4> <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl enable cloudera-scm-server</span><br><span class="line">sudo systemctl start cloudera-scm-server</span><br><span class="line">sudo tail -f /var/log/cloudera-scm-server/cloudera-scm-server.log</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>直到看到：<br>INFO WebServerImpl:com.cloudera.server.cmf.WebServerImpl: Started Jetty server.<br>则说明启动完成，打开<br><a target="_blank" rel="noopener" href="http://paas-241:7180/">http://paas-241:7180</a> 即可 admin/admin</p>
+<p>注意配置自定义仓库：<br><a target="_blank" rel="noopener" href="http://192.168.100.241/cloudera-repos/cdh6/6.3.2/redhat7/yum/">http://192.168.100.241/cloudera-repos/cdh6/6.3.2/redhat7/yum/</a><br>方法是数据表</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>林泽浩
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://linshenkx.github.io/cdh_server_env_deploy/" title="CDH部署笔记">https://linshenkx.github.io/cdh_server_env_deploy/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CDH/" rel="tag"># CDH</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/oracle_logminer/" rel="prev" title="oracle_logminer学习和实践笔记">
+      <i class="fa fa-chevron-left"></i> oracle_logminer学习和实践笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/cdh_client_env_deploy/" rel="next" title="CDH客户端环境搭建">
+      CDH客户端环境搭建 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+ 
+   <div>
+     <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+   </div>
+ 
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E4%BE%9D%E8%B5%96%E6%A3%80%E6%9F%A5"><span class="nav-text">一 依赖检查</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%BD%AF%E4%BB%B6"><span class="nav-text">1. 软件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0-%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="nav-text">0. 常用软件安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-python"><span class="nav-text">1. python</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Perl"><span class="nav-text">2. Perl</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-python-psycopg2"><span class="nav-text">3. python-psycopg2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%BD%91%E7%BB%9C"><span class="nav-text">2. 网络</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A6%81%E7%94%A8ipv6"><span class="nav-text">禁用ipv6</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEhostname"><span class="nav-text">配置hostname</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-text">关闭防火墙</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%85%B3%E9%97%ADSELinux"><span class="nav-text">3. 关闭SELinux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%90%AF%E7%94%A8ntp"><span class="nav-text">4. 启用ntp</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E5%AE%89%E8%A3%85"><span class="nav-text">二 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80-%E9%85%8D%E7%BD%AE%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93"><span class="nav-text">一. 配置本地仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E9%85%8D%E7%BD%AEweb%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-text">1. 配置web服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6-clouderaManager%E5%92%8Ccdh%EF%BC%89"><span class="nav-text">2. 下载文件(clouderaManager和cdh）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E5%BA%93"><span class="nav-text">3. 配置使用本地存储库</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89-%E5%AE%89%E8%A3%85CDH"><span class="nav-text">三. 安装CDH</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85java"><span class="nav-text">1. 安装java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85CM"><span class="nav-text">2. 安装CM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-text">3. 安装数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85jdbc%E9%A9%B1%E5%8A%A8"><span class="nav-text">1. 安装jdbc驱动</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B9%B6%E6%8E%88%E6%9D%83"><span class="nav-text">2. 创建数据库并授权</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%89%A7%E8%A1%8C%E5%88%9B%E5%BB%BA%E8%84%9A%E6%9C%AC"><span class="nav-text">3. 执行创建脚本</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B-%E5%90%AF%E5%8A%A8"><span class="nav-text">四 启动</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="林泽浩"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">林泽浩</p>
+  <div class="site-description" itemprop="description">林泽浩的个人小站</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/alinyua" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;alinyua" rel="noopener" target="_blank"><i class="fab fa-csdn fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/linshenkx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;linshenkx" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      作品链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/productions/" title="&#x2F;productions&#x2F;">作品介绍页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://119.29.144.243:18080/" title="http:&#x2F;&#x2F;119.29.144.243:18080" rel="noopener" target="_blank">web数据库管理终端(登录：test/test)</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">林泽浩</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">40k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">36 分钟</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"./live2d_models/崩坏学院2/Kiro/model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"react":{"opacity":1},"log":false});</script></body>
+</html>
