@@ -4,6 +4,37 @@
   
     
     <entry>
+      <title>个人博客系统设计(支持hexo和halo同步)</title>
+      <link href="//my_blog_system_design/"/>
+      <url>//my_blog_system_design/</url>
+      
+        <content type="html"><![CDATA[<p>本文介绍我自己的博客系统是如何设计的，以及使用自己开发的软件达到hexo（git pages: <a href="https://linshenkx.github.io/">https://linshenkx.github.io</a> ）文章自动同步到halo( <a href="http://linshenkx.cn/">http://linshenkx.cn</a> )的效果。<br>实现一次编写、两套博客系统并存、多个网址访问的效果。</p><span id="more"></span>]]></content>
+      
+      
+      <categories>
+          
+          <category> 程序员杂记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 生产力 </tag>
+            
+            <tag> 博客 </tag>
+            
+            <tag> hexo </tag>
+            
+            <tag> halo </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>clash代理工具docker版使用笔记</title>
       <link href="//clash_docker/"/>
       <url>//clash_docker/</url>
@@ -151,9 +182,9 @@
       
         <tags>
             
-            <tag> hive </tag>
-            
             <tag> hbase </tag>
+            
+            <tag> hive </tag>
             
             <tag> bulkload </tag>
             

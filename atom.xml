@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2021-09-13T09:48:18.353Z</updated>
+  <updated>2021-09-13T15:50:28.968Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>个人博客系统设计(支持hexo和halo同步)</title>
+    <link href="https://linshenkx.github.io/my_blog_system_design/"/>
+    <id>https://linshenkx.github.io/my_blog_system_design/</id>
+    <published>2021-09-13T15:40:20.000Z</published>
+    <updated>2021-09-13T15:50:28.968Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文介绍我自己的博客系统是如何设计的，以及使用自己开发的软件达到hexo（git pages: &lt;a href=&quot;https://linshenkx.github.io/&quot;&gt;https://linshenkx.github.io&lt;/a&gt; ）文章自动同步到halo( &lt;a href=&quot;http://linshenkx.cn/&quot;&gt;http://linshenkx.cn&lt;/a&gt; )的效果。&lt;br&gt;实现一次编写、两套博客系统并存、多个网址访问的效果。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="程序员杂记" scheme="https://linshenkx.github.io/categories/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%9D%82%E8%AE%B0/"/>
+    
+    
+    <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
+    
+    <category term="博客" scheme="https://linshenkx.github.io/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+    <category term="hexo" scheme="https://linshenkx.github.io/tags/hexo/"/>
+    
+    <category term="halo" scheme="https://linshenkx.github.io/tags/halo/"/>
+    
+  </entry>
   
   <entry>
     <title>clash代理工具docker版使用笔记</title>
@@ -136,9 +161,9 @@
     <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-    <category term="hive" scheme="https://linshenkx.github.io/tags/hive/"/>
-    
     <category term="hbase" scheme="https://linshenkx.github.io/tags/hbase/"/>
+    
+    <category term="hive" scheme="https://linshenkx.github.io/tags/hive/"/>
     
     <category term="bulkload" scheme="https://linshenkx.github.io/tags/bulkload/"/>
     
