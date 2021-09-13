@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2021-09-01T08:02:17.797Z</updated>
+  <updated>2021-09-13T05:05:33.318Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -17,14 +17,14 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>基于k8s的家用大数据集群设计与实现</title>
-    <link href="https://linshenkx.github.io/household_k8s_bigdata/"/>
-    <id>https://linshenkx.github.io/household_k8s_bigdata/</id>
-    <published>2021-07-13T14:54:20.000Z</published>
-    <updated>2021-09-01T08:02:17.797Z</updated>
+    <title>clash代理工具docker版使用笔记</title>
+    <link href="https://linshenkx.github.io/clash_docker/"/>
+    <id>https://linshenkx.github.io/clash_docker/</id>
+    <published>2021-09-12T14:54:20.000Z</published>
+    <updated>2021-09-13T05:05:33.318Z</updated>
     
     
-    <summary type="html">&lt;p&gt;使用3台废旧笔记本搭建k8s集群，部署大数据组件，利用路由器进行异地组网，配合wsl作为管理和客户端，&lt;br&gt;实现随时随地，在工作笔记本上以本地访问的体验使用自建家庭大数据平台进行学习、开发、测试。&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;clash docker镜像使用笔记，以及常用代理配置方法&lt;/p&gt;</summary>
     
     
     
@@ -33,9 +33,32 @@
     
     <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
     
-    <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
+    <category term="clash" scheme="https://linshenkx.github.io/tags/clash/"/>
+    
+    <category term="docker" scheme="https://linshenkx.github.io/tags/docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>基于k8s的家用大数据集群设计与实现</title>
+    <link href="https://linshenkx.github.io/household_k8s_bigdata/"/>
+    <id>https://linshenkx.github.io/household_k8s_bigdata/</id>
+    <published>2021-07-13T14:54:20.000Z</published>
+    <updated>2021-09-03T15:57:49.860Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;使用3台废旧笔记本搭建k8s集群，部署大数据组件，利用路由器进行异地组网，配合wsl作为管理和客户端，&lt;br&gt;实现随时随地，在工作笔记本上以本地访问的体验使用自建家庭大数据平台进行学习、开发、测试。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    
+    <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
     
     <category term="大数据" scheme="https://linshenkx.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
     
   </entry>
   
@@ -61,7 +84,7 @@
     <link href="https://linshenkx.github.io/wsl2_idea2021/"/>
     <id>https://linshenkx.github.io/wsl2_idea2021/</id>
     <published>2021-04-13T14:54:20.000Z</published>
-    <updated>2021-09-01T08:02:17.799Z</updated>
+    <updated>2021-09-13T04:49:17.814Z</updated>
     
     
     <summary type="html">&lt;p&gt;最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。&lt;br&gt;倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。&lt;/p&gt;</summary>
