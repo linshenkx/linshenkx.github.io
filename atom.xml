@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2021-09-13T15:50:28.968Z</updated>
+  <updated>2021-09-14T03:59:29.208Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://linshenkx.github.io/my_blog_system_design/"/>
     <id>https://linshenkx.github.io/my_blog_system_design/</id>
     <published>2021-09-13T15:40:20.000Z</published>
-    <updated>2021-09-13T15:50:28.968Z</updated>
+    <updated>2021-09-14T03:59:29.208Z</updated>
     
     
     <summary type="html">&lt;p&gt;本文介绍我自己的博客系统是如何设计的，以及使用自己开发的软件达到hexo（git pages: &lt;a href=&quot;https://linshenkx.github.io/&quot;&gt;https://linshenkx.github.io&lt;/a&gt; ）文章自动同步到halo( &lt;a href=&quot;http://linshenkx.cn/&quot;&gt;http://linshenkx.cn&lt;/a&gt; )的效果。&lt;br&gt;实现一次编写、两套博客系统并存、多个网址访问的效果。&lt;/p&gt;</summary>
