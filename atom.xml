@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2021-10-24T09:05:39.669Z</updated>
+  <updated>2021-10-24T09:08:52.400Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://linshenkx.github.io/household_k8s_bigdata/"/>
     <id>https://linshenkx.github.io/household_k8s_bigdata/</id>
     <published>2021-10-24T09:00:20.000Z</published>
-    <updated>2021-10-24T09:05:39.669Z</updated>
+    <updated>2021-10-24T09:08:52.400Z</updated>
     
     
     <summary type="html">&lt;p&gt;使用3台废旧笔记本搭建k8s集群，部署大数据组件，利用路由器进行异地组网，配合wsl作为管理和客户端，&lt;br&gt;实现随时随地，在工作笔记本上以本地访问的体验使用自建家庭大数据平台进行学习、开发、测试。&lt;/p&gt;</summary>
