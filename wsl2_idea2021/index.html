@@ -28,7 +28,7 @@
 <meta property="og:description" content="最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-04-13T14:54:20.000Z">
-<meta property="article:modified_time" content="2021-09-13T04:49:17.814Z">
+<meta property="article:modified_time" content="2021-10-20T01:19:32.447Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta property="article:tag" content="WSL">
@@ -238,7 +238,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-13 12:49:17" itemprop="dateModified" datetime="2021-09-13T12:49:17+08:00">2021-09-13</time>
+                <time title="修改时间：2021-10-20 09:19:32" itemprop="dateModified" datetime="2021-10-20T09:19:32+08:00">2021-10-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,7 +256,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.7k</span>
+              <span>1.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -298,6 +298,10 @@
 <p>总之，IDEA（2021.1）的WSL2支持尚不成熟，但是也已经初步支持，还可以自动下载、选择WSL环境的JDK<br>可以作为日常开发的辅助支持，但目前仍不建议全面迁移过去</p>
 <p>对我来说，WSL的开发应用场景主要在于：<br>大数据功能开发：之前简单的hdfs操作都需要在windows中配置hadoop相关的环境变量，而且各种版本或兼容性问题，很麻烦，以后这些直接丢wsl里面<br>大数据组件编译：很多组件并不是纯Java代码，可能还需要一些脚本，这些有平台依赖性的，很可能因为windows而导致编译失败<br>脚本开发：在windows新建的sh脚本在拿去linux系统之前都要先转换一下格式，以后直接作为wsl系统下文件新建，就不用考虑这些乱七八糟的问题</p>
 <p>最终目标是以后把所有的工程都迁移到wsl下，开发相关全部使用wsl环境</p>
+<h3 id="四-其他"><a href="#四-其他" class="headerlink" title="四 其他"></a>四 其他</h3><h4 id="1-网络访问问题"><a href="#1-网络访问问题" class="headerlink" title="1 网络访问问题"></a>1 网络访问问题</h4><p>windows可以直接访问wsl的应用，使用localhost即可，但是不能使用127.0.0.1<br>wsl可以通过以下操作获取windows的ip，但一般没必要，除了访问windows的代理服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;host_ip=$(cat /etc/resolv.conf |grep &quot;nameserver&quot; |cut -f 2 -d &quot; &quot;)&#x27;&gt;&gt;/etc/profile</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
 
     </div>
 
@@ -410,7 +414,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80-%E9%85%8D%E7%BD%AEWSL"><span class="nav-text">一 配置WSL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%BC%80%E5%90%AFwsl"><span class="nav-text">1 开启wsl</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85%E3%80%8C%E9%80%82%E7%94%A8%E4%BA%8E-Linux-%E7%9A%84-Windows-%E5%AD%90%E7%B3%BB%E7%BB%9F%E3%80%8D%E5%92%8C%E3%80%8C%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%B9%B3%E5%8F%B0%E3%80%8D%E8%BF%99%E4%B8%A4%E4%B8%AA%E5%8F%AF%E9%80%89%E7%BB%84%E4%BB%B6"><span class="nav-text">1 安装「适用于 Linux 的 Windows 子系统」和「虚拟机平台」这两个可选组件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E9%87%8D%E5%90%AF"><span class="nav-text">2 重启</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E9%85%8D%E7%BD%AE%E9%BB%98%E8%AE%A4%E4%BD%BF%E7%94%A8wsl2"><span class="nav-text">3 配置默认使用wsl2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85windows-terminal"><span class="nav-text">2 安装windows terminal</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C-%E9%85%8D%E7%BD%AEubuntu"><span class="nav-text">二 配置ubuntu</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85ubuntu"><span class="nav-text">1 安装ubuntu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E7%94%A8%E6%88%B7%E4%B8%BAroot"><span class="nav-text">2 修改默认用户为root</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8Dwsl%E5%88%97%E8%A1%A8%EF%BC%9A"><span class="nav-text">1 查看当前wsl列表：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E4%BF%AE%E6%94%B9%E5%AF%B9%E5%BA%94wsl%E9%BB%98%E8%AE%A4%E7%94%A8%E6%88%B7"><span class="nav-text">2 修改对应wsl默认用户</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%B0%86linux%E6%A0%B9%E7%9B%AE%E5%BD%95%E6%98%A0%E5%B0%84%E5%88%B0win10%E7%A3%81%E7%9B%98"><span class="nav-text">3 将linux根目录映射到win10磁盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E9%85%8D%E7%BD%AE-terminal-%E6%89%93%E5%BC%80%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84"><span class="nav-text">4 配置 terminal 打开默认路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E6%9B%B4%E6%96%B0%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-text">5 更新镜像源</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%85%B7%E4%BD%93%E7%89%88%E6%9C%AC"><span class="nav-text">1 查看具体版本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%88%B0-https-mirrors-tuna-tsinghua-edu-cn-help-ubuntu-%E5%A4%8D%E5%88%B6%E6%9C%80%E6%96%B0%E7%9A%84%E9%95%9C%E5%83%8F"><span class="nav-text">2 到 https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;help&#x2F;ubuntu&#x2F; 复制最新的镜像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%9B%B4%E6%96%B0"><span class="nav-text">3 更新</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86"><span class="nav-text">6 配置代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E7%A6%81%E6%AD%A2%E6%B7%BB%E5%8A%A0Windows-PATH"><span class="nav-text">7 禁止添加Windows-PATH</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89-IDEA%E5%BC%80%E5%8F%91%E5%92%8C%E6%80%BB%E7%BB%93"><span class="nav-text">三 IDEA开发和总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80-%E9%85%8D%E7%BD%AEWSL"><span class="nav-text">一 配置WSL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%BC%80%E5%90%AFwsl"><span class="nav-text">1 开启wsl</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85%E3%80%8C%E9%80%82%E7%94%A8%E4%BA%8E-Linux-%E7%9A%84-Windows-%E5%AD%90%E7%B3%BB%E7%BB%9F%E3%80%8D%E5%92%8C%E3%80%8C%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%B9%B3%E5%8F%B0%E3%80%8D%E8%BF%99%E4%B8%A4%E4%B8%AA%E5%8F%AF%E9%80%89%E7%BB%84%E4%BB%B6"><span class="nav-text">1 安装「适用于 Linux 的 Windows 子系统」和「虚拟机平台」这两个可选组件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E9%87%8D%E5%90%AF"><span class="nav-text">2 重启</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E9%85%8D%E7%BD%AE%E9%BB%98%E8%AE%A4%E4%BD%BF%E7%94%A8wsl2"><span class="nav-text">3 配置默认使用wsl2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85windows-terminal"><span class="nav-text">2 安装windows terminal</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C-%E9%85%8D%E7%BD%AEubuntu"><span class="nav-text">二 配置ubuntu</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85ubuntu"><span class="nav-text">1 安装ubuntu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E7%94%A8%E6%88%B7%E4%B8%BAroot"><span class="nav-text">2 修改默认用户为root</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8Dwsl%E5%88%97%E8%A1%A8%EF%BC%9A"><span class="nav-text">1 查看当前wsl列表：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E4%BF%AE%E6%94%B9%E5%AF%B9%E5%BA%94wsl%E9%BB%98%E8%AE%A4%E7%94%A8%E6%88%B7"><span class="nav-text">2 修改对应wsl默认用户</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%B0%86linux%E6%A0%B9%E7%9B%AE%E5%BD%95%E6%98%A0%E5%B0%84%E5%88%B0win10%E7%A3%81%E7%9B%98"><span class="nav-text">3 将linux根目录映射到win10磁盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E9%85%8D%E7%BD%AE-terminal-%E6%89%93%E5%BC%80%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84"><span class="nav-text">4 配置 terminal 打开默认路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E6%9B%B4%E6%96%B0%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-text">5 更新镜像源</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%85%B7%E4%BD%93%E7%89%88%E6%9C%AC"><span class="nav-text">1 查看具体版本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%88%B0-https-mirrors-tuna-tsinghua-edu-cn-help-ubuntu-%E5%A4%8D%E5%88%B6%E6%9C%80%E6%96%B0%E7%9A%84%E9%95%9C%E5%83%8F"><span class="nav-text">2 到 https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;help&#x2F;ubuntu&#x2F; 复制最新的镜像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%9B%B4%E6%96%B0"><span class="nav-text">3 更新</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86"><span class="nav-text">6 配置代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E7%A6%81%E6%AD%A2%E6%B7%BB%E5%8A%A0Windows-PATH"><span class="nav-text">7 禁止添加Windows-PATH</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89-IDEA%E5%BC%80%E5%8F%91%E5%92%8C%E6%80%BB%E7%BB%93"><span class="nav-text">三 IDEA开发和总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B-%E5%85%B6%E4%BB%96"><span class="nav-text">四 其他</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%E9%97%AE%E9%A2%98"><span class="nav-text">1 网络访问问题</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -496,12 +500,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">44k</span>
+    <span title="站点总字数">46k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">40 分钟</span>
+    <span title="站点阅读时长">42 分钟</span>
 </div>
 
         

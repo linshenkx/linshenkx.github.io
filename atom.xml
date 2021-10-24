@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2021-09-15T15:22:12.106Z</updated>
+  <updated>2021-10-24T09:05:39.669Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -17,11 +17,34 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>基于k8s的家用大数据集群设计与实现</title>
+    <link href="https://linshenkx.github.io/household_k8s_bigdata/"/>
+    <id>https://linshenkx.github.io/household_k8s_bigdata/</id>
+    <published>2021-10-24T09:00:20.000Z</published>
+    <updated>2021-10-24T09:05:39.669Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;使用3台废旧笔记本搭建k8s集群，部署大数据组件，利用路由器进行异地组网，配合wsl作为管理和客户端，&lt;br&gt;实现随时随地，在工作笔记本上以本地访问的体验使用自建家庭大数据平台进行学习、开发、测试。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    
+    <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
+    
+    <category term="大数据" scheme="https://linshenkx.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
+    
+  </entry>
+  
+  <entry>
     <title>个人博客系统设计(支持hexo和halo同步)</title>
     <link href="https://linshenkx.github.io/my_blog_system_design/"/>
     <id>https://linshenkx.github.io/my_blog_system_design/</id>
     <published>2021-09-13T15:40:20.000Z</published>
-    <updated>2021-09-15T15:22:12.106Z</updated>
+    <updated>2021-10-24T09:05:28.056Z</updated>
     
     
     <summary type="html">&lt;p&gt;本文介绍我自己的博客系统是如何设计的，以及使用自己开发的软件达到hexo（git pages: &lt;a href=&quot;https://linshenkx.github.io/&quot;&gt;https://linshenkx.github.io&lt;/a&gt; ）文章自动同步到halo( &lt;a href=&quot;http://linshenkx.cn/&quot;&gt;http://linshenkx.cn&lt;/a&gt; )的效果。&lt;br&gt;实现一次编写、两套博客系统并存、多个网址访问的效果。&lt;/p&gt;</summary>
@@ -65,29 +88,6 @@
   </entry>
   
   <entry>
-    <title>基于k8s的家用大数据集群设计与实现</title>
-    <link href="https://linshenkx.github.io/household_k8s_bigdata/"/>
-    <id>https://linshenkx.github.io/household_k8s_bigdata/</id>
-    <published>2021-07-13T14:54:20.000Z</published>
-    <updated>2021-09-03T15:57:49.860Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;使用3台废旧笔记本搭建k8s集群，部署大数据组件，利用路由器进行异地组网，配合wsl作为管理和客户端，&lt;br&gt;实现随时随地，在工作笔记本上以本地访问的体验使用自建家庭大数据平台进行学习、开发、测试。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
-    
-    <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
-    
-    <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
-    
-    <category term="大数据" scheme="https://linshenkx.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Ranger2.1编译笔记</title>
     <link href="https://linshenkx.github.io/ranger-compile/"/>
     <id>https://linshenkx.github.io/ranger-compile/</id>
@@ -109,7 +109,7 @@
     <link href="https://linshenkx.github.io/wsl2_idea2021/"/>
     <id>https://linshenkx.github.io/wsl2_idea2021/</id>
     <published>2021-04-13T14:54:20.000Z</published>
-    <updated>2021-09-13T04:49:17.814Z</updated>
+    <updated>2021-10-20T01:19:32.447Z</updated>
     
     
     <summary type="html">&lt;p&gt;最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。&lt;br&gt;倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。&lt;/p&gt;</summary>
