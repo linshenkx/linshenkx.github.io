@@ -28,7 +28,7 @@
 <meta property="og:description" content="最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-04-13T14:54:20.000Z">
-<meta property="article:modified_time" content="2021-11-04T07:42:23.906Z">
+<meta property="article:modified_time" content="2021-11-04T09:23:31.025Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta property="article:tag" content="WSL">
@@ -238,7 +238,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-11-04 15:42:23" itemprop="dateModified" datetime="2021-11-04T15:42:23+08:00">2021-11-04</time>
+                <time title="修改时间：2021-11-04 17:23:31" itemprop="dateModified" datetime="2021-11-04T17:23:31+08:00">2021-11-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -298,8 +298,8 @@
 <p>总之，IDEA（2021.1）的WSL2支持尚不成熟，但是也已经初步支持，还可以自动下载、选择WSL环境的JDK<br>可以作为日常开发的辅助支持，但目前仍不建议全面迁移过去</p>
 <p>对我来说，WSL的开发应用场景主要在于：<br>大数据功能开发：之前简单的hdfs操作都需要在windows中配置hadoop相关的环境变量，而且各种版本或兼容性问题，很麻烦，以后这些直接丢wsl里面<br>大数据组件编译：很多组件并不是纯Java代码，可能还需要一些脚本，这些有平台依赖性的，很可能因为windows而导致编译失败<br>脚本开发：在windows新建的sh脚本在拿去linux系统之前都要先转换一下格式，以后直接作为wsl系统下文件新建，就不用考虑这些乱七八糟的问题</p>
 <p>最终目标是以后把所有的工程都迁移到wsl下，开发相关全部使用wsl环境</p>
-<h3 id="四-其他"><a href="#四-其他" class="headerlink" title="四 其他"></a>四 其他</h3><h4 id="1-网络访问问题"><a href="#1-网络访问问题" class="headerlink" title="1 网络访问问题"></a>1 网络访问问题</h4><p>windows可以直接访问wsl的应用，使用localhost即可，但是不能使用127.0.0.1<br>wsl可以通过以下操作获取windows的ip并设置host，以后直接提供my.win访问，一般用于访问windows的代理服务</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;host_ip=$(cat /etc/resolv.conf |grep &quot;nameserver&quot; |cut -f 2 -d &quot; &quot;)&#x27;&gt;&gt;/etc/profile</span><br><span class="line">echo &#x27;sed -e &quot;/my.win/d&quot;  /etc/hosts  &gt; /etc/hosts&#x27;&gt;&gt;/etc/profile</span><br><span class="line">echo &#x27;echo &quot;$host_ip my.win&quot; &gt;&gt;/etc/hosts&#x27;&gt;&gt;/etc/profile</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="四-其他"><a href="#四-其他" class="headerlink" title="四 其他"></a>四 其他</h3><h4 id="1-网络访问问题"><a href="#1-网络访问问题" class="headerlink" title="1 网络访问问题"></a>1 网络访问问题</h4><p>windows可以直接访问wsl的应用，使用localhost即可，但是不能使用127.0.0.1<br>wsl可以通过以下操作获取windows的ip并设置host，以后直接提供my.win访问，一般用于访问windows的代理服务<br>注意需要使用/tmp/hosts作为中转，否则/etc/hosts会被清空</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;host_ip=$(cat /etc/resolv.conf |grep &quot;nameserver&quot; |cut -f 2 -d &quot; &quot;)&#x27;&gt;&gt;/etc/profile</span><br><span class="line">echo &#x27;sed -e &quot;/my.win/d&quot;  /etc/hosts  &gt; /tmp/hosts&#x27;&gt;&gt;/etc/profile</span><br><span class="line">echo &#x27;cat /tmp/hosts &gt; /etc/hosts&gt;&gt;/etc/profile</span><br><span class="line">echo &#x27;echo &quot;$host_ip my.win&quot; &gt;&gt;/etc/hosts&#x27;&gt;&gt;/etc/profile</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
     </div>
