@@ -20,19 +20,21 @@
     var CONFIG = {"hostname":"linshenkx.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。">
+  <meta name="description" content="最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。2021.11更新：wsl-gui环境配置及idea使用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="WSL2配置与结合IDEA2021使用体验">
+<meta property="og:title" content="WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑）">
 <meta property="og:url" content="https://linshenkx.github.io/wsl2_idea2021/index.html">
 <meta property="og:site_name" content="且炼时光">
-<meta property="og:description" content="最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。">
+<meta property="og:description" content="最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。2021.11更新：wsl-gui环境配置及idea使用">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1636899123(1).png">
 <meta property="article:published_time" content="2021-04-13T14:54:20.000Z">
-<meta property="article:modified_time" content="2021-11-04T09:23:31.025Z">
+<meta property="article:modified_time" content="2021-11-14T14:27:07.889Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta property="article:tag" content="WSL">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1636899123(1).png">
 
 <link rel="canonical" href="https://linshenkx.github.io/wsl2_idea2021/">
 
@@ -47,7 +49,7 @@
   };
 </script>
 
-  <title>WSL2配置与结合IDEA2021使用体验 | 且炼时光</title>
+  <title>WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑） | 且炼时光</title>
   
 
 
@@ -220,7 +222,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          WSL2配置与结合IDEA2021使用体验
+          WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑）
         </h1>
 
         <div class="post-meta">
@@ -238,7 +240,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-11-04 17:23:31" itemprop="dateModified" datetime="2021-11-04T17:23:31+08:00">2021-11-04</time>
+                <time title="修改时间：2021-11-14 22:27:07" itemprop="dateModified" datetime="2021-11-14T22:27:07+08:00">2021-11-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,14 +258,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.9k</span>
+              <span>2.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -275,7 +277,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。<br>倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。</p>
+        <p>最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。<br>倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。<br>2021.11更新：wsl-gui环境配置及idea使用</p>
 <span id="more"></span>
 <h3 id="一-配置WSL"><a href="#一-配置WSL" class="headerlink" title="一 配置WSL"></a>一 配置WSL</h3><p>按惯例，先给出官方文档地址，基础性操作参考这个： <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/">https://docs.microsoft.com/zh-cn/windows/wsl/</a></p>
 <h4 id="1-开启wsl"><a href="#1-开启wsl" class="headerlink" title="1 开启wsl"></a>1 开启wsl</h4><p>参考：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/install-win10">https://docs.microsoft.com/zh-cn/windows/wsl/install-win10</a></p>
@@ -290,17 +292,31 @@
 <h4 id="5-更新镜像源"><a href="#5-更新镜像源" class="headerlink" title="5 更新镜像源"></a>5 更新镜像源</h4><h5 id="1-查看具体版本"><a href="#1-查看具体版本" class="headerlink" title="1 查看具体版本"></a>1 查看具体版本</h5>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/lsb-release</span><br></pre></td></tr></table></figure>
 <h5 id="2-到-https-mirrors-tuna-tsinghua-edu-cn-help-ubuntu-复制最新的镜像"><a href="#2-到-https-mirrors-tuna-tsinghua-edu-cn-help-ubuntu-复制最新的镜像" class="headerlink" title="2 到 https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/ 复制最新的镜像"></a>2 到 <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/">https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/</a> 复制最新的镜像</h5><p>   阿里的支持傻瓜式操作，但经常打不开，就算了<br>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">备份：</span></span><br><span class="line">mv /etc/apt/sources.list /etc/apt/sources.list.backup</span><br><span class="line"><span class="meta">#</span><span class="bash">编辑：</span></span><br><span class="line">vi /etc/apt/sources.list</span><br></pre></td></tr></table></figure></p>
 <h5 id="3-更新"><a href="#3-更新" class="headerlink" title="3 更新"></a>3 更新</h5>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get update -y &amp;&amp; apt-get upgrade -y</span><br></pre></td></tr></table></figure>
-<h4 id="6-配置代理"><a href="#6-配置代理" class="headerlink" title="6 配置代理"></a>6 配置代理</h4><p>在 /etc/profile 最后加：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;host_ip=$(cat /etc/resolv.conf |grep &quot;nameserver&quot; |cut -f 2 -d &quot; &quot;)&#x27;&gt;&gt;/etc/profile</span><br><span class="line">echo &#x27;export ALL_PROXY=&quot;http://$host_ip:7890&quot;&#x27;&gt;&gt;/etc/profile</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h4 id="7-禁止添加Windows-PATH"><a href="#7-禁止添加Windows-PATH" class="headerlink" title="7 禁止添加Windows-PATH"></a>7 禁止添加Windows-PATH</h4><p>为了避免开发环境冲突，需关闭Windows-PATH<br>wsl.conf配置参考：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config">https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config</a><br>新建 /etc/wsl.conf，添加以下内容：<br>    <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 不加载Windows中的PATH内容</span></span><br><span class="line">[interop]</span><br><span class="line">appendWindowsPath = false</span><br></pre></td></tr></table></figure></p>
+<h4 id="6-配置代理"><a href="#6-配置代理" class="headerlink" title="6 配置代理"></a>6 配置代理</h4><p>如果代理软件是装在windows系统的，参考第四部分的 获取宿主机ip 部分配置my.win就行了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;export ALL_PROXY=&quot;http://$host_ip:7890&quot;&#x27;&gt;&gt;/etc/profile</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="7-禁止添加Windows-PATH"><a href="#7-禁止添加Windows-PATH" class="headerlink" title="7 禁止添加Windows-PATH"></a>7 禁止添加Windows-PATH</h4><blockquote>
+<p>此部分内容过期，可不配置</p>
+</blockquote>
+<p>为了避免开发环境冲突，需关闭Windows-PATH<br>wsl.conf配置参考：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config">https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config</a><br>新建 /etc/wsl.conf，添加以下内容：<br>    <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 不加载Windows中的PATH内容</span></span><br><span class="line">[interop]</span><br><span class="line">appendWindowsPath = false</span><br></pre></td></tr></table></figure></p>
 <h3 id="三-IDEA开发和总结"><a href="#三-IDEA开发和总结" class="headerlink" title="三 IDEA开发和总结"></a>三 IDEA开发和总结</h3><p>经过测试，常规SpringBoot工程，在Windows目录下的，可以使用WSL环境进行debug、部署<br>对于纯maven工程，支持也还好</p>
 <p>但对于纯gradle工程（非spring），则无法完成gradle初始化，无论工程是否是在WSL中都不行<br>设置JDK是WSL，但将Gradle路径指定为WSL却一直不行，说路径有问题，只能使用默认的Gradle。<br>根据issue的说法，建议将Windows的gradle path设置为WSL的路径，不过我没有试，我觉得这单纯就是官方的bug。<br>官方issue：<a target="_blank" rel="noopener" href="https://youtrack.jetbrains.com/issues/IDEA?q=wsl">https://youtrack.jetbrains.com/issues/IDEA?q=wsl</a><br>另外，对于WSL下工程的git，idea似乎也无法识别</p>
 <p>总之，IDEA（2021.1）的WSL2支持尚不成熟，但是也已经初步支持，还可以自动下载、选择WSL环境的JDK<br>可以作为日常开发的辅助支持，但目前仍不建议全面迁移过去</p>
 <p>对我来说，WSL的开发应用场景主要在于：<br>大数据功能开发：之前简单的hdfs操作都需要在windows中配置hadoop相关的环境变量，而且各种版本或兼容性问题，很麻烦，以后这些直接丢wsl里面<br>大数据组件编译：很多组件并不是纯Java代码，可能还需要一些脚本，这些有平台依赖性的，很可能因为windows而导致编译失败<br>脚本开发：在windows新建的sh脚本在拿去linux系统之前都要先转换一下格式，以后直接作为wsl系统下文件新建，就不用考虑这些乱七八糟的问题</p>
 <p>最终目标是以后把所有的工程都迁移到wsl下，开发相关全部使用wsl环境</p>
-<h3 id="四-其他"><a href="#四-其他" class="headerlink" title="四 其他"></a>四 其他</h3><h4 id="1-网络访问问题"><a href="#1-网络访问问题" class="headerlink" title="1 网络访问问题"></a>1 网络访问问题</h4><p>windows可以直接访问wsl的应用，使用localhost即可，但是不能使用127.0.0.1<br>wsl可以通过以下操作获取windows的ip并设置host，以后直接提供my.win访问，一般用于访问windows的代理服务<br>注意需要使用/tmp/hosts作为中转，否则/etc/hosts会被清空</p>
+<p>2021年11月更新：<br>IDEA2021.2.3的wsl工程的bug已经较少，git、gradle支持相对正常，可以满足一般场景下的开发需求。<br>但仍不能在工程里读取到wsl的环境变量（能读取到windows的），所以我选择放弃。<br>直接在WSLg里装jetbrains toolbox，然后启动idea。<br>除去一些小bug，已经和原生linux体验差不多了，用来做大数据开发很舒服。<br>配置好环境就可以直接本地进行大数据操作，不再需要远程开发了，之前被这东西折磨得不行。<br>性能的话比windows idea的wsl开发要快很多，前提是你内存够。<br>wsl比较吃内存，当然开发的标配是32g，一般还是够用的。</p>
+<p>目前遇到的问题有：</p>
+<ol>
+<li>全屏偏移<br>在全屏状态下，无法进行部分拖拽操作，可能与这个issue有关<br><a target="_blank" rel="noopener" href="https://github.com/microsoft/wslg/issues/502">https://github.com/microsoft/wslg/issues/502</a></li>
+<li>卡死<br>通常是在调出新的窗口的时候<br>需要手动wsl –shutdown，再启动，但可能造成idea文件未保存，修改丢失的情况<br>在windows上不管怎么造基本都不会出现idea文件修改丢失的情况</li>
+</ol>
+<h3 id="四-其他"><a href="#四-其他" class="headerlink" title="四 其他"></a>四 其他</h3><h4 id="1-wsl2获取宿主机ip"><a href="#1-wsl2获取宿主机ip" class="headerlink" title="1 wsl2获取宿主机ip"></a>1 wsl2获取宿主机ip</h4><p>windows可以直接访问wsl的应用，使用localhost即可，但是不能使用127.0.0.1<br>wsl可以通过以下操作获取windows的ip并设置host，以后直接提供my.win访问，一般用于访问windows的代理服务<br>注意需要使用/tmp/hosts作为中转，否则/etc/hosts会被清空</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;host_ip=$(cat /etc/resolv.conf |grep &quot;nameserver&quot; |cut -f 2 -d &quot; &quot;)&#x27;&gt;&gt;/etc/profile</span><br><span class="line">echo &#x27;sed -e &quot;/my.win/d&quot;  /etc/hosts  &gt; /tmp/hosts&#x27;&gt;&gt;/etc/profile</span><br><span class="line">echo &#x27;cat /tmp/hosts &gt; /etc/hosts&gt;&gt;/etc/profile</span><br><span class="line">echo &#x27;echo &quot;$host_ip my.win&quot; &gt;&gt;/etc/hosts&#x27;&gt;&gt;/etc/profile</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<h4 id="2-局域网访问wsl2"><a href="#2-局域网访问wsl2" class="headerlink" title="2 局域网访问wsl2"></a>2 局域网访问wsl2</h4><p>在powershell 管理员模式下执行以下命令，局域网其他机器只需要连接宿主机的28090端口即可访问wsl2内19909端口的内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">netsh interface portproxy add v4tov4 listenport=28090 listenaddress=0.0.0.0 connectport=19909 connectaddress=127.0.0.1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="3-手动添加jetbrains-toolbox软件的快捷方式到开始菜单"><a href="#3-手动添加jetbrains-toolbox软件的快捷方式到开始菜单" class="headerlink" title="3 手动添加jetbrains toolbox软件的快捷方式到开始菜单"></a>3 手动添加jetbrains toolbox软件的快捷方式到开始菜单</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.local/share/applications</span><br><span class="line">sudo cp *.desktop /usr/share/applications</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://juejin.cn/post/6966630345915498526">https://juejin.cn/post/6966630345915498526</a></p>
+<h4 id="3-中文环境及输入法"><a href="#3-中文环境及输入法" class="headerlink" title="3 中文环境及输入法"></a>3 中文环境及输入法</h4><p>这个教程比较多，而且写得都不一样，但大同小异，需要注意的是<br>输入法没有切换处理很可能是快捷键被windows系统的覆盖了，<br>需要手动调出来输入法的配置界面，修改快捷键<br>比方说fcix的是fcitx-config-gtk3命令<br>然后我的配置是这样的，就是shift键，保持和windows使用习惯统一<br><img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1636899123(1).png"></p>
+<p>这里的教程可以参考：<a target="_blank" rel="noopener" href="https://monkeywie.cn/2021/09/26/wsl2-gui-idea-config/">https://monkeywie.cn/2021/09/26/wsl2-gui-idea-config/</a><br>我的配置和里面的不一样， 也没有遇到idea切不出输入法的问题<br>如果有的话参考文章里的方法或者看：<a target="_blank" rel="noopener" href="https://github.com/microsoft/wslg/issues/278">https://github.com/microsoft/wslg/issues/278</a></p>
 
     </div>
 
@@ -316,7 +332,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://linshenkx.github.io/wsl2_idea2021/" title="WSL2配置与结合IDEA2021使用体验">https://linshenkx.github.io/wsl2_idea2021/</a>
+    <a href="https://linshenkx.github.io/wsl2_idea2021/" title="WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑）">https://linshenkx.github.io/wsl2_idea2021/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -413,7 +429,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80-%E9%85%8D%E7%BD%AEWSL"><span class="nav-text">一 配置WSL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%BC%80%E5%90%AFwsl"><span class="nav-text">1 开启wsl</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85%E3%80%8C%E9%80%82%E7%94%A8%E4%BA%8E-Linux-%E7%9A%84-Windows-%E5%AD%90%E7%B3%BB%E7%BB%9F%E3%80%8D%E5%92%8C%E3%80%8C%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%B9%B3%E5%8F%B0%E3%80%8D%E8%BF%99%E4%B8%A4%E4%B8%AA%E5%8F%AF%E9%80%89%E7%BB%84%E4%BB%B6"><span class="nav-text">1 安装「适用于 Linux 的 Windows 子系统」和「虚拟机平台」这两个可选组件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E9%87%8D%E5%90%AF"><span class="nav-text">2 重启</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E9%85%8D%E7%BD%AE%E9%BB%98%E8%AE%A4%E4%BD%BF%E7%94%A8wsl2"><span class="nav-text">3 配置默认使用wsl2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85windows-terminal"><span class="nav-text">2 安装windows terminal</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C-%E9%85%8D%E7%BD%AEubuntu"><span class="nav-text">二 配置ubuntu</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85ubuntu"><span class="nav-text">1 安装ubuntu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E7%94%A8%E6%88%B7%E4%B8%BAroot"><span class="nav-text">2 修改默认用户为root</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8Dwsl%E5%88%97%E8%A1%A8%EF%BC%9A"><span class="nav-text">1 查看当前wsl列表：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E4%BF%AE%E6%94%B9%E5%AF%B9%E5%BA%94wsl%E9%BB%98%E8%AE%A4%E7%94%A8%E6%88%B7"><span class="nav-text">2 修改对应wsl默认用户</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%B0%86linux%E6%A0%B9%E7%9B%AE%E5%BD%95%E6%98%A0%E5%B0%84%E5%88%B0win10%E7%A3%81%E7%9B%98"><span class="nav-text">3 将linux根目录映射到win10磁盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E9%85%8D%E7%BD%AE-terminal-%E6%89%93%E5%BC%80%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84"><span class="nav-text">4 配置 terminal 打开默认路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E6%9B%B4%E6%96%B0%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-text">5 更新镜像源</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%85%B7%E4%BD%93%E7%89%88%E6%9C%AC"><span class="nav-text">1 查看具体版本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%88%B0-https-mirrors-tuna-tsinghua-edu-cn-help-ubuntu-%E5%A4%8D%E5%88%B6%E6%9C%80%E6%96%B0%E7%9A%84%E9%95%9C%E5%83%8F"><span class="nav-text">2 到 https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;help&#x2F;ubuntu&#x2F; 复制最新的镜像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%9B%B4%E6%96%B0"><span class="nav-text">3 更新</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86"><span class="nav-text">6 配置代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E7%A6%81%E6%AD%A2%E6%B7%BB%E5%8A%A0Windows-PATH"><span class="nav-text">7 禁止添加Windows-PATH</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89-IDEA%E5%BC%80%E5%8F%91%E5%92%8C%E6%80%BB%E7%BB%93"><span class="nav-text">三 IDEA开发和总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B-%E5%85%B6%E4%BB%96"><span class="nav-text">四 其他</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%E9%97%AE%E9%A2%98"><span class="nav-text">1 网络访问问题</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80-%E9%85%8D%E7%BD%AEWSL"><span class="nav-text">一 配置WSL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%BC%80%E5%90%AFwsl"><span class="nav-text">1 开启wsl</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85%E3%80%8C%E9%80%82%E7%94%A8%E4%BA%8E-Linux-%E7%9A%84-Windows-%E5%AD%90%E7%B3%BB%E7%BB%9F%E3%80%8D%E5%92%8C%E3%80%8C%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%B9%B3%E5%8F%B0%E3%80%8D%E8%BF%99%E4%B8%A4%E4%B8%AA%E5%8F%AF%E9%80%89%E7%BB%84%E4%BB%B6"><span class="nav-text">1 安装「适用于 Linux 的 Windows 子系统」和「虚拟机平台」这两个可选组件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E9%87%8D%E5%90%AF"><span class="nav-text">2 重启</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E9%85%8D%E7%BD%AE%E9%BB%98%E8%AE%A4%E4%BD%BF%E7%94%A8wsl2"><span class="nav-text">3 配置默认使用wsl2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85windows-terminal"><span class="nav-text">2 安装windows terminal</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C-%E9%85%8D%E7%BD%AEubuntu"><span class="nav-text">二 配置ubuntu</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85ubuntu"><span class="nav-text">1 安装ubuntu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E7%94%A8%E6%88%B7%E4%B8%BAroot"><span class="nav-text">2 修改默认用户为root</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8Dwsl%E5%88%97%E8%A1%A8%EF%BC%9A"><span class="nav-text">1 查看当前wsl列表：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E4%BF%AE%E6%94%B9%E5%AF%B9%E5%BA%94wsl%E9%BB%98%E8%AE%A4%E7%94%A8%E6%88%B7"><span class="nav-text">2 修改对应wsl默认用户</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%B0%86linux%E6%A0%B9%E7%9B%AE%E5%BD%95%E6%98%A0%E5%B0%84%E5%88%B0win10%E7%A3%81%E7%9B%98"><span class="nav-text">3 将linux根目录映射到win10磁盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E9%85%8D%E7%BD%AE-terminal-%E6%89%93%E5%BC%80%E9%BB%98%E8%AE%A4%E8%B7%AF%E5%BE%84"><span class="nav-text">4 配置 terminal 打开默认路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E6%9B%B4%E6%96%B0%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-text">5 更新镜像源</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%9F%A5%E7%9C%8B%E5%85%B7%E4%BD%93%E7%89%88%E6%9C%AC"><span class="nav-text">1 查看具体版本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%88%B0-https-mirrors-tuna-tsinghua-edu-cn-help-ubuntu-%E5%A4%8D%E5%88%B6%E6%9C%80%E6%96%B0%E7%9A%84%E9%95%9C%E5%83%8F"><span class="nav-text">2 到 https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;help&#x2F;ubuntu&#x2F; 复制最新的镜像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%9B%B4%E6%96%B0"><span class="nav-text">3 更新</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86"><span class="nav-text">6 配置代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E7%A6%81%E6%AD%A2%E6%B7%BB%E5%8A%A0Windows-PATH"><span class="nav-text">7 禁止添加Windows-PATH</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89-IDEA%E5%BC%80%E5%8F%91%E5%92%8C%E6%80%BB%E7%BB%93"><span class="nav-text">三 IDEA开发和总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B-%E5%85%B6%E4%BB%96"><span class="nav-text">四 其他</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-wsl2%E8%8E%B7%E5%8F%96%E5%AE%BF%E4%B8%BB%E6%9C%BAip"><span class="nav-text">1 wsl2获取宿主机ip</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%B1%80%E5%9F%9F%E7%BD%91%E8%AE%BF%E9%97%AEwsl2"><span class="nav-text">2 局域网访问wsl2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E6%89%8B%E5%8A%A8%E6%B7%BB%E5%8A%A0jetbrains-toolbox%E8%BD%AF%E4%BB%B6%E7%9A%84%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F%E5%88%B0%E5%BC%80%E5%A7%8B%E8%8F%9C%E5%8D%95"><span class="nav-text">3 手动添加jetbrains toolbox软件的快捷方式到开始菜单</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E4%B8%AD%E6%96%87%E7%8E%AF%E5%A2%83%E5%8F%8A%E8%BE%93%E5%85%A5%E6%B3%95"><span class="nav-text">3 中文环境及输入法</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -496,7 +512,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">46k</span>
+    <span title="站点总字数">47k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
