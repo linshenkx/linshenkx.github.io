@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1636899123(1).png">
 <meta property="article:published_time" content="2021-04-13T14:54:20.000Z">
-<meta property="article:modified_time" content="2021-11-14T14:53:30.680Z">
+<meta property="article:modified_time" content="2021-11-14T14:55:14.198Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta property="article:tag" content="WSL">
@@ -244,7 +244,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-11-14 22:53:30" itemprop="dateModified" datetime="2021-11-14T22:53:30+08:00">2021-11-14</time>
+                <time title="修改时间：2021-11-14 22:55:14" itemprop="dateModified" datetime="2021-11-14T22:55:14+08:00">2021-11-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -304,9 +304,7 @@
 <p>为了避免开发环境冲突，需关闭Windows-PATH<br>wsl.conf配置参考：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config">https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config</a><br>新建 /etc/wsl.conf，添加以下内容：<br>    <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 不加载Windows中的PATH内容</span></span><br><span class="line">[interop]</span><br><span class="line">appendWindowsPath = false</span><br></pre></td></tr></table></figure></p>
 <h3 id="三-IDEA开发和总结"><a href="#三-IDEA开发和总结" class="headerlink" title="三 IDEA开发和总结"></a>三 IDEA开发和总结</h3><p>经过测试，常规SpringBoot工程，在Windows目录下的，可以使用WSL环境进行debug、部署<br>对于纯maven工程，支持也还好</p>
 <blockquote>
-<blockquote>
 <p>此部分过期：<br>但对于纯gradle工程（非spring），则无法完成gradle初始化，无论工程是否是在WSL中都不行<br>设置JDK是WSL，但将Gradle路径指定为WSL却一直不行，说路径有问题，只能使用默认的Gradle。<br>根据issue的说法，建议将Windows的gradle path设置为WSL的路径，不过我没有试，我觉得这单纯就是官方的bug。<br>官方issue：<a target="_blank" rel="noopener" href="https://youtrack.jetbrains.com/issues/IDEA?q=wsl">https://youtrack.jetbrains.com/issues/IDEA?q=wsl</a><br>另外，对于WSL下工程的git，idea似乎也无法识别</p>
-</blockquote>
 </blockquote>
 <p>总之，IDEA（2021.1）的WSL2支持尚不成熟，但是也已经初步支持，还可以自动下载、选择WSL环境的JDK<br>可以作为日常开发的辅助支持，但目前仍不建议全面迁移过去</p>
 <p>对我来说，WSL的开发应用场景主要在于：<br>大数据功能开发：之前简单的hdfs操作都需要在windows中配置hadoop相关的环境变量，而且各种版本或兼容性问题，很麻烦，以后这些直接丢wsl里面<br>大数据组件编译：很多组件并不是纯Java代码，可能还需要一些脚本，这些有平台依赖性的，很可能因为windows而导致编译失败<br>脚本开发：在windows新建的sh脚本在拿去linux系统之前都要先转换一下格式，以后直接作为wsl系统下文件新建，就不用考虑这些乱七八糟的问题</p>
