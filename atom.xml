@@ -44,7 +44,7 @@
     <link href="https://linshenkx.github.io/my_blog_system_design/"/>
     <id>https://linshenkx.github.io/my_blog_system_design/</id>
     <published>2021-09-13T15:40:20.000Z</published>
-    <updated>2021-11-20T07:38:52.274Z</updated>
+    <updated>2021-11-20T07:44:27.864Z</updated>
     
     
     <summary type="html">&lt;p&gt;本文主要介绍自己的博客系统是如何设计的，&lt;br&gt;并使用&lt;a href=&quot;https://github.com/linshenkx/haloSyncServer&quot;&gt;Halo博客同步器&lt;/a&gt;&lt;br&gt;将hexo（git pages: &lt;a href=&quot;https://linshenkx.github.io/&quot;&gt;https://linshenkx.github.io&lt;/a&gt; ）文章自动同步到halo( &lt;a href=&quot;http://linshenkx.cn/&quot;&gt;http://linshenkx.cn&lt;/a&gt; )。&lt;br&gt;实现一次编写、两套博客系统并存、多个网址访问的效果。&lt;/p&gt;</summary>
@@ -163,9 +163,9 @@
     <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-    <category term="hbase" scheme="https://linshenkx.github.io/tags/hbase/"/>
-    
     <category term="hive" scheme="https://linshenkx.github.io/tags/hive/"/>
+    
+    <category term="hbase" scheme="https://linshenkx.github.io/tags/hbase/"/>
     
     <category term="bulkload" scheme="https://linshenkx.github.io/tags/bulkload/"/>
     
