@@ -44,10 +44,10 @@
     <link href="https://linshenkx.github.io/my_blog_system_design/"/>
     <id>https://linshenkx.github.io/my_blog_system_design/</id>
     <published>2021-09-13T15:40:20.000Z</published>
-    <updated>2021-10-24T09:05:28.056Z</updated>
+    <updated>2021-11-20T07:38:52.274Z</updated>
     
     
-    <summary type="html">&lt;p&gt;本文介绍我自己的博客系统是如何设计的，以及使用自己开发的软件达到hexo（git pages: &lt;a href=&quot;https://linshenkx.github.io/&quot;&gt;https://linshenkx.github.io&lt;/a&gt; ）文章自动同步到halo( &lt;a href=&quot;http://linshenkx.cn/&quot;&gt;http://linshenkx.cn&lt;/a&gt; )的效果。&lt;br&gt;实现一次编写、两套博客系统并存、多个网址访问的效果。&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;本文主要介绍自己的博客系统是如何设计的，&lt;br&gt;并使用&lt;a href=&quot;https://github.com/linshenkx/haloSyncServer&quot;&gt;Halo博客同步器&lt;/a&gt;&lt;br&gt;将hexo（git pages: &lt;a href=&quot;https://linshenkx.github.io/&quot;&gt;https://linshenkx.github.io&lt;/a&gt; ）文章自动同步到halo( &lt;a href=&quot;http://linshenkx.cn/&quot;&gt;http://linshenkx.cn&lt;/a&gt; )。&lt;br&gt;实现一次编写、两套博客系统并存、多个网址访问的效果。&lt;/p&gt;</summary>
     
     
     
@@ -109,7 +109,7 @@
     <link href="https://linshenkx.github.io/wsl2_idea2021/"/>
     <id>https://linshenkx.github.io/wsl2_idea2021/</id>
     <published>2021-04-13T14:54:20.000Z</published>
-    <updated>2021-11-14T14:55:14.198Z</updated>
+    <updated>2021-11-19T04:02:38.475Z</updated>
     
     
     <summary type="html">&lt;p&gt;最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。&lt;br&gt;倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。&lt;br&gt;2021.11更新：wsl-gui环境配置及idea使用&lt;/p&gt;</summary>
@@ -126,11 +126,11 @@
   </entry>
   
   <entry>
-    <title>大数据通用计算平台(支持flink、spark等)(1)系统调研及设计</title>
+    <title>大数据通用计算平台(支持flink、spark、storm)-系统调研及设计</title>
     <link href="https://linshenkx.github.io/bigdata_compute_platform/"/>
     <id>https://linshenkx.github.io/bigdata_compute_platform/</id>
     <published>2021-01-09T13:08:41.000Z</published>
-    <updated>2021-09-01T08:02:17.798Z</updated>
+    <updated>2021-11-16T16:08:31.444Z</updated>
     
     
     <summary type="html">&lt;p&gt;项目源于对flink_sql流计算任务的实际使用需求，最初目标是设计一个系统可以在线提交sql生成flink流式计算任务，并进行监控监测。 后延申至支持在线jar包提交的方式，同时支持批式计算任务。并以模块化开发的思路，引入对spark的支持。&lt;/p&gt;</summary>
@@ -143,6 +143,8 @@
     <category term="flink" scheme="https://linshenkx.github.io/tags/flink/"/>
     
     <category term="spark" scheme="https://linshenkx.github.io/tags/spark/"/>
+    
+    <category term="storm" scheme="https://linshenkx.github.io/tags/storm/"/>
     
   </entry>
   
@@ -231,7 +233,7 @@
     <link href="https://linshenkx.github.io/oracle_logminer/"/>
     <id>https://linshenkx.github.io/oracle_logminer/</id>
     <published>2020-09-24T09:03:16.000Z</published>
-    <updated>2021-09-01T08:02:17.790Z</updated>
+    <updated>2021-11-16T16:01:53.062Z</updated>
     
     
     <summary type="html">&lt;p&gt;Oracle LogMiner是Oracle公司从产品8i以后提供的一个实际非常有用的分析工具，使用该工具可以轻松获得Oracle 在线/归档日志文件中的具体内容，特别是该工具可以分析出所有对于数据库操作的DML和DDL语句。该工具特别适用于调试、审计或者回退某个特定的事务。&lt;/p&gt;</summary>
