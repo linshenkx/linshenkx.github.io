@@ -28,7 +28,7 @@
 <meta property="og:description" content="项目源于对flink_sql流计算任务的实际使用需求，最初目标是设计一个系统可以在线提交sql生成flink流式计算任务，并进行监控监测。 后延申至支持在线jar包提交的方式，同时支持批式计算任务。并以模块化开发的思路，引入对spark的支持。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-01-09T13:08:41.000Z">
-<meta property="article:modified_time" content="2021-11-16T16:08:31.444Z">
+<meta property="article:modified_time" content="2021-11-26T08:11:15.618Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="flink">
 <meta property="article:tag" content="spark">
@@ -243,7 +243,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-11-17 00:08:31" itemprop="dateModified" datetime="2021-11-17T00:08:31+08:00">2021-11-17</time>
+                <time title="修改时间：2021-11-26 16:11:15" itemprop="dateModified" datetime="2021-11-26T16:11:15+08:00">2021-11-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -261,7 +261,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>5k</span>
+              <span>5.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -313,16 +313,18 @@
 <li>接口提交？<br>flink的web界面确实有jar包提交功能，但首先要把flink跑起来，即session模式，这里不使用。</li>
 <li>命令行提交<br>默认的提交方法，万能的。</li>
 </ol>
-<h5 id="监控实现？"><a href="#监控实现？" class="headerlink" title="监控实现？"></a>监控实现？</h5><ol>
+<h5 id="监控实现？"><a href="#监控实现？" class="headerlink" title="监控实现？"></a>监控实现？</h5><p>api+metrics</p>
+<ul>
+<li>api调用流程：<ol>
 <li>提交yarn的时候指定tag，根据tag进行搜索，获取任务的appId，进行任务追踪</li>
 <li>yarn层根据appId和yarn的rest接口跟踪任务在yarn上的状态</li>
 <li>flink层根据appId可以组成出flink的web监控页面，同时flink提供了web界面所需的各项数据的rest接口，可以二次开发</li>
 </ol>
-<h5 id="任务管理？"><a href="#任务管理？" class="headerlink" title="任务管理？"></a>任务管理？</h5><p>flink任务的停止可以直接调用其rest接口<br>savepoint信息也可以提供rest接口获取，savepoint的执行通过rest执行好像有问题，这里还是先用命令行操作</p>
-<h4 id="2-spark"><a href="#2-spark" class="headerlink" title="2 spark"></a>2 spark</h4><p>spark作为一个<del>过时</del>成熟稳重的计算框架，虽然不支持流批一体，但是相关的第三方框架更加成熟。</p>
-<h5 id="代码提交or接口提交or命令行提交？-1"><a href="#代码提交or接口提交or命令行提交？-1" class="headerlink" title="代码提交or接口提交or命令行提交？"></a>代码提交or接口提交or命令行提交？</h5><p>我们还是先从官网看起。大体情况和flink类似。<br>没有官方的代码提交接口，都是各自挖掘出来的，而且写法还都不一样，这里不推荐。<br>接口提交有个spark.master.rest.enabled配置项，但只支持standalone模式<br>所以还是走命令行提交</p>
-<h5 id="监控实现？-1"><a href="#监控实现？-1" class="headerlink" title="监控实现？"></a>监控实现？</h5><p>同flink，yarn层api+spark自身api</p>
-<h5 id="任务管理？-1"><a href="#任务管理？-1" class="headerlink" title="任务管理？"></a>任务管理？</h5><p>主要就是想找个spark原生的rest api来kill它。<br>网上有一些spark隐藏rest api合集之类的东西，我本身是不想用的，毕竟你都知道是隐藏了，说明官方还不想给你用，你又不知道什么时间哪个版本就会变了<br>不过我也很好奇为什么官方不提供，很多人跟我有同样的想法，还跑去问了。<a target="_blank" rel="noopener" href="https://issues.apache.org/jira/browse/SPARK-12528">https://issues.apache.org/jira/browse/SPARK-12528</a><br>standalone已经可以通过spark.master.rest.enabled来用了，但yarn还不行。讨论的人有提到可以用Livy或spark-jobserver。</p>
+</li>
+<li>metrics获取：<br>flink 支持主动将指标数据推送到 Prometheus 的pushgateway。<h5 id="任务管理？"><a href="#任务管理？" class="headerlink" title="任务管理？"></a>任务管理？</h5>flink任务的停止可以直接调用其rest接口<br>savepoint信息也可以提供rest接口获取，savepoint的执行通过rest执行好像有问题，这里还是先用命令行操作<h4 id="2-spark"><a href="#2-spark" class="headerlink" title="2 spark"></a>2 spark</h4>spark作为一个<del>过时</del>成熟稳重的计算框架，虽然不支持流批一体，但是相关的第三方框架更加成熟。<h5 id="代码提交or接口提交or命令行提交？-1"><a href="#代码提交or接口提交or命令行提交？-1" class="headerlink" title="代码提交or接口提交or命令行提交？"></a>代码提交or接口提交or命令行提交？</h5>我们还是先从官网看起。大体情况和flink类似。<br>没有官方的代码提交接口，都是各自挖掘出来的，而且写法还都不一样，这里不推荐。<br>接口提交有个spark.master.rest.enabled配置项，但只支持standalone模式<br>所以还是走命令行提交<h5 id="监控实现？-1"><a href="#监控实现？-1" class="headerlink" title="监控实现？"></a>监控实现？</h5>api+metrics</li>
+<li>api调用流程：<br>类似flink</li>
+<li>metrics获取：<br>spark最新3.2.0版本支持显示Prometheus格式的指标数据，但不会主动推送<br>不过社区有支持pushgateway的插件：<a target="_blank" rel="noopener" href="https://github.com/banzaicloud/spark-metrics">https://github.com/banzaicloud/spark-metrics</a><h5 id="任务管理？-1"><a href="#任务管理？-1" class="headerlink" title="任务管理？"></a>任务管理？</h5>主要就是想找个spark原生的rest api来kill它。<br>网上有一些spark隐藏rest api合集之类的东西，我本身是不想用的，毕竟你都知道是隐藏了，说明官方还不想给你用，你又不知道什么时间哪个版本就会变了<br>不过我也很好奇为什么官方不提供，很多人跟我有同样的想法，还跑去问了。<a target="_blank" rel="noopener" href="https://issues.apache.org/jira/browse/SPARK-12528">https://issues.apache.org/jira/browse/SPARK-12528</a><br>standalone已经可以通过spark.master.rest.enabled来用了，但yarn还不行。讨论的人有提到可以用Livy或spark-jobserver。</li>
+</ul>
 <ol>
 <li>spark-jobserver的社区比较活跃，更新比较快，功能也很强大，但是需要继承指定类，造成极强的入侵性，这是无法容忍的，这里不做考虑。<br>按我的理解，你都能继承自己的类了，那你做出什么增强的功能都不稀奇，因为你本质上已经不是工具型产品，而是一个基于spark二次开发的平台，还不支持spark原生jar包。</li>
 <li>Livy毕竟是Apache孵化项目，虽然还没毕业，但使用还是没什么问题的。<br>接口很简单，使用也很方便。主要就是可以通过livy的rest接口实现任务的发布、停止、状态获取、日志获取。<br>其实livy的存在已经和本项目对spark的支持重复了…但是本着轮子要自己造的思想，我们还是来<del>挑挑刺</del>研究一下livy的优缺点<br>嗯…文档不清晰：虽然参数都是对官方的封装，但是缺少必要的描述说明，比方说没有说jar包的路径默认是hdfs的（当然这不是主要问题…）<br>其实没什么大问题，还是推荐使用的，任务提交我们已经通过脚本方式实现了，这里就没必要再引入livy了，毕竟是个单独的web服务器，也挺重的。</li>
@@ -475,7 +477,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -488,7 +490,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -542,12 +544,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">48k</span>
+    <span title="站点总字数">51k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">43 分钟</span>
+    <span title="站点阅读时长">46 分钟</span>
 </div>
 
         

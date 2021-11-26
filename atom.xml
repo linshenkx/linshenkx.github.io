@@ -79,11 +79,11 @@
     <category term="程序员杂记" scheme="https://linshenkx.github.io/categories/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%9D%82%E8%AE%B0/"/>
     
     
+    <category term="docker" scheme="https://linshenkx.github.io/tags/docker/"/>
+    
     <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
     
     <category term="clash" scheme="https://linshenkx.github.io/tags/clash/"/>
-    
-    <category term="docker" scheme="https://linshenkx.github.io/tags/docker/"/>
     
   </entry>
   
@@ -109,7 +109,7 @@
     <link href="https://linshenkx.github.io/wsl2_idea2021/"/>
     <id>https://linshenkx.github.io/wsl2_idea2021/</id>
     <published>2021-04-13T14:54:20.000Z</published>
-    <updated>2021-11-19T04:02:38.475Z</updated>
+    <updated>2021-11-25T07:47:42.404Z</updated>
     
     
     <summary type="html">&lt;p&gt;最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。&lt;br&gt;倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。&lt;br&gt;2021.11更新：wsl-gui环境配置及idea使用&lt;/p&gt;</summary>
@@ -130,7 +130,7 @@
     <link href="https://linshenkx.github.io/bigdata_compute_platform/"/>
     <id>https://linshenkx.github.io/bigdata_compute_platform/</id>
     <published>2021-01-09T13:08:41.000Z</published>
-    <updated>2021-11-16T16:08:31.444Z</updated>
+    <updated>2021-11-26T08:11:15.618Z</updated>
     
     
     <summary type="html">&lt;p&gt;项目源于对flink_sql流计算任务的实际使用需求，最初目标是设计一个系统可以在线提交sql生成flink流式计算任务，并进行监控监测。 后延申至支持在线jar包提交的方式，同时支持批式计算任务。并以模块化开发的思路，引入对spark的支持。&lt;/p&gt;</summary>
@@ -163,9 +163,9 @@
     <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-    <category term="hive" scheme="https://linshenkx.github.io/tags/hive/"/>
-    
     <category term="hbase" scheme="https://linshenkx.github.io/tags/hbase/"/>
+    
+    <category term="hive" scheme="https://linshenkx.github.io/tags/hive/"/>
     
     <category term="bulkload" scheme="https://linshenkx.github.io/tags/bulkload/"/>
     
@@ -364,6 +364,29 @@
     
     
     <category term="Spring" scheme="https://linshenkx.github.io/tags/Spring/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Dockerfile实现MySQL定时备份</title>
+    <link href="https://linshenkx.github.io/mysql-cron-docker/"/>
+    <id>https://linshenkx.github.io/mysql-cron-docker/</id>
+    <published>2018-09-09T07:11:26.000Z</published>
+    <updated>2021-11-25T09:07:35.132Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文利用自定制Dockerfile实现在mysql容器内自动定时备份,避免了在宿主机设置cron定时任务所带来的高耦合操作,更易于部署和搬迁.项目最新版已上传到&lt;a href=&quot;https://github.com/linshenkx/mysql-cron&quot;&gt;github&lt;/a&gt;和&lt;a href=&quot;https://hub.docker.com/r/linshen/mysql-cron/&quot;&gt;DockerHub&lt;/a&gt;,建议直接到&lt;a href=&quot;https://hub.docker.com/r/linshen/mysql-cron/&quot;&gt;DockerHub&lt;/a&gt;查看使用.&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="后端开发" scheme="https://linshenkx.github.io/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
+    
+    
+    <category term="docker" scheme="https://linshenkx.github.io/tags/docker/"/>
+    
+    <category term="mysql" scheme="https://linshenkx.github.io/tags/mysql/"/>
+    
+    <category term="cron" scheme="https://linshenkx.github.io/tags/cron/"/>
     
   </entry>
   

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/bear_polar_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/bear_polar_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文利用自定制Dockerfile实现在mysql容器内自动定时备份,避免了在宿主机设置cron定时任务所带来的高耦合操作,更易于部署和搬迁.项目最新版已上传到github和DockerHub,建议直接到DockerHub查看使用.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerfile实现MySQL定时备份">
+<meta property="og:url" content="https://linshenkx.github.io/mysql-cron-docker/index.html">
+<meta property="og:site_name" content="且炼时光">
+<meta property="og:description" content="本文利用自定制Dockerfile实现在mysql容器内自动定时备份,避免了在宿主机设置cron定时任务所带来的高耦合操作,更易于部署和搬迁.项目最新版已上传到github和DockerHub,建议直接到DockerHub查看使用.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-09T07:11:26.000Z">
+<meta property="article:modified_time" content="2021-11-25T09:07:35.132Z">
+<meta property="article:author" content="林泽浩">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="mysql">
+<meta property="article:tag" content="cron">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://linshenkx.github.io/mysql-cron-docker/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Dockerfile实现MySQL定时备份 | 且炼时光</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">且炼时光</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">韶华未褪，且炼时光</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-mysite">
+
+    <a href="http://linshenkx.cn/" rel="noopener" target="_blank"><i class="fa fa-heartbeat fa-fw"></i>切换到【个性版】个人网站</a>
+
+  </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-productions">
+
+    <a href="/productions/" rel="section"><i class="fas fa-store fa-fw"></i>作品展示</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/mysql-cron-docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="林泽浩">
+      <meta itemprop="description" content="林泽浩的个人小站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且炼时光">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dockerfile实现MySQL定时备份
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-09-09 15:11:26" itemprop="dateCreated datePublished" datetime="2018-09-09T15:11:26+08:00">2018-09-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-11-25 17:07:35" itemprop="dateModified" datetime="2021-11-25T17:07:35+08:00">2021-11-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">后端开发</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文利用自定制Dockerfile实现在mysql容器内自动定时备份,避免了在宿主机设置cron定时任务所带来的高耦合操作,更易于部署和搬迁.项目最新版已上传到<a target="_blank" rel="noopener" href="https://github.com/linshenkx/mysql-cron">github</a>和<a target="_blank" rel="noopener" href="https://hub.docker.com/r/linshen/mysql-cron/">DockerHub</a>,建议直接到<a target="_blank" rel="noopener" href="https://hub.docker.com/r/linshen/mysql-cron/">DockerHub</a>查看使用.</p>
+<span id="more"></span>
+
+<p>网上其他教程大多都是利用宿主机crontab定期执行docker exec实现,很简单但每次部署mysql都需要设置,本教程则是将其封装起来,避免重复性工作.踩坑不易,请大家多多支持,未经本人允许禁止转载.</p>
+<h3 id="一-文件结构"><a href="#一-文件结构" class="headerlink" title="一. 文件结构"></a>一. 文件结构</h3><h3 id="二-文件介绍"><a href="#二-文件介绍" class="headerlink" title="二. 文件介绍"></a>二. 文件介绍</h3><ul>
+<li><p>cron-shell文件夹<br>放置cron任务表文件crontab.bak和相关任务脚本,对应容器内文件夹为**/cron-shell**</p>
+<ul>
+<li>backup.sh<br>实现备份功能,用户可替换掉该文件以实现自己的备份逻辑</li>
+<li>crontab.bak<br>crontab任务表,要求结尾必须换行,且文件为Unix格式</li>
+</ul>
+</li>
+<li><p>start.sh<br>功能:</p>
+</li>
+</ul>
+<ol>
+<li>将mysql用户的环境变量写入/etc/default/locale文件,使得这些环境变量对cron运行的脚本(如backup.sh)可见</li>
+<li>启动cron</li>
+<li>载入/cron-shell/crontab.bak定时任务列表文件</li>
+</ol>
+<ul>
+<li>init-sql文件夹<br>inti-sql文件夹下的sql脚本(.sql)或者sql的压缩文件(.sql.gz)在容器启动后由msql运行,通常用来实现数据库初始化,需要注意的是这些sql的执行顺序不固定,故如果对sql脚本执行顺序有要求的话应自己使用shell脚本实现<ul>
+<li>data_20180909.sql.gz<br>数据库初始化sql的压缩包</li>
+</ul>
+</li>
+<li>Dockerfile<br>将文件复制进镜像文件,并安装sudo,cron工具,同时授予mysql组用户免密码使用sudo的权限.</li>
+</ul>
+<h3 id="三-实现思路"><a href="#三-实现思路" class="headerlink" title="三. 实现思路"></a>三. 实现思路</h3><p>通过Dockerfile安装所需cron,利用<strong>docker-entrypoint.sh</strong>中自动执行**/docker-entrypoint-initdb.d**文件夹下shell和sql脚本的功能完成cron自启动和任务制定</p>
+<h3 id="四-文件实现"><a href="#四-文件实现" class="headerlink" title="四. 文件实现"></a>四. 文件实现</h3><h4 id="1-baskup-sh"><a href="#1-baskup-sh" class="headerlink" title="1. baskup.sh"></a>1. baskup.sh</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash">作为crontab运行的脚本,需特别注意环境变量问题,指令写成绝对路径</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">读取环境变量</span></span><br><span class="line">. /etc/profile</span><br><span class="line"><span class="meta">#</span><span class="bash">如果目录不存在则新建</span></span><br><span class="line">DIR=/var/lib/mysql/backup</span><br><span class="line">if [ ! -e $DIR ]</span><br><span class="line">then</span><br><span class="line">/bin/mkdir -p $DIR</span><br><span class="line">fi</span><br><span class="line"><span class="meta">#</span><span class="bash">将所有数据库导出并按日期命名保存成sql文件并压缩</span></span><br><span class="line">/usr/bin/mysqldump --all-databases -uroot -p&quot;$MYSQL_ROOT_PASSWORD&quot;   | gzip &gt; &quot;$DIR/data_`date +%Y%m%d`.sql.gz&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash">查找更改时间在7日以前的sql备份文件并删除</span></span><br><span class="line">/usr/bin/find $DIR -mtime +7  -name &quot;data_[1-9]*.sql.gz&quot; -exec rm -rf &#123;&#125; \;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="2-crontab-bak"><a href="#2-crontab-bak" class="headerlink" title="2. crontab.bak"></a>2. crontab.bak</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/1 * * * * /cron-shell/backup.sh</span><br></pre></td></tr></table></figure>
+<p>注意结尾要换行,并且文件格式要是Unix(其他所有sh脚本也是)</p>
+<h4 id="3-start-sh"><a href="#3-start-sh" class="headerlink" title="3. start.sh"></a>3. start.sh</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">此脚本由mysql用户执行,故需要加sudo避免权限不够,同时,新建文件一般放在/var/lib/mysql目录下,否则同样权限不够</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">修改文件夹权限,否则无法在该目录下创建文件</span></span><br><span class="line">sudo chmod 777 /etc/default</span><br><span class="line"><span class="meta">#</span><span class="bash">将docker的环境变量输出到locale,使得cron定期运行的脚本可以使用这些环境变量,否则执行备份脚本时可能提示密码为空</span></span><br><span class="line">env &gt;&gt; /etc/default/locale</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">启动cron并将其启动结果写入文件</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这里需要使用sudo,否则会提示cron: can<span class="string">&#x27;t open or create /var/run/crond.pid: Permission denied</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="string"> 这个问题无法通过修改/var/run/crond或/run文件夹权限解决</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="string"> 需要注意的是,使用sudo后cron是在root用户下运行的,root用户下使用`service cron status`会出现` [ ok ] cron is running. `</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="string"> 而mysql执行`service cron status`则会出现` [FAIL] cron is not running ... failed! `</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="string"> 虽然如此,mysql用户身份制定的定时任务还是会执行的</span></span></span><br><span class="line">sudo /usr/sbin/service cron start &amp;&gt;&gt; /var/lib/mysql/cron-start.log</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="string">授予权限</span></span></span><br><span class="line">sudo chmod 777 -R /cron-shell</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="string">修正文件格式,这里dos2unix的执行也需要sudo,否则会报错`Failed to change the owner and group of temporary output file /cron-shell/d2utmpKfjPMF: Operation not permitted`</span></span></span><br><span class="line">for f in /cron-shell/*; do</span><br><span class="line">	sudo dos2unix &quot;$f&quot;</span><br><span class="line">done</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="string"> 确保结尾换行,避免出现错误:`new crontab file is missing newline before EOF, can&#x27;</span>t install.`</span></span><br><span class="line">echo &quot;&quot; &gt;&gt; /cron-shell/crontab.bak</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">以/cron-shell/crontab.bak作为crontab的任务列表文件并载入</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因为执行的定时任务一般是数据库相关的,mysql用户就可以了,如果使用root用户可能会报错:`Got error: 1045: Access denied <span class="keyword">for</span> user <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span> (using password: YES) when trying to connect`</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 所以这里使用mysql用户载入定时任务表,任务脚本也将以mysql用户执行,需注意权限问题</span></span><br><span class="line">crontab /cron-shell/crontab.bak</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="4-Dockerfile"><a href="#4-Dockerfile" class="headerlink" title="4. Dockerfile"></a>4. Dockerfile</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">FROM mysql:5.7</span><br><span class="line"></span><br><span class="line">MAINTAINER LinShen</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">修正时区</span></span><br><span class="line">RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \</span><br><span class="line">      &amp;&amp; echo &#x27;Asia/Shanghai&#x27; &gt;/etc/timezone \</span><br><span class="line"><span class="meta">#</span><span class="bash">更新源</span></span><br><span class="line">      &amp;&amp; apt-get update \</span><br><span class="line"><span class="meta">#</span><span class="bash">安装cron</span></span><br><span class="line">      &amp;&amp; apt-get install -y  --no-install-recommends cron \</span><br><span class="line"><span class="meta">#</span><span class="bash">安装dos2unix工具</span></span><br><span class="line">      &amp;&amp; apt-get install -y  dos2unix \</span><br><span class="line"><span class="meta">#</span><span class="bash">安装sudo</span></span><br><span class="line">      &amp;&amp; apt-get install sudo \</span><br><span class="line"><span class="meta">#</span><span class="bash">授予mysql组用户sudo免密码</span></span><br><span class="line">      &amp;&amp; echo &#x27;%mysql ALL=(ALL) NOPASSWD: ALL&#x27; &gt;&gt; /etc/sudoers \</span><br><span class="line"><span class="meta">#</span><span class="bash">减小镜像的体积</span></span><br><span class="line">      &amp;&amp; rm -rf /var/lib/apt/lists/*  \</span><br><span class="line">      &amp;&amp; apt-get clean \</span><br><span class="line"><span class="meta">#</span><span class="bash">赋予脚本可执行权限</span></span><br><span class="line">      &amp;&amp; chmod a+x -R /docker-entrypoint-initdb.d</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">将任务脚本复制进容器,需要注意不能放到/var/lib/mysql目录下,该目录随mysql初始化会被清空造成原文件丢失</span></span><br><span class="line">COPY cron-shell/ /cron-shell/</span><br><span class="line"></span><br><span class="line">COPY start.sh /tmp/start.sh</span><br><span class="line"></span><br><span class="line">ENTRYPOINT [&quot;/tmp/start.sh&quot;]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="五-问题"><a href="#五-问题" class="headerlink" title="五. 问题"></a>五. 问题</h3><h4 id="1-在什么时候启动cron-在哪里执行service-cron-start"><a href="#1-在什么时候启动cron-在哪里执行service-cron-start" class="headerlink" title="(1) 在什么时候启动cron(在哪里执行service cron start)"></a>(1) 在什么时候启动cron(在哪里执行<code>service cron start</code>)</h4><p>我本来是想在Dockerfile里完成启动cron工作的,Dockerfile里执行语句无外乎<code>RUN</code>,<code>CMD</code>和<code>ENTRYPOINT</code>三种指令,但很可惜这三种指令都不行,最后只能利用<strong>docker-entrypoint.sh</strong>,下面进行分析说明:</p>
+<h5 id="1-RUN"><a href="#1-RUN" class="headerlink" title="1. RUN"></a>1. RUN</h5><p>RUN的特点是可以执行多条,每执行一条docker镜像就会多构建一层.<br>需要注意的是RUN通常只用来构建镜像,而镜像是不带有运行状态的.故RUN可完成安装软件,修改文件等操作,但使用<strong>service start</strong>是无意义的.<br>而CMD和ENTRYPOINT则是等到容器启动后才运行.</p>
+<h5 id="2-CMD"><a href="#2-CMD" class="headerlink" title="2. CMD"></a>2. CMD</h5><p>CMD每个Dockerfile文件可以有多条,但一个镜像只有最后一条CMD有效<br>MySQL官方镜像已经有用到CMD和ENTRYPOINT指令了,分别是<code>CMD [&quot;mysqld&quot;]</code>和<code>ENTRYPOINT [&quot;docker-entrypoint.sh&quot;]</code>,当ENTRYPOINT和CMD同时存在时,CMD通常是作为ENTRYPOINT的参数,其内容视ENTRYPOINT的处理而执行.<br>而docker-entrypoint.sh中对cmd内容的分类有如下:</p>
+<ol>
+<li>开头是 <code>-</code> , 认为是参数的情况<br> 可携带参数,如**–character-set-server=utf8mb4<strong>和</strong>–collation-server=utf8mb4_unicode_ci**</li>
+<li>开头是 mysqld, 且用户 id 为0 (root 用户) 的情况</li>
+<li>开头是 mysqld 的情况</li>
+<li>其他情况<br>由docker-entrypoint.sh最后一句的<code>exec &quot;$@&quot;</code>负责执行用户的自定义语句</li>
+</ol>
+<blockquote>
+<p>特别注意:前3种情况在docker-entrypoint.sh都有对应的处理,最终都会启动mysql,而最后一种情况不会 !</p>
+</blockquote>
+<p>在前3种情况中CMD无法携带<code>service cron start</code>,会被视为参数忽略或报错,而最后一种启动cron的语句如下<code>CMD service cron start &amp;&amp; tail -n 1 -f somefile</code>,其中tail语句是为了让容器在前台运行而不会自动退出.但是使用docker exec 进入容器就可以发现,mysql根本没有运行.而如果想在CMD里面同时启动cron和mysql就更麻烦了,几乎不可能(因为有很多mysql的初始化工作要做,这些本来是docker-entrypoint帮你做好的),而且这样就失去了使用docker-entrypoint.sh的意义,得不偿失.</p>
+<h5 id="3-ENTRYPOINT"><a href="#3-ENTRYPOINT" class="headerlink" title="3. ENTRYPOINT"></a>3. ENTRYPOINT</h5><p>ENTRYPOINT每个Dockerfile文件可以有多条,但一个镜像只有最后一条ENTRYPOINT有效<br>MySQL官方镜像的ENTRYPOINT是执行<strong>docker-entrypoint.sh</strong>,所以这一句是改不了的,要改不如直接改<strong>docker-entrypoint.sh</strong>.</p>
+<p>以上,可以看出来,想要在Dockerfile里执行<strong>service cron start</strong>是不可能的,唯一的办法在<strong>docker-entrypoint.sh</strong>文件.</p>
+<h5 id="4-docker-entrypoint-sh"><a href="#4-docker-entrypoint-sh" class="headerlink" title="4. docker-entrypoint.sh"></a>4. docker-entrypoint.sh</h5><p>该文件的详细解读网上有比较多,可以直接把执行语句加在这里,毕竟这个文件就是来做这种事的,这也确实是个实现思路.但这么做修改了原来的文件,很不优雅,不符合开闭原则,还好MySQL镜像的设计者考虑到了这点,留下了个<code>/docker-entrypoint-initdb.d</code>文件夹<br>2021年更新：<code>/docker-entrypoint-initdb.d</code>只有在数据库空白（即第一次启动且挂载目录为空）的时候才会执行初始化。如果将执行语句放这里会导致容器重启后cron执行语句失效，参考 <a target="_blank" rel="noopener" href="https://github.com/linshenkx/mysql-cron/issues/1">https://github.com/linshenkx/mysql-cron/issues/1</a> 。现已更改为使用自定义ENTRYPOINT脚本，再在脚本的最后调用docker-entrypoint.sh。<br>docker-entrypoint中相关语句如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for f in /docker-entrypoint-initdb.d/*; do</span><br><span class="line">	process_init_file &quot;$f&quot; &quot;$&#123;mysql[@]&#125;&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<p>如上,会遍历<code>/docker-entrypoint-initdb.d</code>中的每个文件作为参数调用<code>process_init_file</code>方法,该方法如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> usage: process_init_file FILENAME MYSQLCOMMAND...</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    ie: process_init_file foo.sh mysql -uroot</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> (process a single initializer file, based on its extension. we define this</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="keyword">function</span> here, so that initializer scripts (*.sh) can use the same logic,</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> potentially recursively, or override the logic used <span class="keyword">in</span> subsequent calls)</span></span><br><span class="line">process_init_file() &#123;</span><br><span class="line">	local f=&quot;$1&quot;; shift</span><br><span class="line">	local mysql=( &quot;$@&quot; )</span><br><span class="line"></span><br><span class="line">	case &quot;$f&quot; in</span><br><span class="line">		*.sh)     echo &quot;$0: running $f&quot;; . &quot;$f&quot; ;;</span><br><span class="line">		*.sql)    echo &quot;$0: running $f&quot;; &quot;$&#123;mysql[@]&#125;&quot; &lt; &quot;$f&quot;; echo ;;</span><br><span class="line">		*.sql.gz) echo &quot;$0: running $f&quot;; gunzip -c &quot;$f&quot; | &quot;$&#123;mysql[@]&#125;&quot;; echo ;;</span><br><span class="line">		*)        echo &quot;$0: ignoring $f&quot; ;;</span><br><span class="line">	esac</span><br><span class="line">	echo</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上,需要执行的shell脚本或者sql脚本,可放到/docker-entrypoint-initdb.d/目录下,如果是sql.gz的压缩包,容器会自动解压再执行.<br>需要注意的是,只能保证遍历全部执行而不保证顺序,所以有顺序需求的需要利用脚本自己实现.</p>
+<p><del>很明显,cron的启动脚本应该放在这个文件夹下</del></p>
+<h4 id="2-sh脚本文件须为Unix格式-Windows下默认为dos-同时注意提供可执行权限"><a href="#2-sh脚本文件须为Unix格式-Windows下默认为dos-同时注意提供可执行权限" class="headerlink" title="(2) sh脚本文件须为Unix格式(Windows下默认为dos),同时注意提供可执行权限"></a>(2) sh脚本文件须为Unix格式(Windows下默认为dos),同时注意提供可执行权限</h4><p>dos转unix格式通常有以下几种方式:</p>
+<ol>
+<li>windows:使用notepad++<br>依次点击”编辑”-&gt;”文档格式转换” -&gt;”转换为UNIX格式”</li>
+<li>linux:使用vim<br>在命令模式输入<strong>set ff=unix</strong>回车即可,<strong>set ff</strong>可以查看格式</li>
+<li>linux:使用dos2unix<br>dos2unix后直接加文件名即可</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>林泽浩
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://linshenkx.github.io/mysql-cron-docker/" title="Dockerfile实现MySQL定时备份">https://linshenkx.github.io/mysql-cron-docker/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+              <a href="/tags/cron/" rel="tag"># cron</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/DelegatingPasswordEncoder/" rel="prev" title="SpringSecurity5.0的DelegatingPasswordEncoder详解">
+      <i class="fa fa-chevron-left"></i> SpringSecurity5.0的DelegatingPasswordEncoder详解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/spring_enum/" rel="next" title="深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践">
+      深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+ 
+   <div>
+     <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+   </div>
+ 
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80-%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84"><span class="nav-text">一. 文件结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C-%E6%96%87%E4%BB%B6%E4%BB%8B%E7%BB%8D"><span class="nav-text">二. 文件介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89-%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF"><span class="nav-text">三. 实现思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B-%E6%96%87%E4%BB%B6%E5%AE%9E%E7%8E%B0"><span class="nav-text">四. 文件实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-baskup-sh"><span class="nav-text">1. baskup.sh</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-crontab-bak"><span class="nav-text">2. crontab.bak</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-start-sh"><span class="nav-text">3. start.sh</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Dockerfile"><span class="nav-text">4. Dockerfile</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%94-%E9%97%AE%E9%A2%98"><span class="nav-text">五. 问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%9C%A8%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E5%90%AF%E5%8A%A8cron-%E5%9C%A8%E5%93%AA%E9%87%8C%E6%89%A7%E8%A1%8Cservice-cron-start"><span class="nav-text">(1) 在什么时候启动cron(在哪里执行service cron start)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-RUN"><span class="nav-text">1. RUN</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-CMD"><span class="nav-text">2. CMD</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-ENTRYPOINT"><span class="nav-text">3. ENTRYPOINT</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-docker-entrypoint-sh"><span class="nav-text">4. docker-entrypoint.sh</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-sh%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6%E9%A1%BB%E4%B8%BAUnix%E6%A0%BC%E5%BC%8F-Windows%E4%B8%8B%E9%BB%98%E8%AE%A4%E4%B8%BAdos-%E5%90%8C%E6%97%B6%E6%B3%A8%E6%84%8F%E6%8F%90%E4%BE%9B%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%9D%83%E9%99%90"><span class="nav-text">(2) sh脚本文件须为Unix格式(Windows下默认为dos),同时注意提供可执行权限</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="林泽浩"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">林泽浩</p>
+  <div class="site-description" itemprop="description">林泽浩的个人小站</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/alinyua" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;alinyua" rel="noopener" target="_blank"><i class="fab fa-csdn fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/linshenkx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;linshenkx" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      作品链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/productions/" title="&#x2F;productions&#x2F;">作品介绍页</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">林泽浩</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">51k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">46 分钟</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"./live2d_models/崩坏学院2/Kiro/model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"react":{"opacity":1},"log":false});</script></body>
+</html>
