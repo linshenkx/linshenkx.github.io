@@ -184,9 +184,9 @@
       
         <tags>
             
-            <tag> hbase </tag>
-            
             <tag> hive </tag>
+            
+            <tag> hbase </tag>
             
             <tag> bulkload </tag>
             
