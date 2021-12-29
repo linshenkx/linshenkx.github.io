@@ -4,6 +4,62 @@
   
     
     <entry>
+      <title>k8s常用命令笔记</title>
+      <link href="//kubernetes-commands/"/>
+      <url>//kubernetes-commands/</url>
+      
+        <content type="html"><![CDATA[<span id="more"></span><p>重启pod：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod podname -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br></pre></td></tr></table></figure><p>重启所有evicted或Terminating的pod</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">NAME_SPACE=anyonedev</span><br><span class="line">kubectl get pods -n=$&#123;NAME_SPACE&#125; | grep -E &#x27;ImagePullBackOff|CrashLoopBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl delete pod  -n $&#123;NAME_SPACE&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop-test | grep -E &#x27;Evicted|Terminating&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop-test -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop | grep -E &#x27;ImagePullBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop | grep -E &#x27;CrashLoopBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=kube-system | grep -E &#x27;Evicted|Terminating&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=kube-system -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br></pre></td></tr></table></figure><p>强制删除pod<br>解决：加参数 –force –grace-period=0，grace-period表示过渡存活期，默认30s，在删除POD之前允许POD慢慢终止其上的容器进程，从而优雅退出，0表示立即终止POD</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete pod &lt;your-pod-name&gt; -n &lt;name-space&gt; --force --grace-period=0</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Kubernetes </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> kubernetes </tag>
+            
+            <tag> 笔记 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>基于kube-prometheus的大数据平台监控系统设计</title>
+      <link href="//kube-prometheus-bigdata/"/>
+      <url>//kube-prometheus-bigdata/</url>
+      
+        <content type="html"><![CDATA[<p>本文介绍了如何基于kube-prometheus设计一个监控系统， 以灵活简单的方式对kubernetes上的应用进行指标采集，并实现监控报警功能</p><span id="more"></span><h2 id="零-前言"><a href="#零-前言" class="headerlink" title="零 前言"></a>零 前言</h2><p>众所周知，大数据产品作为底层平台，其运维监控一直是生产实践的痛点难点，且在稳定运行的基础之上<br>往往还需要对性能进行评估优化，所以其监控系统的建设显得尤为重要。</p><p>Prometheus作为云原生时代最火的监控软件，很多大数据组件或原生或以第三方插件/exporter的形式对Prometheus做了支持。</p><p>我使用的大数据平台是基于kubernetes运行的，有部署灵活管理方便的优点，更容易与Prometheus进行结合。</p><p>下面将对设计思路和技术实现进行阐述探讨。</p><h2 id="一-设计思路"><a href="#一-设计思路" class="headerlink" title="一 设计思路"></a>一 设计思路</h2><p>监控系统的核心任务是将暴露出来的指标数据进行抓取，在此之上进行分析、告警<br>所以有以下几个要明确的问题：</p><ol><li>监控对象是什么</li><li>监控对象如何暴露指标数据</li><li>监控系统如何对指标进行抓取</li><li>如何实现告警规则动态配置、管理</li></ol><h3 id="1-监控对象"><a href="#1-监控对象" class="headerlink" title="1. 监控对象"></a>1. 监控对象</h3><p>以pod（容器）形式运行在kubernetes集群上的各个大数据组件。</p><h3 id="2-指标暴露方式"><a href="#2-指标暴露方式" class="headerlink" title="2. 指标暴露方式"></a>2. 指标暴露方式</h3><p>各组件根据对Prometheus的支持程度，可分为3种类型的指标暴露方式：</p><ol><li>直接暴露Prometheus指标数据(直接，拉)</li><li>主动将指标数据推送到prometheus-pushGateway，由pushGateway暴露数据（间接，推）</li><li>自定义exporter将其他形式的指标数据转换为符合Prometheus标准的格式进行暴露（exporter，直接，拉）</li></ol><p>个别组件同时支持多种方式，如flink支持直接和间接方式，spark支持直接方式而且也有第三方exporter。<br>大部分组件都有官方/第三方的exporter，极少数需要自己开发。</p><p>一般情况下直接方式就可以了<br>需要注意的是，像flink（spark） on yarn模式运行的时候，flink节点是跑在yarn容器里面的。<br>这种情况下Prometheus很难对其直接进行抓取，这种时候就只能用间接方式，主动将数据推送到pushGateway。</p><p>另外那些短暂生命周期的组件也建议用主动push到pushGateway。</p><h3 id="3-指标抓取方式"><a href="#3-指标抓取方式" class="headerlink" title="3. 指标抓取方式"></a>3. 指标抓取方式</h3><p>不管是exporter还是pushGateway，到最后必然是由Prometheus主动对这些目标进行抓取。</p><blockquote><p>Prometheus 主要通过 Pull 的方式来抓取目标服务暴露出来的监控接口，<br>因此需要配置对应的抓取任务来请求监控数据并写入到 Prometheus 提供的存储中，<br>目前 Prometheus 服务提供了如下几个任务的配置：</p><ul><li>原生 Job 配置：提供 Prometheus 原生抓取 Job 的配置。</li><li>Pod Monitor：在 K8S 生态下，基于 Prometheus Operator 来抓取 Pod 上对应的监控数据。</li><li>Service Monitor：在 K8S 生态下，基于 Prometheus Operator 来抓取 Service 对应 Endpoints 上的监控数据。</li></ul><p>参考：<a href="https://cloud.tencent.com/document/product/1416/55995">https://cloud.tencent.com/document/product/1416/55995</a></p></blockquote><p>既然都上了kubernetes环境了，一般当然是推荐直接用 podMonitor。配置更简洁易懂。</p><p>不过一个podMonitor一般只对应一种类型的pod，在已有pod类型较多的情况下，<br>还可以考虑一种更取巧的方法就是Prometheus的kubernetes服务发现功能。即kubernetes_sd_config。<br>这种属于<em>原生Job配置</em>，建议使用<a href="https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/additional-scrape-config.md">additional-scrape-config</a><br>进行配置。</p><p><a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config">kubernetes_sd_config</a>赋予了Prometheus通过kubernetes rest api感知kubernetes资源的功能，<br>利用该能力，可以使用<em>原生Job配置</em>自动发现pod，将其作为监控目标。<br>再利用Prometheus的<a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config">Relabel功能</a>可以改写发现的标签，进行前置处理、转换。实现pod筛选，修改抓取配置的效果。<br>而自动发现的pod的标签的来源又可以是pod资源的label/annotation等。<br>最终实现的效果如下，<br>这是一个pushGateway的pod的配置,则Prometheus会通过其19091端口访问/metrics路径获取其指标数据</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">annotations:</span></span><br><span class="line">  <span class="attr">prometheus.io/scrape:</span> <span class="string">&quot;true&quot;</span></span><br><span class="line">  <span class="attr">prometheus.io/scheme:</span> <span class="string">&quot;http&quot;</span></span><br><span class="line">  <span class="attr">prometheus.io/path:</span> <span class="string">&quot;/metrics&quot;</span></span><br><span class="line">  <span class="attr">prometheus.io/port:</span> <span class="string">&quot;19091&quot;</span></span><br></pre></td></tr></table></figure><p>这部分的内容主要参考：</p><ol><li><a href="https://godleon.github.io/blog/Prometheus/Prometheus-Relabel">https://godleon.github.io/blog/Prometheus/Prometheus-Relabel</a></li><li><a href="https://yunlzheng.gitbook.io/prometheus-book/part-iii-prometheus-shi-zhan/readmd/service-discovery-with-kubernetes">https://yunlzheng.gitbook.io/prometheus-book/part-iii-prometheus-shi-zhan/readmd/service-discovery-with-kubernetes</a></li></ol><p>podMonitor是官方支持，简洁易懂。<br>kubernetes_sd_config+relabel的方案较复杂，难度较高，但不用写那么多的podMonitor。<br>自行抉择就行，也可以一起用。</p><h3 id="4-告警设计"><a href="#4-告警设计" class="headerlink" title="4. 告警设计"></a>4. 告警设计</h3><p>待补充</p><h2 id="二-技术实现"><a href="#二-技术实现" class="headerlink" title="二 技术实现"></a>二 技术实现</h2><p>技术实现主要分以下几部分：</p><ol><li>kubernetes环境下prometheus的部署(kube-prometheus)</li><li>kube-prometheus的增强配置:即kubernetes_sd_config+relabel方案的实现</li><li>bigdata-exporter的实现</li></ol><h3 id="1-kubernetes环境下prometheus的部署"><a href="#1-kubernetes环境下prometheus的部署" class="headerlink" title="1. kubernetes环境下prometheus的部署"></a>1. kubernetes环境下prometheus的部署</h3><h4 id="1-kube-prometheus-vs-prometheus-operator"><a href="#1-kube-prometheus-vs-prometheus-operator" class="headerlink" title="1) kube-prometheus vs prometheus-operator"></a>1) kube-prometheus vs prometheus-operator</h4><p>github 上 coreos 下有两个项目： kube-prometheus 和 prometheus-operator，<br>两者都可以实现 prometheus 的创建及管理。</p><p>需要注意的是，kube-prometheus 上的配置操作也是基于 prometheus-operator 的，<br>并提供了大量的默认配置，故这里使用的是 kube-prometheus 项目的配置。</p><p>另外使用前需注意k8s版本要求，找到对应的kube-prometheus版本，弄清楚对应的prometheus-operator版本</p><h4 id="2-kube-prometheus-使用前说明"><a href="#2-kube-prometheus-使用前说明" class="headerlink" title="2) kube-prometheus 使用前说明"></a>2) kube-prometheus 使用前说明</h4><p>kube-prometheus 使用 jsonnet 编写配置模板文件，生成k8s配置清单<br>已提供默认清单文件，在 manifests 文件夹下<br>如果需要修改默认清单配置，需要在go环境下使用jp编译清单<br>下面都以默认配置为例</p><h4 id="3-安装教程"><a href="#3-安装教程" class="headerlink" title="3) 安装教程"></a>3) 安装教程</h4><p>参考官方说明即可</p><ol><li>git clone 项目 并切换到指定分支</li><li>kubectl create<br>清单文件中各配置已附带namespace信息，故执行时不需要指定namespace，否则可能出错。<br>官方命令如下： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">Create the namespace and CRDs, and <span class="keyword">then</span> <span class="built_in">wait</span> <span class="keyword">for</span> them to be availble before creating the remaining resources</span></span><br><span class="line"></span><br><span class="line">kubectl create -f manifests/setup</span><br><span class="line">until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo &quot;&quot;; done</span><br><span class="line">kubectl create -f manifests/</span><br></pre></td></tr></table></figure></li></ol><h3 id="2-kubernetes-sd-config-relabel方案的实现"><a href="#2-kubernetes-sd-config-relabel方案的实现" class="headerlink" title="2. kubernetes_sd_config+relabel方案的实现"></a>2. kubernetes_sd_config+relabel方案的实现</h3><p>见： <a href="https://github.com/linshenkx/kube-prometheus-enhance">https://github.com/linshenkx/kube-prometheus-enhance</a></p><h3 id="3-bigdata-exporter的实现"><a href="#3-bigdata-exporter的实现" class="headerlink" title="3. bigdata-exporter的实现"></a>3. bigdata-exporter的实现</h3><p>hdfs、yarn、hbase、yarn等组件都提供了web获取jmx指标的方式。</p><p>这里的思路是使用一个bigdata-exporter，去采集多个组件多个节点的指标数据，并进行转换，然后以Prometheus规定的格式对外公开。</p><p>指标数据的转换规则可以查看github上的一些项目，要注意版本，也可以像我一样自己写，更可靠。</p><p>bigdata-exporter如何感知到采集目标？</p><p>除了部署ip不同，不同组件不同角色的指标对外端口、路径、内容（解析规则）也都不一样。<br>这里可以参考上面kubernetes_sd_config+relabel的方案，做得优雅一些：</p><ol><li>授予bigdata-exporter调用kubernetes app的能力，</li><li>利用label和annotations进行筛选和信息传递，确定捕捉目标和途径。</li><li>使用role代表解析内容的类型，根据role确定解析规则<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">labels:</span></span><br><span class="line">  <span class="attr">bigData.metrics.object:</span> <span class="string">pod</span></span><br><span class="line"><span class="attr">annotations:</span></span><br><span class="line">  <span class="attr">bigData.metrics/scrape:</span> <span class="string">&quot;true&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/scheme:</span> <span class="string">&quot;https&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/path:</span> <span class="string">&quot;/jmx&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/port:</span> <span class="string">&quot;29871&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/role:</span> <span class="string">&quot;hdfs-nn,common&quot;</span></span><br></pre></td></tr></table></figure></li></ol><h2 id="三-其他问题"><a href="#三-其他问题" class="headerlink" title="三 其他问题"></a>三 其他问题</h2><h3 id="exporter的位置"><a href="#exporter的位置" class="headerlink" title="exporter的位置"></a>exporter的位置</h3><p>exporter可以以sidecar的形式和原容器放在同一个pod内（1对1），也可以以独立部署的形式存在（1对1/1对多）。<br>这个视具体情况而定，技术上没什么不同，sidecar可以绑定生命周期，视为对原有组件的补充。独立部署则耦合度更低，更灵活。<br>像单节点的mysql，用sidecar则只需要1个pod，不会太复杂。<br>而如果像多节点的kafka集群，用独立部署则只需要一个exporter就可以实现对多个节点的采集监控。</p><p>这里出于减小耦合、节省资源的目的，我主要使用的是独立部署形式。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Kubernetes </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> kubernetes </tag>
+            
+            <tag> prometheus </tag>
+            
+            <tag> bigdata </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>基于k8s的家用大数据集群设计与实现</title>
       <link href="//household_k8s_bigdata/"/>
       <url>//household_k8s_bigdata/</url>
@@ -184,9 +240,9 @@
       
         <tags>
             
-            <tag> hive </tag>
-            
             <tag> hbase </tag>
+            
+            <tag> hive </tag>
             
             <tag> bulkload </tag>
             

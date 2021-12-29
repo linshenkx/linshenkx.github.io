@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2021-10-24T09:10:50.268Z</updated>
+  <updated>2021-12-29T07:34:26.734Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -15,6 +15,58 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>k8s常用命令笔记</title>
+    <link href="https://linshenkx.github.io/kubernetes-commands/"/>
+    <id>https://linshenkx.github.io/kubernetes-commands/</id>
+    <published>2021-12-28T15:00:00.000Z</published>
+    <updated>2021-12-29T07:34:26.734Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+&lt;p&gt;重启pod：&lt;/p&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span</summary>
+        
+      
+    
+    
+    
+    <category term="Kubernetes" scheme="https://linshenkx.github.io/categories/Kubernetes/"/>
+    
+    
+    <category term="kubernetes" scheme="https://linshenkx.github.io/tags/kubernetes/"/>
+    
+    <category term="笔记" scheme="https://linshenkx.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>基于kube-prometheus的大数据平台监控系统设计</title>
+    <link href="https://linshenkx.github.io/kube-prometheus-bigdata/"/>
+    <id>https://linshenkx.github.io/kube-prometheus-bigdata/</id>
+    <published>2021-12-28T15:00:00.000Z</published>
+    <updated>2021-12-29T14:49:52.611Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文介绍了如何基于kube-prometheus设计一个监控系统， 以灵活简单的方式对kubernetes上的应用进行指标采集，并实现监控报警功能&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Kubernetes" scheme="https://linshenkx.github.io/categories/Kubernetes/"/>
+    
+    
+    <category term="kubernetes" scheme="https://linshenkx.github.io/tags/kubernetes/"/>
+    
+    <category term="prometheus" scheme="https://linshenkx.github.io/tags/prometheus/"/>
+    
+    <category term="bigdata" scheme="https://linshenkx.github.io/tags/bigdata/"/>
+    
+  </entry>
   
   <entry>
     <title>基于k8s的家用大数据集群设计与实现</title>
@@ -163,9 +215,9 @@
     <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
-    <category term="hive" scheme="https://linshenkx.github.io/tags/hive/"/>
-    
     <category term="hbase" scheme="https://linshenkx.github.io/tags/hbase/"/>
+    
+    <category term="hive" scheme="https://linshenkx.github.io/tags/hive/"/>
     
     <category term="bulkload" scheme="https://linshenkx.github.io/tags/bulkload/"/>
     
@@ -387,25 +439,6 @@
     <category term="mysql" scheme="https://linshenkx.github.io/tags/mysql/"/>
     
     <category term="cron" scheme="https://linshenkx.github.io/tags/cron/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>SpringSecurity5.0的DelegatingPasswordEncoder详解</title>
-    <link href="https://linshenkx.github.io/DelegatingPasswordEncoder/"/>
-    <id>https://linshenkx.github.io/DelegatingPasswordEncoder/</id>
-    <published>2018-05-07T06:30:32.000Z</published>
-    <updated>2021-09-01T08:02:17.788Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;本文参考自Spring Security 5.0.4.RELEASE  的官方文档,结合源码介绍了DelegatingPasswordEncoder,对其工作过程进行分析并解决其中遇到的问题.包括&lt;code&gt;There is no PasswordEncoder mapped for the id &amp;quot;null&amp;quot;&lt;/code&gt;的非法参数异常的正确处理方法&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="后端开发" scheme="https://linshenkx.github.io/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
-    
-    
-    <category term="Spring" scheme="https://linshenkx.github.io/tags/Spring/"/>
     
   </entry>
   
