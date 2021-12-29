@@ -4,33 +4,6 @@
   
     
     <entry>
-      <title>k8s常用命令笔记</title>
-      <link href="//kubernetes-commands/"/>
-      <url>//kubernetes-commands/</url>
-      
-        <content type="html"><![CDATA[<span id="more"></span><p>重启pod：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod podname -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br></pre></td></tr></table></figure><p>重启所有evicted或Terminating的pod</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">NAME_SPACE=anyonedev</span><br><span class="line">kubectl get pods -n=$&#123;NAME_SPACE&#125; | grep -E &#x27;ImagePullBackOff|CrashLoopBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl delete pod  -n $&#123;NAME_SPACE&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop-test | grep -E &#x27;Evicted|Terminating&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop-test -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop | grep -E &#x27;ImagePullBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop | grep -E &#x27;CrashLoopBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=kube-system | grep -E &#x27;Evicted|Terminating&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=kube-system -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br></pre></td></tr></table></figure><p>强制删除pod<br>解决：加参数 –force –grace-period=0，grace-period表示过渡存活期，默认30s，在删除POD之前允许POD慢慢终止其上的容器进程，从而优雅退出，0表示立即终止POD</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete pod &lt;your-pod-name&gt; -n &lt;name-space&gt; --force --grace-period=0</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-      
-      
-      <categories>
-          
-          <category> Kubernetes </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> kubernetes </tag>
-            
-            <tag> 笔记 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>基于kube-prometheus的大数据平台监控系统设计</title>
       <link href="//kube-prometheus-bigdata/"/>
       <url>//kube-prometheus-bigdata/</url>
@@ -472,6 +445,33 @@
             <tag> hbase </tag>
             
             <tag> debug </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s常用命令笔记</title>
+      <link href="//kubernetes-commands/"/>
+      <url>//kubernetes-commands/</url>
+      
+        <content type="html"><![CDATA[<p>一些自用的kubectl命令</p><span id="more"></span><p>待整理</p><p>重启pod：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod podname -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br></pre></td></tr></table></figure><p>重启所有evicted或Terminating的pod</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">NAME_SPACE=anyonedev</span><br><span class="line">kubectl get pods -n=$&#123;NAME_SPACE&#125; | grep -E &#x27;ImagePullBackOff|CrashLoopBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl delete pod  -n $&#123;NAME_SPACE&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop-test | grep -E &#x27;Evicted|Terminating&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop-test -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop | grep -E &#x27;ImagePullBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop | grep -E &#x27;CrashLoopBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=kube-system | grep -E &#x27;Evicted|Terminating&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=kube-system -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br></pre></td></tr></table></figure><p>强制删除pod<br>解决：加参数 –force –grace-period=0，grace-period表示过渡存活期，默认30s，在删除POD之前允许POD慢慢终止其上的容器进程，从而优雅退出，0表示立即终止POD</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete pod &lt;your-pod-name&gt; -n &lt;name-space&gt; --force --grace-period=0</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Kubernetes </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> kubernetes </tag>
+            
+            <tag> 笔记 </tag>
             
         </tags>
       

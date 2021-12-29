@@ -203,107 +203,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/kubernetes-commands/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="林泽浩">
-      <meta itemprop="description" content="林泽浩的个人小站">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="且炼时光">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/kubernetes-commands/" class="post-title-link" itemprop="url">k8s常用命令笔记</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <i class="fa fa-thumb-tack"></i>
-            <font color=7D26CD>置顶</font>
-            <span class="post-meta-divider">|</span>
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-12-28 23:00:00" itemprop="dateCreated datePublished" datetime="2021-12-28T23:00:00+08:00">2021-12-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-29 15:34:26" itemprop="dateModified" datetime="2021-12-29T15:34:26+08:00">2021-12-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>136</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<p>重启pod：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod podname -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>重启所有evicted或Terminating的pod</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">NAME_SPACE=anyonedev</span><br><span class="line">kubectl get pods -n=$&#123;NAME_SPACE&#125; | grep -E &#x27;ImagePullBackOff|CrashLoopBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl delete pod  -n $&#123;NAME_SPACE&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop-test | grep -E &#x27;Evicted|Terminating&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop-test -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop | grep -E &#x27;ImagePullBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=hadoop | grep -E &#x27;CrashLoopBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=hadoop -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br><span class="line">kubectl get pods -n=kube-system | grep -E &#x27;Evicted|Terminating&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=kube-system -o yaml | kubectl replace --force -f  - </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>强制删除pod<br>解决：加参数 –force –grace-period=0，grace-period表示过渡存活期，默认30s，在删除POD之前允许POD慢慢终止其上的容器进程，从而优雅退出，0表示立即终止POD</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete pod &lt;your-pod-name&gt; -n &lt;name-space&gt; --force --grace-period=0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
- 
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/kube-prometheus-bigdata/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -779,6 +678,107 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/bigdata_compute_platform/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+ 
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/kubernetes-commands/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="林泽浩">
+      <meta itemprop="description" content="林泽浩的个人小站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="且炼时光">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/kubernetes-commands/" class="post-title-link" itemprop="url">k8s常用命令笔记</a>
+        </h2>
+
+        <div class="post-meta">
+          
+            <i class="fa fa-thumb-tack"></i>
+            <font color=7D26CD>置顶</font>
+            <span class="post-meta-divider">|</span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-28 23:00:00" itemprop="dateCreated datePublished" datetime="2019-12-28T23:00:00+08:00">2019-12-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-12-29 22:55:58" itemprop="dateModified" datetime="2021-12-29T22:55:58+08:00">2021-12-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>153</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>一些自用的kubectl命令</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/kubernetes-commands/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

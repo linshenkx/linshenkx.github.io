@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2021-12-29T07:34:26.734Z</updated>
+  <updated>2021-12-29T14:49:52.611Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -15,35 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>k8s常用命令笔记</title>
-    <link href="https://linshenkx.github.io/kubernetes-commands/"/>
-    <id>https://linshenkx.github.io/kubernetes-commands/</id>
-    <published>2021-12-28T15:00:00.000Z</published>
-    <updated>2021-12-29T07:34:26.734Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;p&gt;重启pod：&lt;/p&gt;
-&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span</summary>
-        
-      
-    
-    
-    
-    <category term="Kubernetes" scheme="https://linshenkx.github.io/categories/Kubernetes/"/>
-    
-    
-    <category term="kubernetes" scheme="https://linshenkx.github.io/tags/kubernetes/"/>
-    
-    <category term="笔记" scheme="https://linshenkx.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
   
   <entry>
     <title>基于kube-prometheus的大数据平台监控系统设计</title>
@@ -397,6 +368,27 @@
     <category term="hbase" scheme="https://linshenkx.github.io/tags/hbase/"/>
     
     <category term="debug" scheme="https://linshenkx.github.io/tags/debug/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>k8s常用命令笔记</title>
+    <link href="https://linshenkx.github.io/kubernetes-commands/"/>
+    <id>https://linshenkx.github.io/kubernetes-commands/</id>
+    <published>2019-12-28T15:00:00.000Z</published>
+    <updated>2021-12-29T14:55:58.840Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;一些自用的kubectl命令&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Kubernetes" scheme="https://linshenkx.github.io/categories/Kubernetes/"/>
+    
+    
+    <category term="kubernetes" scheme="https://linshenkx.github.io/tags/kubernetes/"/>
+    
+    <category term="笔记" scheme="https://linshenkx.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
