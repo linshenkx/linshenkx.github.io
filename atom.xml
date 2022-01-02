@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2021-12-29T14:49:52.611Z</updated>
+  <updated>2022-01-02T07:00:24.471Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -21,10 +21,10 @@
     <link href="https://linshenkx.github.io/kube-prometheus-bigdata/"/>
     <id>https://linshenkx.github.io/kube-prometheus-bigdata/</id>
     <published>2021-12-28T15:00:00.000Z</published>
-    <updated>2021-12-29T14:49:52.611Z</updated>
+    <updated>2022-01-02T07:00:24.471Z</updated>
     
     
-    <summary type="html">&lt;p&gt;本文介绍了如何基于kube-prometheus设计一个监控系统， 以灵活简单的方式对kubernetes上的应用进行指标采集，并实现监控报警功能&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;本文介绍了如何基于kube-prometheus设计一个监控系统， 以灵活简单的方式对kubernetes上的应用进行指标采集，并实现监控报警功能。&lt;br&gt;本文提供了作者的应用示例，另外还记录了作者在学习、使用Prometheus过程中的一些笔记，如arm版镜像获取、一些工具的使用等。&lt;/p&gt;</summary>
     
     
     
@@ -376,7 +376,7 @@
     <link href="https://linshenkx.github.io/kubernetes-commands/"/>
     <id>https://linshenkx.github.io/kubernetes-commands/</id>
     <published>2019-12-28T15:00:00.000Z</published>
-    <updated>2021-12-29T14:55:58.840Z</updated>
+    <updated>2022-01-02T07:04:20.951Z</updated>
     
     
     <summary type="html">&lt;p&gt;一些自用的kubectl命令&lt;/p&gt;</summary>

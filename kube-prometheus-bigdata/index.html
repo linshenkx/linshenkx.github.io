@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"linshenkx.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="本文介绍了如何基于kube-prometheus设计一个监控系统， 以灵活简单的方式对kubernetes上的应用进行指标采集，并实现监控报警功能">
+  <meta name="description" content="本文介绍了如何基于kube-prometheus设计一个监控系统， 以灵活简单的方式对kubernetes上的应用进行指标采集，并实现监控报警功能。本文提供了作者的应用示例，另外还记录了作者在学习、使用Prometheus过程中的一些笔记，如arm版镜像获取、一些工具的使用等。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于kube-prometheus的大数据平台监控系统设计">
 <meta property="og:url" content="https://linshenkx.github.io/kube-prometheus-bigdata/index.html">
 <meta property="og:site_name" content="且炼时光">
-<meta property="og:description" content="本文介绍了如何基于kube-prometheus设计一个监控系统， 以灵活简单的方式对kubernetes上的应用进行指标采集，并实现监控报警功能">
+<meta property="og:description" content="本文介绍了如何基于kube-prometheus设计一个监控系统， 以灵活简单的方式对kubernetes上的应用进行指标采集，并实现监控报警功能。本文提供了作者的应用示例，另外还记录了作者在学习、使用Prometheus过程中的一些笔记，如arm版镜像获取、一些工具的使用等。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-12-28T15:00:00.000Z">
-<meta property="article:modified_time" content="2021-12-29T14:49:52.611Z">
+<meta property="article:modified_time" content="2022-01-02T07:00:24.471Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="kubernetes">
 <meta property="article:tag" content="prometheus">
@@ -243,7 +243,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-29 22:49:52" itemprop="dateModified" datetime="2021-12-29T22:49:52+08:00">2021-12-29</time>
+                <time title="修改时间：2022-01-02 15:00:24" itemprop="dateModified" datetime="2022-01-02T15:00:24+08:00">2022-01-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -261,14 +261,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.4k</span>
+              <span>8.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>7 分钟</span>
             </span>
 
         </div>
@@ -280,7 +280,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文介绍了如何基于kube-prometheus设计一个监控系统， 以灵活简单的方式对kubernetes上的应用进行指标采集，并实现监控报警功能</p>
+        <p>本文介绍了如何基于kube-prometheus设计一个监控系统， 以灵活简单的方式对kubernetes上的应用进行指标采集，并实现监控报警功能。<br>本文提供了作者的应用示例，另外还记录了作者在学习、使用Prometheus过程中的一些笔记，如arm版镜像获取、一些工具的使用等。</p>
 <span id="more"></span>
 <h2 id="零-前言"><a href="#零-前言" class="headerlink" title="零 前言"></a>零 前言</h2><p>众所周知，大数据产品作为底层平台，其运维监控一直是生产实践的痛点难点，且在稳定运行的基础之上<br>往往还需要对性能进行评估优化，所以其监控系统的建设显得尤为重要。</p>
 <p>Prometheus作为云原生时代最火的监控软件，很多大数据组件或原生或以第三方插件/exporter的形式对Prometheus做了支持。</p>
@@ -313,7 +313,10 @@
 </ul>
 <p>参考：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/1416/55995">https://cloud.tencent.com/document/product/1416/55995</a></p>
 </blockquote>
-<p>既然都上了kubernetes环境了，一般当然是推荐直接用 podMonitor。配置更简洁易懂。</p>
+<p>既然都上了kubernetes环境了，一般当然是推荐直接用 podMonitor。配置更简洁易懂。<br>podMonitorSelector的过滤在prometheus-prometheus.yaml配置。</p>
+<blockquote>
+<p>prometheus-prometheus.yaml是核心配置文件，不宜频繁修改(会导致Prometheus重启)。<br>主要配置项为：serviceMonitorSelector，podMonitorSelector，ruleSelector，alertmanagers。<br>其中service监控选择器和pod监控选择器默认选择所有，这里建议把 ruleSelector 也修改为选择所有</p>
+</blockquote>
 <p>不过一个podMonitor一般只对应一种类型的pod，在已有pod类型较多的情况下，<br>还可以考虑一种更取巧的方法就是Prometheus的kubernetes服务发现功能。即kubernetes_sd_config。<br>这种属于<em>原生Job配置</em>，建议使用<a target="_blank" rel="noopener" href="https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/additional-scrape-config.md">additional-scrape-config</a><br>进行配置。</p>
 <p><a target="_blank" rel="noopener" href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config">kubernetes_sd_config</a>赋予了Prometheus通过kubernetes rest api感知kubernetes资源的功能，<br>利用该能力，可以使用<em>原生Job配置</em>自动发现pod，将其作为监控目标。<br>再利用Prometheus的<a target="_blank" rel="noopener" href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config">Relabel功能</a>可以改写发现的标签，进行前置处理、转换。实现pod筛选，修改抓取配置的效果。<br>而自动发现的pod的标签的来源又可以是pod资源的label/annotation等。<br>最终实现的效果如下，<br>这是一个pushGateway的pod的配置,则Prometheus会通过其19091端口访问/metrics路径获取其指标数据</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">annotations:</span></span><br><span class="line">  <span class="attr">prometheus.io/scrape:</span> <span class="string">&quot;true&quot;</span></span><br><span class="line">  <span class="attr">prometheus.io/scheme:</span> <span class="string">&quot;http&quot;</span></span><br><span class="line">  <span class="attr">prometheus.io/path:</span> <span class="string">&quot;/metrics&quot;</span></span><br><span class="line">  <span class="attr">prometheus.io/port:</span> <span class="string">&quot;19091&quot;</span></span><br></pre></td></tr></table></figure>
@@ -323,16 +326,34 @@
 <li><a target="_blank" rel="noopener" href="https://yunlzheng.gitbook.io/prometheus-book/part-iii-prometheus-shi-zhan/readmd/service-discovery-with-kubernetes">https://yunlzheng.gitbook.io/prometheus-book/part-iii-prometheus-shi-zhan/readmd/service-discovery-with-kubernetes</a></li>
 </ol>
 <p>podMonitor是官方支持，简洁易懂。<br>kubernetes_sd_config+relabel的方案较复杂，难度较高，但不用写那么多的podMonitor。<br>自行抉择就行，也可以一起用。</p>
-<h3 id="4-告警设计"><a href="#4-告警设计" class="headerlink" title="4. 告警设计"></a>4. 告警设计</h3><p>待补充</p>
+<h3 id="4-告警设计"><a href="#4-告警设计" class="headerlink" title="4. 告警设计"></a>4. 告警设计</h3><h4 id="告警流程"><a href="#告警流程" class="headerlink" title="告警流程"></a>告警流程</h4><p>prometheus的监控告警基本流程是：</p>
+<ol>
+<li>服务发生异常</li>
+<li>触发prometheus服务器发出告警信息（alert）</li>
+<li>alertmanager收到告警信息</li>
+<li>alertmanager根据预配置的规则对告警信息进行处理，实现业务逻辑，如分组、抑制、触发短信邮箱等</li>
+</ol>
+<p>当然具体的流程没那么简单，有很多细节需要注意，特别是触发告警时机，是个重点。<br>这些属于Prometheus的机制实现，这里就不展开赘述，推荐阅读以下文章：<br><a target="_blank" rel="noopener" href="https://my.oschina.net/u/4400455/blog/3442101">Prometheus 一条告警的触发流程、等待时间</a><br><a target="_blank" rel="noopener" href="https://www.qikqiak.com/post/alertmanager-when-alert/">AlertManager 何时报警</a></p>
+<p>后边会给出一个本人实际应用测试的例子，可供参考，会直观一些。</p>
+<h4 id="告警的动态配置"><a href="#告警的动态配置" class="headerlink" title="告警的动态配置"></a>告警的动态配置</h4><p>kube-prometheus的告警规则分两部分：</p>
+<ol>
+<li>alertmanager: 即对告警信息的处理策略<br>配置参考：<a target="_blank" rel="noopener" href="https://yunlzheng.gitbook.io/prometheus-book/parti-prometheus-ji-chu/alert/alert-manager-config">https://yunlzheng.gitbook.io/prometheus-book/parti-prometheus-ji-chu/alert/alert-manager-config</a><br>核心是alertmanager-secret.yaml配置文件，该文件以 secret 的形式被 Alertmanager 读取。<br>Alertmanager会自动读取secret中的配置进行更新。</li>
+<li>alertRule: 即具体的告警规则<br>配置参考：<a target="_blank" rel="noopener" href="https://yunlzheng.gitbook.io/prometheus-book/parti-prometheus-ji-chu/alert/prometheus-alert-rule">https://yunlzheng.gitbook.io/prometheus-book/parti-prometheus-ji-chu/alert/prometheus-alert-rule</a><br>在kubernetes中是以PrometheusRule类型操作，所以管理起来跟pod一样，直接使用kubelet增删改即可</li>
+</ol>
+<h4 id="接入自定义告警平台"><a href="#接入自定义告警平台" class="headerlink" title="接入自定义告警平台"></a>接入自定义告警平台</h4><p>从个人实践的角度来看，AlertManager处理web hook之外的告警接收插件，如短信、邮箱等只适合测着玩。<br>生产使用还是要通过web hook将告警信息发送到自己的告警平台。可以根据业务需要对告警信息做高度定制化处理、记录等。<br>另外可以在告警信息中携带具体告警规则等信息指导告警平台进行处理。</p>
+<p>这里要做个区分，AlertManager是告警信息的前置处理，负责非业务性前置操作，如告警信息分组、平抑等。<br>而自定义告警平台则负责告警信息的业务处理，如记录、去敏、发送到多终端等。</p>
+<p>AlertManager可能收到1w条告警信息，经过处理最终只发了1条到自定义告警平台。<br>而自定义告警平台可以将这1条告警信息记录起来，修改内容，同时使用邮箱、短信通知到多个负责人。</p>
+<h4 id="告警层级标签设计"><a href="#告警层级标签设计" class="headerlink" title="告警层级标签设计"></a>告警层级标签设计</h4><p>监控对象的粒度决定告警的层级，体现在配置上则是告警规则的分组。<br>分组信息决定alertManager的处理方式。<br>alertManager对告警信息的路由策略是树状的，所以可通过多个分组标签实现多层级路由处理。<br>具体设计应结合业务需求，不在这里展开，感兴趣的可以看我下面的实现举例。</p>
 <h2 id="二-技术实现"><a href="#二-技术实现" class="headerlink" title="二 技术实现"></a>二 技术实现</h2><p>技术实现主要分以下几部分：</p>
 <ol>
 <li>kubernetes环境下prometheus的部署(kube-prometheus)</li>
 <li>kube-prometheus的增强配置:即kubernetes_sd_config+relabel方案的实现</li>
 <li>bigdata-exporter的实现</li>
+<li>告警设计实例</li>
 </ol>
 <h3 id="1-kubernetes环境下prometheus的部署"><a href="#1-kubernetes环境下prometheus的部署" class="headerlink" title="1. kubernetes环境下prometheus的部署"></a>1. kubernetes环境下prometheus的部署</h3><h4 id="1-kube-prometheus-vs-prometheus-operator"><a href="#1-kube-prometheus-vs-prometheus-operator" class="headerlink" title="1) kube-prometheus vs prometheus-operator"></a>1) kube-prometheus vs prometheus-operator</h4><p>github 上 coreos 下有两个项目： kube-prometheus 和 prometheus-operator，<br>两者都可以实现 prometheus 的创建及管理。</p>
 <p>需要注意的是，kube-prometheus 上的配置操作也是基于 prometheus-operator 的，<br>并提供了大量的默认配置，故这里使用的是 kube-prometheus 项目的配置。</p>
-<p>另外使用前需注意k8s版本要求，找到对应的kube-prometheus版本，弄清楚对应的prometheus-operator版本</p>
+<p>另外使用前需注意k8s版本要求，找到对应的kube-prometheus版本，弄清楚对应的prometheus-operator版本<br>如：k8s1.14版本最高可使用 kube-prometheus 0.3，对应的 prometheus-operator 版本是 0.32<br>阅读文档时注意对应版本。</p>
 <h4 id="2-kube-prometheus-使用前说明"><a href="#2-kube-prometheus-使用前说明" class="headerlink" title="2) kube-prometheus 使用前说明"></a>2) kube-prometheus 使用前说明</h4><p>kube-prometheus 使用 jsonnet 编写配置模板文件，生成k8s配置清单<br>已提供默认清单文件，在 manifests 文件夹下<br>如果需要修改默认清单配置，需要在go环境下使用jp编译清单<br>下面都以默认配置为例</p>
 <h4 id="3-安装教程"><a href="#3-安装教程" class="headerlink" title="3) 安装教程"></a>3) 安装教程</h4><p>参考官方说明即可</p>
 <ol>
@@ -348,10 +369,77 @@
 <ol>
 <li>授予bigdata-exporter调用kubernetes app的能力，</li>
 <li>利用label和annotations进行筛选和信息传递，确定捕捉目标和途径。</li>
-<li>使用role代表解析内容的类型，根据role确定解析规则<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">labels:</span></span><br><span class="line">  <span class="attr">bigData.metrics.object:</span> <span class="string">pod</span></span><br><span class="line"><span class="attr">annotations:</span></span><br><span class="line">  <span class="attr">bigData.metrics/scrape:</span> <span class="string">&quot;true&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/scheme:</span> <span class="string">&quot;https&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/path:</span> <span class="string">&quot;/jmx&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/port:</span> <span class="string">&quot;29871&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/role:</span> <span class="string">&quot;hdfs-nn,common&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li>使用role代表解析内容的类型，根据role确定解析规则<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">labels:</span></span><br><span class="line">  <span class="attr">bigData.metrics.object:</span> <span class="string">pod</span></span><br><span class="line"><span class="attr">annotations:</span></span><br><span class="line">  <span class="attr">bigData.metrics/scrape:</span> <span class="string">&quot;true&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/scheme:</span> <span class="string">&quot;https&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/path:</span> <span class="string">&quot;/jmx&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/port:</span> <span class="string">&quot;29871&quot;</span></span><br><span class="line">  <span class="attr">bigData.metrics/role:</span> <span class="string">&quot;hdfs-nn,common&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-告警设计示例"><a href="#4-告警设计示例" class="headerlink" title="4. 告警设计示例"></a>4. 告警设计示例</h3>这里以<em>组</em>和<em>实例</em>两个维度为例，用groupId和instanceId表示。</li>
 </ol>
-<h2 id="三-其他问题"><a href="#三-其他问题" class="headerlink" title="三 其他问题"></a>三 其他问题</h2><h3 id="exporter的位置"><a href="#exporter的位置" class="headerlink" title="exporter的位置"></a>exporter的位置</h3><p>exporter可以以sidecar的形式和原容器放在同一个pod内（1对1），也可以以独立部署的形式存在（1对1/1对多）。<br>这个视具体情况而定，技术上没什么不同，sidecar可以绑定生命周期，视为对原有组件的补充。独立部署则耦合度更低，更灵活。<br>像单节点的mysql，用sidecar则只需要1个pod，不会太复杂。<br>而如果像多节点的kafka集群，用独立部署则只需要一个exporter就可以实现对多个节点的采集监控。</p>
+<h4 id="1-alertManager配置示例"><a href="#1-alertManager配置示例" class="headerlink" title="1) alertManager配置示例"></a>1) alertManager配置示例</h4><p>以下是alertmanager的规则配置，有两个接收者，<br>其中 test.web.hook 指向自定义告警平台<br>default 是空白接收者，不做处理。<br>路由策略是根据groupId,instanceId分组，对节点磁盘使用率、kafka队列堆积两个组处理，instanceId还没有展开。</p>
+<p>旧版本是用secret的data字段，需要将配置内容转成base64编码格式。<br>新版本直接用stringData字段。推荐用stringData字段配置。<br>其实只要看一下kube-prometheus的alertmanager-secret.yaml文件就知道怎么回事了。</p>
+<p>使用data字段的配置方法：<br>写好config文件，以 alertmanager.yaml 命名（不能使用其他名称）。<br>执行以下命令,即可更新secret。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl -n monitoring create secret generic alertmanager-main --from-file=alertmanager.yaml --dry-run -o yaml  |  kubectl -n=monitoring apply -f -</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="attr">resolve_timeout:</span> <span class="string">5m</span></span><br><span class="line"><span class="attr">receivers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&#x27;default&#x27;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&#x27;test.web.hook&#x27;</span></span><br><span class="line">    <span class="attr">webhook_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">url:</span> <span class="string">&#x27;http://alert-url&#x27;</span></span><br><span class="line"><span class="attr">route:</span></span><br><span class="line">  <span class="attr">receiver:</span> <span class="string">&#x27;default&#x27;</span></span><br><span class="line">  <span class="attr">group_wait:</span> <span class="string">30s</span></span><br><span class="line">  <span class="attr">group_interval:</span> <span class="string">5m</span></span><br><span class="line">  <span class="attr">repeat_interval:</span> <span class="string">2h</span></span><br><span class="line">  <span class="attr">group_by:</span> [<span class="string">groupId</span>,<span class="string">instanceId</span>]</span><br><span class="line">  <span class="attr">routes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">receiver:</span> <span class="string">&#x27;test.web.hook&#x27;</span></span><br><span class="line">      <span class="attr">continue:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">match:</span></span><br><span class="line">        <span class="attr">groupId:</span> <span class="string">node-disk-usage</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">receiver:</span> <span class="string">&#x27;test.web.hook&#x27;</span></span><br><span class="line">      <span class="attr">continue:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">match:</span></span><br><span class="line">        <span class="attr">groupId:</span> <span class="string">kafka-topic-highstore</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="2-alertRule配置示例"><a href="#2-alertRule配置示例" class="headerlink" title="2) alertRule配置示例"></a>2) alertRule配置示例</h4><p>组代表一个类型的所有目标：即所有节点<br>实例则代表具体的某个节点</p>
+<p>disk-usage.yaml.ftl磁盘使用率告警配置示例如下：<br>注意：${path}为监控的磁盘路径，${thresholdValue}为使用率阈值，需自行替换<br>labels中的userIds和receivers为传递给自定义告警平台的参数，以指导告警平台如何操作。<br>在这个任务中，我们的目标是组粒度的（所有节点），所以不需要设置instanceId。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">monitoring.coreos.com/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">PrometheusRule</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">   <span class="attr">creationTimestamp:</span> <span class="literal">null</span></span><br><span class="line">   <span class="attr">labels:</span></span><br><span class="line">      <span class="attr">role:</span> <span class="string">alert-rules</span></span><br><span class="line">   <span class="attr">name:</span> <span class="string">node-disk-usage</span></span><br><span class="line">   <span class="attr">namespace:</span> <span class="string">monitoring</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">   <span class="attr">groups:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">node-disk-usage</span></span><br><span class="line">        <span class="attr">rules:</span></span><br><span class="line">           <span class="bullet">-</span> <span class="attr">alert:</span> <span class="string">node-disk-usage</span></span><br><span class="line">             <span class="attr">expr:</span> <span class="number">100</span><span class="string">*(1-node_filesystem_avail_bytes&#123;mountpoint=&quot;$&#123;path&#125;&quot;&#125;/node_filesystem_size_bytes&#123;mountpoint=&quot;$&#123;path&#125;&quot;&#125;</span> <span class="string">)</span> <span class="string">&gt;</span> <span class="string">$&#123;thresholdValue&#125;</span></span><br><span class="line">             <span class="attr">for:</span> <span class="string">1m</span></span><br><span class="line">             <span class="attr">labels:</span></span><br><span class="line">                <span class="attr">groupId:</span> <span class="string">node-disk-usage</span></span><br><span class="line">                <span class="attr">userIds:</span> <span class="string">super</span></span><br><span class="line">                <span class="attr">receivers:</span> <span class="string">SMS</span></span><br><span class="line">             <span class="attr">annotations:</span></span><br><span class="line">                <span class="attr">title:</span> <span class="string">&quot;磁盘警告：节点<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>的 $&#123;path&#125; 目录使用率已达到<span class="template-variable">&#123;&#123;$value&#125;&#125;</span>%&quot;</span></span><br><span class="line">                <span class="attr">content:</span> <span class="string">&quot;磁盘警告：节点<span class="template-variable">&#123;&#123;$labels.instance&#125;&#125;</span>的 $&#123;path&#125; 目录使用率已达到<span class="template-variable">&#123;&#123;$value&#125;&#125;</span>%&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>kafka-topic-highstore.yaml.ftl kafka队列消费堆积告警配置示例如下：<br>我们只关心个别队列的消费情况，所以这里的粒度为instance。<br>注意：${uniqueName}为队列名，${consumergroup}为消费组名称，${thresholdValue}为堆积数量阈值</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">monitoring.coreos.com/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">PrometheusRule</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">creationTimestamp:</span> <span class="literal">null</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">role:</span> <span class="string">alert-rules</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">kafka-topic-highstore-$&#123;uniqueName&#125;</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">monitoring</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">groups:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">kafka-topic-highstore</span></span><br><span class="line">      <span class="attr">rules:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">alert:</span> <span class="string">kafka-topic-highstore-$&#123;uniqueName&#125;</span></span><br><span class="line">        <span class="attr">expr:</span> <span class="string">sum(kafka_consumergroup_lag&#123;exporterType=&quot;kafka&quot;,consumergroup=&quot;$&#123;consumergroup&#125;&quot;&#125;)</span> <span class="string">&gt;</span> <span class="string">$&#123;thresholdValue&#125;</span></span><br><span class="line">        <span class="attr">for:</span> <span class="string">1m</span></span><br><span class="line">        <span class="attr">labels:</span></span><br><span class="line">          <span class="attr">groupId:</span> <span class="string">kafka-topic-highstore</span></span><br><span class="line">          <span class="attr">instanceId:</span> <span class="string">$&#123;uniqueName&#125;</span></span><br><span class="line">          <span class="attr">userIds:</span> <span class="string">super</span></span><br><span class="line">          <span class="attr">receivers:</span> <span class="string">SMS</span></span><br><span class="line">        <span class="attr">annotations:</span></span><br><span class="line">          <span class="attr">title:</span> <span class="string">&quot;KAFKA警告：消费组$&#123;consumergroup&#125;的堆积数量达到:<span class="template-variable">&#123;&#123;$value&#125;&#125;</span>&quot;</span></span><br><span class="line">          <span class="attr">content:</span> <span class="string">&quot;KAFKA警告：消费组$&#123;consumergroup&#125;的堆积数量达到:<span class="template-variable">&#123;&#123;$value&#125;&#125;</span>&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="三-其他"><a href="#三-其他" class="headerlink" title="三 其他"></a>三 其他</h2><h3 id="告警流程示例"><a href="#告警流程示例" class="headerlink" title="告警流程示例"></a>告警流程示例</h3><p>这里以两个节点node1和node2配置了磁盘空间监控为例，空间使用到达阈值则触发告警。<br>（测试过程中可通过生成、删除指定体积的文件来控制空间占用）</p>
+<p>其中配置项如下：</p>
+<ul>
+<li>告警规则:node-disk-usage <ul>
+<li>for 为 1m</li>
+</ul>
+</li>
+<li>告警中心:alertManager <ul>
+<li>group_wait: 30s</li>
+<li>group_interval: 5m</li>
+<li>repeat_interval: 10m</li>
+</ul>
+</li>
+</ul>
+<p>收到的告警短信内容及时间线如下：</p>
+<ul>
+<li>10:23:14收到第一次警报：<br>node1于 10:22:44 进入异常</li>
+<li>10:28:14收到第二次警报：<br>node1于 10:22:44 进入异常<br>node2于 10:24:44 进入异常</li>
+<li>10:38:29收到第三次警报：<br>node1于 10:22:44 进入异常<br>node2于 10:24:44 进入异常</li>
+<li>10:48:44收到第四次警报：<br>node1于 10:22:44 进入异常<br>node2于 10:24:44 进入异常</li>
+<li>10:58:44收到第五次警报：恢复告警<br>node1于 10:22:44 进入异常，并于10:55:44恢复<br>node2于 10:24:44 进入异常，并于10:49:14恢复</li>
+</ul>
+<p>总共收到5次短信，第1次是node1异常，<br>第2到4次是node1和node2都异常，因为属于同个分组group，所以合并发送。<br>第5次是已经恢复正常了。<br>根据短信内容和时间，整理出告警逻辑时间线如下：</p>
+<ol>
+<li>node1等待for <strong>1分钟</strong> 后警报进入group<br>node1记录异常时间为10:22:44，实际异常状态至少在10:22:44的一分钟前</li>
+<li>group等待group_wait <strong>30s</strong> 后发送第一次告警<br>firing:node1</li>
+<li>node2等待for <strong>1分钟</strong> 后警报进入group<br>node2记录异常时间为10:24:44，实际异常状态至少在10:24:44的一分钟前<br>此时group中有两个异常目标node1和node2</li>
+<li>group等待group_interval <strong>5m</strong> 后发送第二次告警<br>firing:node1,node2<br>注意：因为group发生了变化，所以这里用的是group_interval</li>
+<li>group等待repeat_interval <strong>10m</strong> 后发送第三次告警<br>firing:node1,node2<br>注意：因为group没有变化，属于重复告警，用的是repeat_interval</li>
+<li>group等待repeat_interval <strong>10m</strong> 后发送第四次告警<br>firing:node1,node2<br>同上一次</li>
+<li>第四次告警后的 前5分钟： node2恢复正常</li>
+<li>第四次告警后的 后5分钟： node1恢复正常</li>
+<li>group等待repeat_interval <strong>10m</strong> 后发送第五次告警<br>resolved:node1,node2<br>注意，这里node1,node2都恢复正常用的也是repeat_interval</li>
+</ol>
+<p>综上：</p>
+<ul>
+<li>for<br>是告警规则个体的监控配置，用来衡量服务多久检测不通过才算异常</li>
+<li>group_wait 初次发送告警的等待时间<br>用于group创建后的等待，这个值通常设置较小，在几分钟以内</li>
+<li>group_interval 同一个组其他新发生的告警发送时间间隔<br>是group内容发生变化后的告警间隔</li>
+<li>repeat_interval 重复发送同一个告警的时间间隔<br>group内容没有变化且上一次发生成功时用的发生间隔</li>
+</ul>
+<p>需要注意，恢复正常不属于group变化，用的是repeat_interval。<br>这有点反直觉，且个人认为不是很合理，不知道是不是测试有问题，也没有找到比较好的资料说明。<br>希望知道的可以指教一下。</p>
+<h3 id="exporter的位置"><a href="#exporter的位置" class="headerlink" title="exporter的位置"></a>exporter的位置</h3><p>exporter可以以sidecar的形式和原容器放在同一个pod内（1对1），也可以以独立部署的形式存在（1对1/1对多）。<br>这个视具体情况而定，技术上没什么不同，sidecar可以绑定生命周期，视为对原有组件的补充。独立部署则耦合度更低，更灵活。<br>像单节点的mysql，用sidecar则只需要1个pod，不会太复杂。<br>而如果像多节点的kafka集群，用独立部署则只需要一个exporter就可以实现对多个节点的采集监控。</p>
 <p>这里出于减小耦合、节省资源的目的，我主要使用的是独立部署形式。</p>
+<h3 id="使用promtool检查指标格式是否正确"><a href="#使用promtool检查指标格式是否正确" class="headerlink" title="使用promtool检查指标格式是否正确"></a>使用promtool检查指标格式是否正确</h3><p>promtool 使用方法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 进入pod</span></span><br><span class="line"> kubectl -n=monitoring exec -it prometheus-k8s-0  sh</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看帮助</span></span><br><span class="line">promtool -h</span><br><span class="line"><span class="meta">#</span><span class="bash"> 检查指标格式</span></span><br><span class="line">curl -s http://ip:9999/metrics | promtool check metrics</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>比方说 指标name、labelname不能使用小数点</p>
+<h3 id="使用port-forward临时提供Prometheus外部访问"><a href="#使用port-forward临时提供Prometheus外部访问" class="headerlink" title="使用port-forward临时提供Prometheus外部访问"></a>使用port-forward临时提供Prometheus外部访问</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> prometheus</span></span><br><span class="line">nohup  kubectl port-forward --address 0.0.0.0 service/prometheus-k8s 19090:9090 -n=monitoring &amp;</span><br><span class="line"><span class="meta">#</span><span class="bash"> grafana</span></span><br><span class="line">nohup kubectl port-forward --address 0.0.0.0 service/grafana 13000:3000 -n=monitoring &amp;</span><br><span class="line"><span class="meta">#</span><span class="bash"> alertmanager</span></span><br><span class="line">nohup  kubectl port-forward --address 0.0.0.0 service/alertmanager-main 9093:9093 -n=monitoring &amp;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>用 <code>jobs -l</code> 可以查看</p>
+<h3 id="kube-prometheus对arm的支持"><a href="#kube-prometheus对arm的支持" class="headerlink" title="kube-prometheus对arm的支持"></a>kube-prometheus对arm的支持</h3><p>目标是找到kube-prometheus用到的镜像的arm版本</p>
+<p>可以使用 <a target="_blank" rel="noopener" href="https://quay.io/">https://quay.io/</a> 搜索</p>
+<p>以下是用到的镜像和各自对arm的支持情况。<br>注意对照自己使用的版本，很多镜像高版本都支持arm了</p>
+<p>未标记（不支持）其实也是可以用，但不保证</p>
+<p>quay.io/prometheus/prometheus:v2.11.0  支持arm（v2.10.0开始）<br>quay.io/prometheus/alertmanager:v0.18.0 支持arm（v0.17.0开始）<br>quay.io/coreos/kube-state-metrics:v1.8.0  未标记（不支持）<br>quay.io/coreos/kube-rbac-proxy:v0.4.1   未标记（不支持）<br>quay.io/prometheus/node-exporter:v0.18.1   支持arm（v0.18.0开始）<br>quay.io/coreos/prometheus-operator:v0.34.0  不支持arm（v0.39开始） 修改成使用0.39.0，0.39以后的prometheus要求k8s必须&gt;=1.16<br>quay.io/coreos/configmap-reload:v0.0.1  未标记（不支持）<br>grafana/grafana:6.4.3 官方说支持arm，但其实不支持，有bug，见：<a target="_blank" rel="noopener" href="https://bleepcoder.com/cn/grafana/501674494/docker-arm-images-doesn-t-work-since-v6-4-x">https://bleepcoder.com/cn/grafana/501674494/docker-arm-images-doesn-t-work-since-v6-4-x</a></p>
+<p>quay.io/coreos/k8s-prometheus-adapter-amd64:v0.5.0 未找到arm版本镜像<br>最新的官方版本已经改用 directxman12/k8s-prometheus-adapter:v0.8.4<br>而directxman12/k8s-prometheus-adapter:v0.5.0 开始支持arm<br>见：<a target="_blank" rel="noopener" href="https://hub.docker.com/r/directxman12/k8s-prometheus-adapter/tags">https://hub.docker.com/r/directxman12/k8s-prometheus-adapter/tags</a></p>
 
     </div>
 
@@ -462,7 +550,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%B6-%E5%89%8D%E8%A8%80"><span class="nav-text">零 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="nav-text">一 设计思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%9B%91%E6%8E%A7%E5%AF%B9%E8%B1%A1"><span class="nav-text">1. 监控对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8C%87%E6%A0%87%E6%9A%B4%E9%9C%B2%E6%96%B9%E5%BC%8F"><span class="nav-text">2. 指标暴露方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%8C%87%E6%A0%87%E6%8A%93%E5%8F%96%E6%96%B9%E5%BC%8F"><span class="nav-text">3. 指标抓取方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%91%8A%E8%AD%A6%E8%AE%BE%E8%AE%A1"><span class="nav-text">4. 告警设计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="nav-text">二 技术实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-kubernetes%E7%8E%AF%E5%A2%83%E4%B8%8Bprometheus%E7%9A%84%E9%83%A8%E7%BD%B2"><span class="nav-text">1. kubernetes环境下prometheus的部署</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-kube-prometheus-vs-prometheus-operator"><span class="nav-text">1) kube-prometheus vs prometheus-operator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-kube-prometheus-%E4%BD%BF%E7%94%A8%E5%89%8D%E8%AF%B4%E6%98%8E"><span class="nav-text">2) kube-prometheus 使用前说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B"><span class="nav-text">3) 安装教程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-kubernetes-sd-config-relabel%E6%96%B9%E6%A1%88%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-text">2. kubernetes_sd_config+relabel方案的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-bigdata-exporter%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-text">3. bigdata-exporter的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-%E5%85%B6%E4%BB%96%E9%97%AE%E9%A2%98"><span class="nav-text">三 其他问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#exporter%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-text">exporter的位置</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%B6-%E5%89%8D%E8%A8%80"><span class="nav-text">零 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="nav-text">一 设计思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%9B%91%E6%8E%A7%E5%AF%B9%E8%B1%A1"><span class="nav-text">1. 监控对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8C%87%E6%A0%87%E6%9A%B4%E9%9C%B2%E6%96%B9%E5%BC%8F"><span class="nav-text">2. 指标暴露方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%8C%87%E6%A0%87%E6%8A%93%E5%8F%96%E6%96%B9%E5%BC%8F"><span class="nav-text">3. 指标抓取方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%91%8A%E8%AD%A6%E8%AE%BE%E8%AE%A1"><span class="nav-text">4. 告警设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%8A%E8%AD%A6%E6%B5%81%E7%A8%8B"><span class="nav-text">告警流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%8A%E8%AD%A6%E7%9A%84%E5%8A%A8%E6%80%81%E9%85%8D%E7%BD%AE"><span class="nav-text">告警的动态配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A5%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E5%91%8A%E8%AD%A6%E5%B9%B3%E5%8F%B0"><span class="nav-text">接入自定义告警平台</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%8A%E8%AD%A6%E5%B1%82%E7%BA%A7%E6%A0%87%E7%AD%BE%E8%AE%BE%E8%AE%A1"><span class="nav-text">告警层级标签设计</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="nav-text">二 技术实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-kubernetes%E7%8E%AF%E5%A2%83%E4%B8%8Bprometheus%E7%9A%84%E9%83%A8%E7%BD%B2"><span class="nav-text">1. kubernetes环境下prometheus的部署</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-kube-prometheus-vs-prometheus-operator"><span class="nav-text">1) kube-prometheus vs prometheus-operator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-kube-prometheus-%E4%BD%BF%E7%94%A8%E5%89%8D%E8%AF%B4%E6%98%8E"><span class="nav-text">2) kube-prometheus 使用前说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B"><span class="nav-text">3) 安装教程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-kubernetes-sd-config-relabel%E6%96%B9%E6%A1%88%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-text">2. kubernetes_sd_config+relabel方案的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-bigdata-exporter%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-text">3. bigdata-exporter的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%91%8A%E8%AD%A6%E8%AE%BE%E8%AE%A1%E7%A4%BA%E4%BE%8B"><span class="nav-text">4. 告警设计示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-alertManager%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="nav-text">1) alertManager配置示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-alertRule%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="nav-text">2) alertRule配置示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-%E5%85%B6%E4%BB%96"><span class="nav-text">三 其他</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%8A%E8%AD%A6%E6%B5%81%E7%A8%8B%E7%A4%BA%E4%BE%8B"><span class="nav-text">告警流程示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exporter%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-text">exporter的位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8promtool%E6%A3%80%E6%9F%A5%E6%8C%87%E6%A0%87%E6%A0%BC%E5%BC%8F%E6%98%AF%E5%90%A6%E6%AD%A3%E7%A1%AE"><span class="nav-text">使用promtool检查指标格式是否正确</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8port-forward%E4%B8%B4%E6%97%B6%E6%8F%90%E4%BE%9BPrometheus%E5%A4%96%E9%83%A8%E8%AE%BF%E9%97%AE"><span class="nav-text">使用port-forward临时提供Prometheus外部访问</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kube-prometheus%E5%AF%B9arm%E7%9A%84%E6%94%AF%E6%8C%81"><span class="nav-text">kube-prometheus对arm的支持</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -542,7 +630,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -551,12 +639,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">54k</span>
+    <span title="站点总字数">59k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">50 分钟</span>
+    <span title="站点阅读时长">54 分钟</span>
 </div>
 
         
