@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>基于hdfs的ftp服务器的设计与实现</title>
+      <link href="//hdfs-ftp-server-design-and-implementation/"/>
+      <url>//hdfs-ftp-server-design-and-implementation/</url>
+      
+        <content type="html"><![CDATA[<p>本文主要记录hdfs-ftp-server的设计思路、实现过程，使用的话直接看github项目文档即可。<br>项目地址：<a href="https://github.com/linshenkx/hdfs-ftp-server">https://github.com/linshenkx/hdfs-ftp-server</a></p><span id="more"></span><h2 id="第一版"><a href="#第一版" class="headerlink" title="第一版"></a>第一版</h2><p>hdfs-ftp-server这个项目我在20年的时候就开源过一版了，先做一下前提介绍。</p><h3 id="1-需求"><a href="#1-需求" class="headerlink" title="1 需求"></a>1 需求</h3><p>因为我们大数据平台是容器化的，一些简单的操作也需要进入容器里面才能执行，而且传递文件也很繁琐。<br>所以那时候的主要需求就是<strong>实现功能</strong>，即通过ftp的方式实现对hdfs文件系统的操作，方便日常操作。</p><h3 id="2-思路"><a href="#2-思路" class="headerlink" title="2 思路"></a>2 思路</h3><p>那时候主要是参考github上一些老一点的项目进行改造升级，以适配高可用、kerberos认证连接。<br>然后再进行易用性改造，更适合生产环境使用。</p><p>核心思路是对外作为ftp服务器，内部使用hdfs实现接口功能即可，很简单的功能。</p><h3 id="3-存在问题"><a href="#3-存在问题" class="headerlink" title="3 存在问题"></a>3 存在问题</h3><p>那时候用的hadoop是官方的2.9.2，后面hadoop升级到3.3.1了，<br>而且有时候还得对接cdh的hadoop，这个时候这个工程就不能直接拿来用了。</p><p>这种时候常规解决办法就是修改一下依赖，重新编译。</p><p>但是我觉得太麻烦了，这样也不利于代码的管理。<br>所以就一直想着要把这个工程模块化，核心工程独立且不常变，其他的作为模块工程对接各个版本的hadoop客户端。</p><h2 id="第二版"><a href="#第二版" class="headerlink" title="第二版"></a>第二版</h2><p>针对第一版存在的问题，第二版主要是对项目进行模块化改造</p><h3 id="技术调研及选型"><a href="#技术调研及选型" class="headerlink" title="技术调研及选型"></a>技术调研及选型</h3><p>最开始我目标是很明确的，就是用蚂蚁金服的<a href="https://github.com/sofastack/sofa-ark">ark框架</a>来实现类隔离，<br>毕竟不同大版本/发行版本的hdfs依赖多少会有类冲突，直接用是肯定不放心的。</p><p>ark我之前就一直有在留意，也跑过demo，觉得还是可以寄予厚望的。<br>事实上这个工程重构所用的时间一大半都花在ark上。<br>本来是想把各个实现模块作为ark的插件的，发现ark的插件又不支持动态插拔，其核心是类隔离而不是模块化。<br>那就把每个模块作为service，来实现动态引用，这也是可以的，也确实改好代码打包好了。<br>但最终运行的时候还是有bug，类似于：<a href="https://github.com/sofastack/sofa-ark/issues/421%E3%80%82">https://github.com/sofastack/sofa-ark/issues/421。</a></p><p>终于还是折腾不下去，放弃ark了，开源支持太差了，我水平有限，玩不动。</p><p>不用ark，osgi又太重了，没必要，那就还是老老实实用java的spi吧。<br>类似于jdbc的用法，添加对应jar包，指定类名进行加载。</p><p>但spi并不能实现类隔离，所以就预先打包好各个jar包，运行时再根据对接hadoop版本进行加载。</p><p>即每个模块形成一个fatjar，如cdh632.jar，official331.jar。<br>在对接cdh6.3.2的时候将cdh632.jar添加到类路径下即可，如果是对接官方3.3.1则添加official331.jar。</p><p>这里还有一个问题，要不要把hadoop的依赖包也一并打包呢？<br>这个倒没纠结太久，还是打包了。缺点是体积大很多，优点是摆脱依赖。<br>你只需要给我hadoop的连接配置文件就行了，而不需要整个hadoop客户端环境。<br>至于包大点就大点，不差那点流量、空间。</p><p>为了简化、统一子模块的开发，我又把gradle任务统一定义在父工程的build.gradle里面。<br>让子模块更加的简单易懂。</p><h3 id="成果总结"><a href="#成果总结" class="headerlink" title="成果总结"></a>成果总结</h3><p><a href="https://github.com/linshenkx/hdfs-ftp-server">https://github.com/linshenkx/hdfs-ftp-server</a></p><p>应该说还是比较满意的。</p><p>虽然就技术来说很简单，毕竟别人十年前就做过的东西，<br>但还是花了很多时间、心思在上面折腾，把这个小东西做得好用一些。<br>在这个过程也算有点收获吧。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 后端开发 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> ftp </tag>
+            
+            <tag> hdfs </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>基于kube-prometheus的大数据平台监控系统设计</title>
       <link href="//kube-prometheus-bigdata/"/>
       <url>//kube-prometheus-bigdata/</url>
@@ -389,6 +416,33 @@
         <tags>
             
             <tag> kafka </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>centos利用yumdownloader获取含依赖的rpm安装包</title>
+      <link href="//centos-yumdownloader-rpm-package/"/>
+      <url>//centos-yumdownloader-rpm-package/</url>
+      
+        <content type="html"><![CDATA[<p>工作经常会遇到需要离线安装软件的情况，特此记录下来，避免每次都得去翻笔记。</p><span id="more"></span><h2 id="零-思路"><a href="#零-思路" class="headerlink" title="零 思路"></a>零 思路</h2><ol><li>使用docker提供目标包洁净隔离环境（如centos7、centos8）。</li><li>使用<code>yumdownloader -resolve</code>下载完整依赖。</li><li>在目标环境使用<code>yum -y localinstall</code> 一键安装</li></ol><h2 id="一-构造运行环境"><a href="#一-构造运行环境" class="headerlink" title="一 构造运行环境"></a>一 构造运行环境</h2><h3 id="1-使用docker提供目标操作系统"><a href="#1-使用docker提供目标操作系统" class="headerlink" title="1 使用docker提供目标操作系统"></a>1 使用docker提供目标操作系统</h3><p>在本地创建data目录并挂载到容器里，方便将生成的依赖取出。<br>如果想将容器当linux远程主机使用，将22端口映射出来即可： -p 5022:22 </p><ol><li>centos7<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /home/lin/centos7/data</span><br><span class="line">docker run -d  --name centos7 -v /home/lin/centos7/data:/data centos:7 /usr/sbin/init</span><br><span class="line">docker exec -it centos7 /bin/bash</span><br><span class="line"></span><br></pre></td></tr></table></figure></li><li>centos8<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /home/lin/centos8/data</span><br><span class="line">docker run -d  --name centos8 -v /home/lin/centos8/data:/data centos:8 /usr/sbin/init</span><br><span class="line">docker exec -it centos8 /bin/bash</span><br><span class="line"></span><br></pre></td></tr></table></figure><h3 id="2-更新yum镜像仓库"><a href="#2-更新yum镜像仓库" class="headerlink" title="2 更新yum镜像仓库"></a>2 更新yum镜像仓库</h3>参考阿里的开源镜像站：<a href="https://developer.aliyun.com/mirror/">https://developer.aliyun.com/mirror/</a><br>以centos7为例：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup</span><br><span class="line">curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo</span><br><span class="line">sed -i -e &#x27;/mirrors.cloud.aliyuncs.com/d&#x27; -e &#x27;/mirrors.aliyuncs.com/d&#x27; /etc/yum.repos.d/CentOS-Base.repo</span><br><span class="line">yum makecache</span><br><span class="line"></span><br></pre></td></tr></table></figure><h2 id="二-使用yumdownloader"><a href="#二-使用yumdownloader" class="headerlink" title="二 使用yumdownloader"></a>二 使用yumdownloader</h2><h3 id="1-安装yumdownloader"><a href="#1-安装yumdownloader" class="headerlink" title="1. 安装yumdownloader"></a>1. 安装yumdownloader</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install yum-utils -y</span><br><span class="line"></span><br></pre></td></tr></table></figure><h3 id="2-下载依赖包"><a href="#2-下载依赖包" class="headerlink" title="2. 下载依赖包"></a>2. 下载依赖包</h3>命令为格式为 yumdownloader –resolve 需要的包<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 进入挂载文件夹</span></span><br><span class="line">cd /data</span><br><span class="line"><span class="meta">#</span><span class="bash"> 根据需要先添加对应的软件存储库源，如</span></span><br><span class="line">rpm -ivh http://mirrors.wlnmp.com/centos/wlnmp-release-centos.noarch.rpm</span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建子目录</span></span><br><span class="line">mkdir packages &amp;&amp; cd packages </span><br><span class="line"><span class="meta">#</span><span class="bash"> 再使用yumdownloader --resolve取代yum install，这里以tar和netstat为例</span></span><br><span class="line">yumdownloader --resolve  tar netstat </span><br><span class="line"></span><br></pre></td></tr></table></figure>一般下载的安装rpm包都是带有x86_64的，某些旧一点的软件会支持32位，为了后面可以直接一键安装，这里推荐把不需要的32位版本的依赖删掉<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rm -f *.i386*</span><br><span class="line">rm -f *.i586*</span><br><span class="line">rm -f *.i686*</span><br><span class="line">rm -f *.noarch*</span><br><span class="line"></span><br></pre></td></tr></table></figure></li></ol><h3 id="3-localinstall-安装"><a href="#3-localinstall-安装" class="headerlink" title="3. localinstall 安装"></a>3. localinstall 安装</h3><p>将生成的文件夹拷贝到目标集群上，使用localinstall 进行安装</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y localinstall *.rpm</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 程序员杂记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> docker </tag>
+            
+            <tag> yumdownloader </tag>
             
         </tags>
       

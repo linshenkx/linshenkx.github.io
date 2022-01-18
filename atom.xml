@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2022-01-02T07:00:24.471Z</updated>
+  <updated>2022-01-18T15:34:27.968Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>基于hdfs的ftp服务器的设计与实现</title>
+    <link href="https://linshenkx.github.io/hdfs-ftp-server-design-and-implementation/"/>
+    <id>https://linshenkx.github.io/hdfs-ftp-server-design-and-implementation/</id>
+    <published>2022-01-17T15:05:34.000Z</published>
+    <updated>2022-01-18T15:34:27.968Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文主要记录hdfs-ftp-server的设计思路、实现过程，使用的话直接看github项目文档即可。&lt;br&gt;项目地址：&lt;a href=&quot;https://github.com/linshenkx/hdfs-ftp-server&quot;&gt;https://github.com/linshenkx/hdfs-ftp-server&lt;/a&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="后端开发" scheme="https://linshenkx.github.io/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
+    
+    
+    <category term="ftp" scheme="https://linshenkx.github.io/tags/ftp/"/>
+    
+    <category term="hdfs" scheme="https://linshenkx.github.io/tags/hdfs/"/>
+    
+  </entry>
   
   <entry>
     <title>基于kube-prometheus的大数据平台监控系统设计</title>
@@ -328,6 +349,27 @@
   </entry>
   
   <entry>
+    <title>centos利用yumdownloader获取含依赖的rpm安装包</title>
+    <link href="https://linshenkx.github.io/centos-yumdownloader-rpm-package/"/>
+    <id>https://linshenkx.github.io/centos-yumdownloader-rpm-package/</id>
+    <published>2020-08-18T03:55:04.000Z</published>
+    <updated>2022-01-18T15:41:50.390Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;工作经常会遇到需要离线安装软件的情况，特此记录下来，避免每次都得去翻笔记。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="程序员杂记" scheme="https://linshenkx.github.io/categories/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%9D%82%E8%AE%B0/"/>
+    
+    
+    <category term="docker" scheme="https://linshenkx.github.io/tags/docker/"/>
+    
+    <category term="yumdownloader" scheme="https://linshenkx.github.io/tags/yumdownloader/"/>
+    
+  </entry>
+  
+  <entry>
     <title>空间索引 S2 学习指南及Java工具类实践</title>
     <link href="https://linshenkx.github.io/google_spatial_search_s2/"/>
     <id>https://linshenkx.github.io/google_spatial_search_s2/</id>
@@ -389,48 +431,6 @@
     <category term="kubernetes" scheme="https://linshenkx.github.io/tags/kubernetes/"/>
     
     <category term="笔记" scheme="https://linshenkx.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践</title>
-    <link href="https://linshenkx.github.io/spring_enum/"/>
-    <id>https://linshenkx.github.io/spring_enum/</id>
-    <published>2019-01-14T01:54:10.000Z</published>
-    <updated>2021-09-01T08:02:17.791Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;Spring对应枚举传参/返回值默认是用字面量实现的（实际情况更复杂），而《阿里巴巴Java开发手册》规定接口返回值不可以使用枚举类型（包括含枚举类型的POJO对象），为此，本文探究了Spring内部对枚举参数的传递和处理机制，并提供了一套自定义方案。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="后端开发" scheme="https://linshenkx.github.io/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
-    
-    
-    <category term="Spring" scheme="https://linshenkx.github.io/tags/Spring/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Dockerfile实现MySQL定时备份</title>
-    <link href="https://linshenkx.github.io/mysql-cron-docker/"/>
-    <id>https://linshenkx.github.io/mysql-cron-docker/</id>
-    <published>2018-09-09T07:11:26.000Z</published>
-    <updated>2021-11-25T09:07:35.132Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;本文利用自定制Dockerfile实现在mysql容器内自动定时备份,避免了在宿主机设置cron定时任务所带来的高耦合操作,更易于部署和搬迁.项目最新版已上传到&lt;a href=&quot;https://github.com/linshenkx/mysql-cron&quot;&gt;github&lt;/a&gt;和&lt;a href=&quot;https://hub.docker.com/r/linshen/mysql-cron/&quot;&gt;DockerHub&lt;/a&gt;,建议直接到&lt;a href=&quot;https://hub.docker.com/r/linshen/mysql-cron/&quot;&gt;DockerHub&lt;/a&gt;查看使用.&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="后端开发" scheme="https://linshenkx.github.io/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
-    
-    
-    <category term="docker" scheme="https://linshenkx.github.io/tags/docker/"/>
-    
-    <category term="mysql" scheme="https://linshenkx.github.io/tags/mysql/"/>
-    
-    <category term="cron" scheme="https://linshenkx.github.io/tags/cron/"/>
     
   </entry>
   
