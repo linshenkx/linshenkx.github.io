@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2022-01-18T15:34:27.968Z</updated>
+  <updated>2022-01-19T14:36:07.065Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>vbs实现wincc或mysql数据导出成csv</title>
+    <link href="https://linshenkx.github.io/vbs-wincc-mysql-csv/"/>
+    <id>https://linshenkx.github.io/vbs-wincc-mysql-csv/</id>
+    <published>2022-01-19T14:13:26.000Z</published>
+    <updated>2022-01-19T14:36:07.065Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;工作要求，需要编写vbs实现将wincc数据导出，估计以后也没机会再接触这门古董语言了，所以就记录一下。&lt;br&gt;因为wincc用得太少了，测试中会使用mysql代替。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="后端开发" scheme="https://linshenkx.github.io/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
+    
+    
+    <category term="mysql" scheme="https://linshenkx.github.io/tags/mysql/"/>
+    
+    <category term="vbs" scheme="https://linshenkx.github.io/tags/vbs/"/>
+    
+    <category term="wincc" scheme="https://linshenkx.github.io/tags/wincc/"/>
+    
+    <category term="csv" scheme="https://linshenkx.github.io/tags/csv/"/>
+    
+  </entry>
   
   <entry>
     <title>基于hdfs的ftp服务器的设计与实现</title>
@@ -410,27 +435,6 @@
     <category term="hbase" scheme="https://linshenkx.github.io/tags/hbase/"/>
     
     <category term="debug" scheme="https://linshenkx.github.io/tags/debug/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>k8s常用命令笔记</title>
-    <link href="https://linshenkx.github.io/kubernetes-commands/"/>
-    <id>https://linshenkx.github.io/kubernetes-commands/</id>
-    <published>2019-12-28T15:00:00.000Z</published>
-    <updated>2022-01-02T07:04:20.951Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;一些自用的kubectl命令&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Kubernetes" scheme="https://linshenkx.github.io/categories/Kubernetes/"/>
-    
-    
-    <category term="kubernetes" scheme="https://linshenkx.github.io/tags/kubernetes/"/>
-    
-    <category term="笔记" scheme="https://linshenkx.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
