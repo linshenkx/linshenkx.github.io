@@ -102,9 +102,9 @@
     
     <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
     
-    <category term="大数据" scheme="https://linshenkx.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
     <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
+    
+    <category term="大数据" scheme="https://linshenkx.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
   </entry>
   
@@ -134,14 +134,14 @@
   </entry>
   
   <entry>
-    <title>clash代理工具docker版使用笔记</title>
+    <title>clash-docker使用并实现订阅链接自动更新</title>
     <link href="https://linshenkx.github.io/clash_docker/"/>
     <id>https://linshenkx.github.io/clash_docker/</id>
     <published>2021-09-12T14:54:20.000Z</published>
-    <updated>2021-09-13T09:48:18.353Z</updated>
+    <updated>2022-03-08T04:58:17.003Z</updated>
     
     
-    <summary type="html">&lt;p&gt;clash docker镜像使用笔记，以及常用代理配置方法&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;clash docker镜像使用笔记，以及常用代理配置方法。&lt;br&gt;2022.3月更新：使用订阅链接并自动更新防止代理失效，并增加web端管理功能&lt;/p&gt;</summary>
     
     
     
