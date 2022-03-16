@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2022-01-19T14:36:07.065Z</updated>
+  <updated>2022-03-16T09:07:27.545Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>PySpark学习笔记</title>
+    <link href="https://linshenkx.github.io/pyspark-notes/"/>
+    <id>https://linshenkx.github.io/pyspark-notes/</id>
+    <published>2022-03-16T15:00:00.000Z</published>
+    <updated>2022-03-16T09:07:27.545Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;pyspark使用笔记，含1.jupyter-docker环境搭建 2.dataframe2jdbc,jdbc2dataframe 3.模型训练及保存 4.模型导入及使用 等。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="机器学习" scheme="https://linshenkx.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="笔记" scheme="https://linshenkx.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="pyspark" scheme="https://linshenkx.github.io/tags/pyspark/"/>
+    
+    <category term="jupyter" scheme="https://linshenkx.github.io/tags/jupyter/"/>
+    
+  </entry>
   
   <entry>
     <title>vbs实现wincc或mysql数据导出成csv</title>
@@ -102,9 +125,9 @@
     
     <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
     
-    <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
-    
     <category term="大数据" scheme="https://linshenkx.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
     
   </entry>
   
@@ -148,9 +171,9 @@
     <category term="程序员杂记" scheme="https://linshenkx.github.io/categories/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%9D%82%E8%AE%B0/"/>
     
     
-    <category term="docker" scheme="https://linshenkx.github.io/tags/docker/"/>
-    
     <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
+    
+    <category term="docker" scheme="https://linshenkx.github.io/tags/docker/"/>
     
     <category term="clash" scheme="https://linshenkx.github.io/tags/clash/"/>
     
@@ -410,31 +433,6 @@
     
     
     <category term="s2" scheme="https://linshenkx.github.io/tags/s2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HBCK2修复RIT实践笔记</title>
-    <link href="https://linshenkx.github.io/hbck2_rit/"/>
-    <id>https://linshenkx.github.io/hbck2_rit/</id>
-    <published>2020-04-15T17:40:39.000Z</published>
-    <updated>2021-09-01T08:02:17.794Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;本文记录了作者使用HBCK2工具对线上HBase发生RIT状态的处理，仅供参考，若有疵漏，还望指正。&lt;br&gt;网络上关于HBCK2的文章很少，基本都是复制粘贴自田竞云(小米)的这一篇：&lt;a href=&quot;https://mp.weixin.qq.com/s/GVMWwB1WsKcdvZGfvX1lcA?spm=a2c4e.11153940.blogcont683107.11.49d762a815MegW&quot;&gt;HBase指南 | HBase 2.0之修复工具HBCK2运维指南&lt;/a&gt;&lt;br&gt;事实上这一篇文章介绍得也已经很详细了。这里只是做一些实践上的补充说明。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
-    <category term="HBASE" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/HBASE/"/>
-    
-    <category term="bug" scheme="https://linshenkx.github.io/categories/bug/"/>
-    
-    
-    <category term="hbase" scheme="https://linshenkx.github.io/tags/hbase/"/>
-    
-    <category term="debug" scheme="https://linshenkx.github.io/tags/debug/"/>
     
   </entry>
   
