@@ -6,7 +6,7 @@
   <link href="https://linshenkx.github.io/atom.xml" rel="self"/>
   
   <link href="https://linshenkx.github.io/"/>
-  <updated>2022-03-27T10:22:50.955Z</updated>
+  <updated>2022-05-13T09:19:29.104Z</updated>
   <id>https://linshenkx.github.io/</id>
   
   <author>
@@ -21,10 +21,10 @@
     <link href="https://linshenkx.github.io/my-server-overall-design/"/>
     <id>https://linshenkx.github.io/my-server-overall-design/</id>
     <published>2099-03-26T15:30:20.000Z</published>
-    <updated>2022-03-27T10:22:50.955Z</updated>
+    <updated>2022-05-13T09:19:29.104Z</updated>
     
     
-    <summary type="html">&lt;p&gt;不定期更新的服务器攻略指南。&lt;br&gt;记录服务器的配置管理、服务分配等信息，和附带文章索引。&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;不定期更新的服务器攻略指南。&lt;br&gt;记录服务器的配置管理、软件安装等信息，和附带文章索引。&lt;/p&gt;</summary>
     
     
     
@@ -38,11 +38,36 @@
   </entry>
   
   <entry>
+    <title>我的服务器系列：tailscale使用自定义derper服务器（docker部署）</title>
+    <link href="https://linshenkx.github.io/tailscale-derper-docker/"/>
+    <id>https://linshenkx.github.io/tailscale-derper-docker/</id>
+    <published>2022-04-16T14:54:20.000Z</published>
+    <updated>2022-05-13T08:59:15.358Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;使用docker部署tailscale私有中继服务器，并使用nginx四层代理与原有服务共用443端口，最后配置使用并检测。&lt;br&gt;derper-docker部署及使用较麻烦，本文分享踩坑记录及经验，建议阅读。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="我的服务器系列" scheme="https://linshenkx.github.io/categories/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
+    
+    
+    <category term="docker" scheme="https://linshenkx.github.io/tags/docker/"/>
+    
+    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
+    
+    <category term="tailscale" scheme="https://linshenkx.github.io/tags/tailscale/"/>
+    
+    <category term="derper" scheme="https://linshenkx.github.io/tags/derper/"/>
+    
+  </entry>
+  
+  <entry>
     <title>我的服务器系列：clash-docker使用并实现订阅链接自动更新</title>
     <link href="https://linshenkx.github.io/clash_docker/"/>
     <id>https://linshenkx.github.io/clash_docker/</id>
     <published>2022-03-26T14:54:20.000Z</published>
-    <updated>2022-03-26T14:27:31.492Z</updated>
+    <updated>2022-04-20T01:48:19.151Z</updated>
     
     
     <summary type="html">&lt;p&gt;clash docker镜像使用笔记，以及常用代理配置方法。&lt;br&gt;2022.3月更新：使用订阅链接并自动更新防止代理失效，并增加web端管理功能&lt;/p&gt;</summary>
@@ -245,7 +270,7 @@
     <link href="https://linshenkx.github.io/wsl2_idea2021/"/>
     <id>https://linshenkx.github.io/wsl2_idea2021/</id>
     <published>2021-04-13T14:54:20.000Z</published>
-    <updated>2022-03-07T02:22:15.392Z</updated>
+    <updated>2022-05-13T08:13:00.811Z</updated>
     
     
     <summary type="html">&lt;p&gt;最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。&lt;br&gt;倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。&lt;br&gt;2021.11更新：wsl-gui环境配置及idea使用&lt;/p&gt;</summary>
@@ -418,25 +443,6 @@
     
     
     <category term="jvm" scheme="https://linshenkx.github.io/tags/jvm/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>kafka动态调整副本因子replication.factor及json生成脚本</title>
-    <link href="https://linshenkx.github.io/kafka_replication_factor/"/>
-    <id>https://linshenkx.github.io/kafka_replication_factor/</id>
-    <published>2020-08-19T01:54:58.000Z</published>
-    <updated>2021-09-01T08:02:17.796Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;kafka默认的副本因子default.replication.factor是1，即无额外副本，如果在创建topic时没有指定副本数，则无高可用性。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
-    
-    <category term="kafka" scheme="https://linshenkx.github.io/tags/kafka/"/>
     
   </entry>
   
