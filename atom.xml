@@ -67,10 +67,10 @@
     <link href="https://linshenkx.github.io/clash_docker/"/>
     <id>https://linshenkx.github.io/clash_docker/</id>
     <published>2022-03-26T14:54:20.000Z</published>
-    <updated>2022-05-18T03:56:14.376Z</updated>
+    <updated>2022-08-23T07:50:27.629Z</updated>
     
     
-    <summary type="html">&lt;p&gt;clash docker镜像使用笔记，以及常用代理配置方法。&lt;br&gt;2022.5月更新：更新使用订阅链接教程，完善配置并自动选择最快节点&lt;br&gt;2022.3月更新：使用订阅链接并自动更新防止代理失效，并增加web端管理功能&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;clash docker镜像使用笔记，以及常用代理配置方法。&lt;br&gt;2022.8月更新：使用clash-premium，并添加rule-providers及示例&lt;br&gt;2022.8月更新：添加no_proxy说明。&lt;br&gt;2022.7月更新：提供示例配置文件。添加docker pull使用代理方法。&lt;br&gt;2022.5月更新：完善配置订阅链接教程并自动选择最快节点。添加容器使用代理方法。&lt;br&gt;2022.3月更新：使用订阅链接并自动更新防止代理失效，并增加web端管理功能&lt;/p&gt;</summary>
     
     
     
@@ -81,9 +81,9 @@
     
     <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
     
-    <category term="clash" scheme="https://linshenkx.github.io/tags/clash/"/>
-    
     <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
+    
+    <category term="clash" scheme="https://linshenkx.github.io/tags/clash/"/>
     
   </entry>
   
@@ -270,10 +270,11 @@
     <link href="https://linshenkx.github.io/wsl2_idea2021/"/>
     <id>https://linshenkx.github.io/wsl2_idea2021/</id>
     <published>2021-04-13T14:54:20.000Z</published>
-    <updated>2022-05-13T08:13:00.811Z</updated>
+    <updated>2022-08-15T07:03:07.134Z</updated>
     
     
-    <summary type="html">&lt;p&gt;最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。&lt;br&gt;倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。&lt;br&gt;2021.11更新：wsl-gui环境配置及idea使用&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;2022.8更新：wslg以root用户运行应用相关问题&lt;br&gt;2022.3更新：wsl-docker（ext4.vhdx）磁盘空间回收&lt;br&gt;2021.11更新：wsl-gui环境配置及idea使用&lt;/p&gt;
+&lt;p&gt;最近把IDEA更新到了2021，发现新版本增强了对WSL2的支持。之前的WSL2很鸡肋，吹很厉害，但真要开发又很不方便。 本来还想等着windows增强WSL2对gui的支持，然后在WSL2里装个IDEA。&lt;br&gt;倒是IDEA动作快一点，先做了支持。不错，值得捣鼓一番。之前为了gui把wsl环境弄得很混乱，直接重装，随便记录一下操作。&lt;/p&gt;</summary>
     
     
     
