@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"linshenkx.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="clash docker镜像使用笔记，以及常用代理配置方法。2022.8月更新：使用clash-premium，并添加rule-providers及示例2022.8月更新：添加no_proxy说明。2022.7月更新：提供示例配置文件。添加docker pull使用代理方法。2022.5月更新：完善配置订阅链接教程并自动选择最快节点。添加容器使用代理方法。2022.3月更新：使用订阅链接并自动更新">
+  <meta name="description" content="clash docker镜像使用笔记，以及常用代理配置方法。2022.9月更新：提供自部署proxy-provider-converter容器及国内部署链接，解决因vercel被墙而无法访问的问题2022.8月更新：使用clash-premium，并添加rule-providers及示例2022.8月更新：添加no_proxy说明。2022.7月更新：提供示例配置文件。添加docker pull使">
 <meta property="og:type" content="article">
 <meta property="og:title" content="我的服务器系列：clash-docker使用并实现订阅链接自动更新">
 <meta property="og:url" content="https://linshenkx.github.io/clash_docker/index.html">
 <meta property="og:site_name" content="且炼时光">
-<meta property="og:description" content="clash docker镜像使用笔记，以及常用代理配置方法。2022.8月更新：使用clash-premium，并添加rule-providers及示例2022.8月更新：添加no_proxy说明。2022.7月更新：提供示例配置文件。添加docker pull使用代理方法。2022.5月更新：完善配置订阅链接教程并自动选择最快节点。添加容器使用代理方法。2022.3月更新：使用订阅链接并自动更新">
+<meta property="og:description" content="clash docker镜像使用笔记，以及常用代理配置方法。2022.9月更新：提供自部署proxy-provider-converter容器及国内部署链接，解决因vercel被墙而无法访问的问题2022.8月更新：使用clash-premium，并添加rule-providers及示例2022.8月更新：添加no_proxy说明。2022.7月更新：提供示例配置文件。添加docker pull使">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652843670(1).png">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652845276(1).png">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1659668585584.png">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1659668681939.png">
 <meta property="article:published_time" content="2022-03-26T14:54:20.000Z">
-<meta property="article:modified_time" content="2022-08-23T07:50:27.629Z">
+<meta property="article:modified_time" content="2022-09-02T09:40:16.088Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="docker">
 <meta property="article:tag" content="生产力">
@@ -246,7 +246,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-23 15:50:27" itemprop="dateModified" datetime="2022-08-23T15:50:27+08:00">2022-08-23</time>
+                <time title="修改时间：2022-09-02 17:40:16" itemprop="dateModified" datetime="2022-09-02T17:40:16+08:00">2022-09-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -264,7 +264,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.2k</span>
+              <span>3.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -283,10 +283,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>clash docker镜像使用笔记，以及常用代理配置方法。<br>2022.8月更新：使用clash-premium，并添加rule-providers及示例<br>2022.8月更新：添加no_proxy说明。<br>2022.7月更新：提供示例配置文件。添加docker pull使用代理方法。<br>2022.5月更新：完善配置订阅链接教程并自动选择最快节点。添加容器使用代理方法。<br>2022.3月更新：使用订阅链接并自动更新防止代理失效，并增加web端管理功能</p>
+        <p>clash docker镜像使用笔记，以及常用代理配置方法。<br>2022.9月更新：提供自部署proxy-provider-converter容器及国内部署链接，解决因vercel被墙而无法访问的问题<br>2022.8月更新：使用clash-premium，并添加rule-providers及示例<br>2022.8月更新：添加no_proxy说明。<br>2022.7月更新：提供示例配置文件。添加docker pull使用代理方法。<br>2022.5月更新：完善配置订阅链接教程并自动选择最快节点。添加容器使用代理方法。<br>2022.3月更新：使用订阅链接并自动更新防止代理失效，并增加web端管理功能</p>
 <span id="more"></span>
 <h2 id="一-设计思路及步骤"><a href="#一-设计思路及步骤" class="headerlink" title="一 设计思路及步骤"></a>一 设计思路及步骤</h2><h3 id="1-获取clash订阅链接"><a href="#1-获取clash订阅链接" class="headerlink" title="1. 获取clash订阅链接"></a>1. 获取clash订阅链接</h3><p>   （不要问我怎么获取）</p>
-<h3 id="2-将clash订阅链接转换成Clash的Proxy-Provider"><a href="#2-将clash订阅链接转换成Clash的Proxy-Provider" class="headerlink" title="2. 将clash订阅链接转换成Clash的Proxy Provider"></a>2. 将clash订阅链接转换成Clash的Proxy Provider</h3><p>   参考 <a target="_blank" rel="noopener" href="https://github.com/qier222/proxy-provider-converter">https://github.com/qier222/proxy-provider-converter</a><br>   懒得部署的话可以用作者的 <a target="_blank" rel="noopener" href="https://proxy-provider-converter.vercel.app/">https://proxy-provider-converter.vercel.app</a><br>   或者是我的 <a target="_blank" rel="noopener" href="https://proxy-provider-converter-sooty.vercel.app/">https://proxy-provider-converter-sooty.vercel.app</a><br>   用我的会安全一点，因为我还不知道怎么查看到上面的订阅地址</p>
+<h3 id="2-将clash订阅链接转换成Clash的Proxy-Provider"><a href="#2-将clash订阅链接转换成Clash的Proxy-Provider" class="headerlink" title="2. 将clash订阅链接转换成Clash的Proxy Provider"></a>2. 将clash订阅链接转换成Clash的Proxy Provider</h3><p>   参考 <a target="_blank" rel="noopener" href="https://github.com/qier222/proxy-provider-converter">https://github.com/qier222/proxy-provider-converter</a><br>   <del>懒得部署的话可以用作者的 <a target="_blank" rel="noopener" href="https://proxy-provider-converter.vercel.app/">https://proxy-provider-converter.vercel.app</a><br>   或者是我的 <a target="_blank" rel="noopener" href="https://proxy-provider-converter-sooty.vercel.app/">https://proxy-provider-converter-sooty.vercel.app</a></del><br>   用我的会安全一点，因为我还不知道怎么查看到上面的订阅地址</p>
+<p>2022.9更新：因vercel被墙，建议使用我部署的：<a target="_blank" rel="noopener" href="https://ppc.linshenkx.cn/">https://ppc.linshenkx.cn</a></p>
+<p>也可自行部署，参考：<a target="_blank" rel="noopener" href="https://github.com/linshenkx/baseDockerImage/tree/master/proxy-provider-converter">https://github.com/linshenkx/baseDockerImage/tree/master/proxy-provider-converter</a></p>
 <h3 id="3-配置Proxy-Provider"><a href="#3-配置Proxy-Provider" class="headerlink" title="3. 配置Proxy Provider"></a>3. 配置Proxy Provider</h3><p>   在clash配置文件中配置Proxy Provider，实现代理服务器列表的自动更新<br>   clash配置文件，可以从订阅链接下载得到，再修改即可。或者我后面贴出来自用的。</p>
 <h3 id="4-启动clash"><a href="#4-启动clash" class="headerlink" title="4. 启动clash"></a>4. 启动clash</h3><p>启动dreamacro/clash或dreamacro/clash-premium容器，加载配置文件，进行clash服务</p>
 <h3 id="5-启动clash-web"><a href="#5-启动clash-web" class="headerlink" title="5. 启动clash-web"></a>5. 启动clash-web</h3><p>   启动haishanh/yacd容器，对clash进行web管理<br>   可以直接用作者部署的：<a target="_blank" rel="noopener" href="http://yacd.haishan.me/">http://yacd.haishan.me</a></p>
