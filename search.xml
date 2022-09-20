@@ -31,6 +31,33 @@
     
     
     <entry>
+      <title>docker部署nfs服务器v3v4</title>
+      <link href="//docker-nfs-server-v3-v4/"/>
+      <url>//docker-nfs-server-v3-v4/</url>
+      
+        <content type="html"><![CDATA[<p>虽然nfs-server的docker镜像有很多，但总有这样或那样的问题，容易踩坑。<br>这里分享一下自己的使用记录。</p><span id="more"></span><h3 id="v3"><a href="#v3" class="headerlink" title="v3"></a>v3</h3><p>使用的镜像是：erichough/nfs-server<br>相关链接见：<a href="https://hub.docker.com/r/erichough/nfs-server">https://hub.docker.com/r/erichough/nfs-server</a> 、 <a href="https://github.com/ehough/docker-nfs-server">https://github.com/ehough/docker-nfs-server</a><br>本身说是支持v4的，但截至2020.9月使用v4会有问题，见：<a href="https://github.com/ehough/docker-nfs-server/issues/58">https://github.com/ehough/docker-nfs-server/issues/58</a><br>使用v3是可以的，但由于v3占用了111端口，所以运行该容器的服务器没办法用nfs-client（rpc-bind用111端口）<br>而且除了2049，其他的端口没得修改，所以不推荐</p><blockquote><p>NFSv3使用大量辅助协议，客户访问过程首先需要通过portmap/rpcbind获取rpc.mounted监听端口，<br>然后nfs客户端访问rpc.mounted，nfs服务器根据/etc/exports文件进行客户身份验证，<br>验证通过后nfs客户端才能与rpc.nfsd建立联系并访问共享。<br>客户端与服务器数据交互过程的配额管理，文件锁管理以及nfs协议数据统计过程都由单独rpc进程来完成。<br>所有这些进程除了portmap和nfsd之外都是监听动态随机端口。<br>NFSv4自身集成辅助协议，只需要TCP 2049一个端口即可，这样极大方便NFS在防火墙后环境中部署。</p></blockquote><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /opt/nfs-server/share</span><br><span class="line">docker rm -f nfs-server</span><br><span class="line">docker run \</span><br><span class="line">    -d \</span><br><span class="line">    --name nfs-server \</span><br><span class="line">    --restart=always   \</span><br><span class="line">    --privileged \</span><br><span class="line">    -e NFS_VERSION=3 \</span><br><span class="line">      -p 2049:2049   -p 2049:2049/udp   \</span><br><span class="line">      -p 111:111     -p 111:111/udp     \</span><br><span class="line">      -p 32765:32765 -p 32765:32765/udp \</span><br><span class="line">      -p 32767:32767 -p 32767:32767/udp \</span><br><span class="line">    -v /opt/nfs-server/share:/nfs-share \</span><br><span class="line">    -e NFS_EXPORT_0=&#x27;/nfs-share *(rw,sync,no_root_squash,all_squash,anonuid=0,anongid=0,no_subtree_check)&#x27;  \</span><br><span class="line">    erichough/nfs-server</span><br><span class="line">docker logs -f  nfs-server</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>客户端操作：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/nfs-share</span><br><span class="line"><span class="meta">#</span><span class="bash"> 挂载</span></span><br><span class="line">mount -v -t nfs -o port=2049 主机:/nfs-share /data/nfs-share</span><br><span class="line"><span class="meta">#</span><span class="bash"> 卸载</span></span><br><span class="line">umount /data/nfs-share</span><br><span class="line"></span><br></pre></td></tr></table></figure><h3 id="v4"><a href="#v4" class="headerlink" title="v4"></a>v4</h3><p>使用的镜像是：<a href="https://github.com/sjiveson/nfs-server-alpine">itsthenetwork/nfs-server-alpine</a> 或 <a href="https://hub.docker.com/r/gists/nfs-server">gists/nfs-server</a></p><p>建议用gists/nfs-server，支持NFS_OPTION，配置更加清晰</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /opt/nfs-server/share</span><br><span class="line">docker rm -f nfs-server</span><br><span class="line"></span><br><span class="line">docker run \</span><br><span class="line">    -d \</span><br><span class="line">    --name nfs-server \</span><br><span class="line">    --restart=always   \</span><br><span class="line">    --privileged \</span><br><span class="line">      -p 32049:2049    \</span><br><span class="line">    -v /opt/nfs-server/share:/nfsshare \</span><br><span class="line">     -e NFS_DIR=/nfsshare   \</span><br><span class="line">     -e NFS_DOMAIN=*   \</span><br><span class="line">     -e NFS_OPTION=&quot;fsid=0,rw,sync,no_root_squash,all_squash,anonuid=0,anongid=0,no_subtree_check&quot;   \</span><br><span class="line">    gists/nfs-server</span><br><span class="line">    </span><br><span class="line">docker logs -f  nfs-server</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> docker run \</span></span><br><span class="line"><span class="bash"><span class="comment">#    -d \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#    --name nfs-server \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#    --restart=always   \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#    --privileged \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#      -p 32049:2049    \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#    -v /opt/nfs-server/share:/nfsshare \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#     -e SHARED_DIRECTORY=/nfsshare   \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#     -e SYNC=true   \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#    itsthenetwork/nfs-server-alpine</span></span></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure><p>客户端操作：<br>注意这里用的是 <strong>/</strong> ,而非 <strong>/nfsshare</strong> </p><blockquote><p>NFSv4将所有共享使用一个虚拟文件系统展示给客户端。<br>伪文件系统根目录（/）使用fsid=0标示，只有一个共享可以是fsid=0。<br>客户端需要使用“nfs server ip:/”挂载伪文件系统，<br>伪文件系统一般使用RO方式共享， 其他共享可以通过mount –bind选项在伪文件系统目录下挂载。<br>客户端挂载过程需要通过mount –t nfs4指定NFS版本为4，默认采用nfsv3</p></blockquote><p>现在客户端挂载一般会优先尝试nfsv4,再尝试nfsv3</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/nfs-share</span><br><span class="line"><span class="meta">#</span><span class="bash"> 挂载</span></span><br><span class="line">mount -v -t nfs -o port=32049 主机:/ /data/nfs-share</span><br><span class="line"><span class="meta">#</span><span class="bash"> 卸载</span></span><br><span class="line">umount /data/nfs-share</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 运维部署 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> docker </tag>
+            
+            <tag> nfs-server </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>我的服务器系列：tailscale使用自定义derper服务器（docker部署）</title>
       <link href="//tailscale-derper-docker/"/>
       <url>//tailscale-derper-docker/</url>
@@ -49,11 +76,11 @@
             
             <tag> docker </tag>
             
+            <tag> 我的服务器系列 </tag>
+            
             <tag> tailscale </tag>
             
             <tag> derper </tag>
-            
-            <tag> 我的服务器系列 </tag>
             
         </tags>
       
@@ -78,13 +105,13 @@
       
         <tags>
             
-            <tag> docker </tag>
-            
             <tag> 生产力 </tag>
             
-            <tag> 我的服务器系列 </tag>
-            
             <tag> clash </tag>
+            
+            <tag> docker </tag>
+            
+            <tag> 我的服务器系列 </tag>
             
         </tags>
       
@@ -165,11 +192,11 @@
       
         <tags>
             
-            <tag> mysql </tag>
-            
             <tag> vbs </tag>
             
             <tag> wincc </tag>
+            
+            <tag> mysql </tag>
             
             <tag> csv </tag>
             
@@ -740,16 +767,16 @@
       
       <categories>
           
-          <category> 后端开发 </category>
+          <category> 运维部署 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> docker </tag>
-            
             <tag> mysql </tag>
+            
+            <tag> docker </tag>
             
             <tag> cron </tag>
             

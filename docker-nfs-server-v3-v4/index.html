@@ -20,21 +20,21 @@
     var CONFIG = {"hostname":"linshenkx.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="本文主要记录hdfs-ftp-server的设计思路、实现过程，使用的话直接看github项目文档即可。项目地址：https:&#x2F;&#x2F;github.com&#x2F;linshenkx&#x2F;hdfs-ftp-server">
+  <meta name="description" content="虽然nfs-server的docker镜像有很多，但总有这样或那样的问题，容易踩坑。这里分享一下自己的使用记录。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于hdfs的ftp服务器的设计与实现">
-<meta property="og:url" content="https://linshenkx.github.io/hdfs-ftp-server-design-and-implementation/index.html">
+<meta property="og:title" content="docker部署nfs服务器v3v4">
+<meta property="og:url" content="https://linshenkx.github.io/docker-nfs-server-v3-v4/index.html">
 <meta property="og:site_name" content="且炼时光">
-<meta property="og:description" content="本文主要记录hdfs-ftp-server的设计思路、实现过程，使用的话直接看github项目文档即可。项目地址：https:&#x2F;&#x2F;github.com&#x2F;linshenkx&#x2F;hdfs-ftp-server">
+<meta property="og:description" content="虽然nfs-server的docker镜像有很多，但总有这样或那样的问题，容易踩坑。这里分享一下自己的使用记录。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-01-17T15:05:34.000Z">
-<meta property="article:modified_time" content="2022-01-18T15:34:27.968Z">
+<meta property="article:published_time" content="2022-09-20T14:11:26.000Z">
+<meta property="article:modified_time" content="2022-09-20T01:56:06.352Z">
 <meta property="article:author" content="林泽浩">
-<meta property="article:tag" content="ftp">
-<meta property="article:tag" content="hdfs">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="nfs-server">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://linshenkx.github.io/hdfs-ftp-server-design-and-implementation/">
+<link rel="canonical" href="https://linshenkx.github.io/docker-nfs-server-v3-v4/">
 
 
 <script id="page-configurations">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>基于hdfs的ftp服务器的设计与实现 | 且炼时光</title>
+  <title>docker部署nfs服务器v3v4 | 且炼时光</title>
   
 
 
@@ -207,7 +207,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/hdfs-ftp-server-design-and-implementation/">
+    <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/docker-nfs-server-v3-v4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -220,7 +220,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          基于hdfs的ftp服务器的设计与实现
+          docker部署nfs服务器v3v4
         </h1>
 
         <div class="post-meta">
@@ -230,23 +230,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-01-17 23:05:34" itemprop="dateCreated datePublished" datetime="2022-01-17T23:05:34+08:00">2022-01-17</time>
+              <time title="创建时间：2022-09-20 22:11:26 / 修改时间：09:56:06" itemprop="dateCreated datePublished" datetime="2022-09-20T22:11:26+08:00">2022-09-20</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-18 23:34:27" itemprop="dateModified" datetime="2022-01-18T23:34:27+08:00">2022-01-18</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">后端开发</span></a>
+                  <a href="/categories/%E8%BF%90%E7%BB%B4%E9%83%A8%E7%BD%B2/" itemprop="url" rel="index"><span itemprop="name">运维部署</span></a>
                 </span>
             </span>
 
@@ -256,7 +250,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.4k</span>
+              <span>970</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -275,28 +269,26 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文主要记录hdfs-ftp-server的设计思路、实现过程，使用的话直接看github项目文档即可。<br>项目地址：<a target="_blank" rel="noopener" href="https://github.com/linshenkx/hdfs-ftp-server">https://github.com/linshenkx/hdfs-ftp-server</a></p>
+        <p>虽然nfs-server的docker镜像有很多，但总有这样或那样的问题，容易踩坑。<br>这里分享一下自己的使用记录。</p>
 <span id="more"></span>
-<h2 id="第一版"><a href="#第一版" class="headerlink" title="第一版"></a>第一版</h2><p>hdfs-ftp-server这个项目我在20年的时候就开源过一版了，先做一下前提介绍。</p>
-<h3 id="1-需求"><a href="#1-需求" class="headerlink" title="1 需求"></a>1 需求</h3><p>因为我们大数据平台是容器化的，一些简单的操作也需要进入容器里面才能执行，而且传递文件也很繁琐。<br>所以那时候的主要需求就是<strong>实现功能</strong>，即通过ftp的方式实现对hdfs文件系统的操作，方便日常操作。</p>
-<h3 id="2-思路"><a href="#2-思路" class="headerlink" title="2 思路"></a>2 思路</h3><p>那时候主要是参考github上一些老一点的项目进行改造升级，以适配高可用、kerberos认证连接。<br>然后再进行易用性改造，更适合生产环境使用。</p>
-<p>核心思路是对外作为ftp服务器，内部使用hdfs实现接口功能即可，很简单的功能。</p>
-<h3 id="3-存在问题"><a href="#3-存在问题" class="headerlink" title="3 存在问题"></a>3 存在问题</h3><p>那时候用的hadoop是官方的2.9.2，后面hadoop升级到3.3.1了，<br>而且有时候还得对接cdh的hadoop，这个时候这个工程就不能直接拿来用了。</p>
-<p>这种时候常规解决办法就是修改一下依赖，重新编译。</p>
-<p>但是我觉得太麻烦了，这样也不利于代码的管理。<br>所以就一直想着要把这个工程模块化，核心工程独立且不常变，其他的作为模块工程对接各个版本的hadoop客户端。</p>
-<h2 id="第二版"><a href="#第二版" class="headerlink" title="第二版"></a>第二版</h2><p>针对第一版存在的问题，第二版主要是对项目进行模块化改造</p>
-<h3 id="技术调研及选型"><a href="#技术调研及选型" class="headerlink" title="技术调研及选型"></a>技术调研及选型</h3><p>最开始我目标是很明确的，就是用蚂蚁金服的<a target="_blank" rel="noopener" href="https://github.com/sofastack/sofa-ark">ark框架</a>来实现类隔离，<br>毕竟不同大版本/发行版本的hdfs依赖多少会有类冲突，直接用是肯定不放心的。</p>
-<p>ark我之前就一直有在留意，也跑过demo，觉得还是可以寄予厚望的。<br>事实上这个工程重构所用的时间一大半都花在ark上。<br>本来是想把各个实现模块作为ark的插件的，发现ark的插件又不支持动态插拔，其核心是类隔离而不是模块化。<br>那就把每个模块作为service，来实现动态引用，这也是可以的，也确实改好代码打包好了。<br>但最终运行的时候还是有bug，类似于：<a target="_blank" rel="noopener" href="https://github.com/sofastack/sofa-ark/issues/421%E3%80%82">https://github.com/sofastack/sofa-ark/issues/421。</a></p>
-<p>终于还是折腾不下去，放弃ark了，开源支持太差了，我水平有限，玩不动。</p>
-<p>不用ark，osgi又太重了，没必要，那就还是老老实实用java的spi吧。<br>类似于jdbc的用法，添加对应jar包，指定类名进行加载。</p>
-<p>但spi并不能实现类隔离，所以就预先打包好各个jar包，运行时再根据对接hadoop版本进行加载。</p>
-<p>即每个模块形成一个fatjar，如cdh632.jar，official331.jar。<br>在对接cdh6.3.2的时候将cdh632.jar添加到类路径下即可，如果是对接官方3.3.1则添加official331.jar。</p>
-<p>这里还有一个问题，要不要把hadoop的依赖包也一并打包呢？<br>这个倒没纠结太久，还是打包了。缺点是体积大很多，优点是摆脱依赖。<br>你只需要给我hadoop的连接配置文件就行了，而不需要整个hadoop客户端环境。<br>至于包大点就大点，不差那点流量、空间。</p>
-<p>为了简化、统一子模块的开发，我又把gradle任务统一定义在父工程的build.gradle里面。<br>让子模块更加的简单易懂。</p>
-<h3 id="成果总结"><a href="#成果总结" class="headerlink" title="成果总结"></a>成果总结</h3><p><a target="_blank" rel="noopener" href="https://github.com/linshenkx/hdfs-ftp-server">https://github.com/linshenkx/hdfs-ftp-server</a></p>
-<p>应该说还是比较满意的。</p>
-<p>虽然就技术来说很简单，毕竟别人十年前就做过的东西，<br>但还是花了很多时间、心思在上面折腾，把这个小东西做得好用一些。<br>在这个过程也算有点收获吧。</p>
 
+<h3 id="v3"><a href="#v3" class="headerlink" title="v3"></a>v3</h3><p>使用的镜像是：erichough/nfs-server<br>相关链接见：<a target="_blank" rel="noopener" href="https://hub.docker.com/r/erichough/nfs-server">https://hub.docker.com/r/erichough/nfs-server</a> 、 <a target="_blank" rel="noopener" href="https://github.com/ehough/docker-nfs-server">https://github.com/ehough/docker-nfs-server</a><br>本身说是支持v4的，但截至2020.9月使用v4会有问题，见：<a target="_blank" rel="noopener" href="https://github.com/ehough/docker-nfs-server/issues/58">https://github.com/ehough/docker-nfs-server/issues/58</a><br>使用v3是可以的，但由于v3占用了111端口，所以运行该容器的服务器没办法用nfs-client（rpc-bind用111端口）<br>而且除了2049，其他的端口没得修改，所以不推荐</p>
+<blockquote>
+<p>NFSv3使用大量辅助协议，客户访问过程首先需要通过portmap/rpcbind获取rpc.mounted监听端口，<br>然后nfs客户端访问rpc.mounted，nfs服务器根据/etc/exports文件进行客户身份验证，<br>验证通过后nfs客户端才能与rpc.nfsd建立联系并访问共享。<br>客户端与服务器数据交互过程的配额管理，文件锁管理以及nfs协议数据统计过程都由单独rpc进程来完成。<br>所有这些进程除了portmap和nfsd之外都是监听动态随机端口。<br>NFSv4自身集成辅助协议，只需要TCP 2049一个端口即可，这样极大方便NFS在防火墙后环境中部署。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /opt/nfs-server/share</span><br><span class="line">docker rm -f nfs-server</span><br><span class="line">docker run \</span><br><span class="line">    -d \</span><br><span class="line">    --name nfs-server \</span><br><span class="line">    --restart=always   \</span><br><span class="line">    --privileged \</span><br><span class="line">    -e NFS_VERSION=3 \</span><br><span class="line">      -p 2049:2049   -p 2049:2049/udp   \</span><br><span class="line">      -p 111:111     -p 111:111/udp     \</span><br><span class="line">      -p 32765:32765 -p 32765:32765/udp \</span><br><span class="line">      -p 32767:32767 -p 32767:32767/udp \</span><br><span class="line">    -v /opt/nfs-server/share:/nfs-share \</span><br><span class="line">    -e NFS_EXPORT_0=&#x27;/nfs-share *(rw,sync,no_root_squash,all_squash,anonuid=0,anongid=0,no_subtree_check)&#x27;  \</span><br><span class="line">    erichough/nfs-server</span><br><span class="line">docker logs -f  nfs-server</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>客户端操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/nfs-share</span><br><span class="line"><span class="meta">#</span><span class="bash"> 挂载</span></span><br><span class="line">mount -v -t nfs -o port=2049 主机:/nfs-share /data/nfs-share</span><br><span class="line"><span class="meta">#</span><span class="bash"> 卸载</span></span><br><span class="line">umount /data/nfs-share</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="v4"><a href="#v4" class="headerlink" title="v4"></a>v4</h3><p>使用的镜像是：<a target="_blank" rel="noopener" href="https://github.com/sjiveson/nfs-server-alpine">itsthenetwork/nfs-server-alpine</a> 或 <a target="_blank" rel="noopener" href="https://hub.docker.com/r/gists/nfs-server">gists/nfs-server</a></p>
+<p>建议用gists/nfs-server，支持NFS_OPTION，配置更加清晰</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /opt/nfs-server/share</span><br><span class="line">docker rm -f nfs-server</span><br><span class="line"></span><br><span class="line">docker run \</span><br><span class="line">    -d \</span><br><span class="line">    --name nfs-server \</span><br><span class="line">    --restart=always   \</span><br><span class="line">    --privileged \</span><br><span class="line">      -p 32049:2049    \</span><br><span class="line">    -v /opt/nfs-server/share:/nfsshare \</span><br><span class="line">     -e NFS_DIR=/nfsshare   \</span><br><span class="line">     -e NFS_DOMAIN=*   \</span><br><span class="line">     -e NFS_OPTION=&quot;fsid=0,rw,sync,no_root_squash,all_squash,anonuid=0,anongid=0,no_subtree_check&quot;   \</span><br><span class="line">    gists/nfs-server</span><br><span class="line">    </span><br><span class="line">docker logs -f  nfs-server</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> docker run \</span></span><br><span class="line"><span class="bash"><span class="comment">#    -d \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#    --name nfs-server \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#    --restart=always   \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#    --privileged \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#      -p 32049:2049    \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#    -v /opt/nfs-server/share:/nfsshare \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#     -e SHARED_DIRECTORY=/nfsshare   \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#     -e SYNC=true   \</span></span></span><br><span class="line"><span class="bash"><span class="comment">#    itsthenetwork/nfs-server-alpine</span></span></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>客户端操作：<br>注意这里用的是 <strong>/</strong> ,而非 <strong>/nfsshare</strong> </p>
+<blockquote>
+<p>NFSv4将所有共享使用一个虚拟文件系统展示给客户端。<br>伪文件系统根目录（/）使用fsid=0标示，只有一个共享可以是fsid=0。<br>客户端需要使用“nfs server ip:/”挂载伪文件系统，<br>伪文件系统一般使用RO方式共享， 其他共享可以通过mount –bind选项在伪文件系统目录下挂载。<br>客户端挂载过程需要通过mount –t nfs4指定NFS版本为4，默认采用nfsv3</p>
+</blockquote>
+<p>现在客户端挂载一般会优先尝试nfsv4,再尝试nfsv3</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/nfs-share</span><br><span class="line"><span class="meta">#</span><span class="bash"> 挂载</span></span><br><span class="line">mount -v -t nfs -o port=32049 主机:/ /data/nfs-share</span><br><span class="line"><span class="meta">#</span><span class="bash"> 卸载</span></span><br><span class="line">umount /data/nfs-share</span><br><span class="line"></span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -311,7 +303,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://linshenkx.github.io/hdfs-ftp-server-design-and-implementation/" title="基于hdfs的ftp服务器的设计与实现">https://linshenkx.github.io/hdfs-ftp-server-design-and-implementation/</a>
+    <a href="https://linshenkx.github.io/docker-nfs-server-v3-v4/" title="docker部署nfs服务器v3v4">https://linshenkx.github.io/docker-nfs-server-v3-v4/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -322,8 +314,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/ftp/" rel="tag"># ftp</a>
-              <a href="/tags/hdfs/" rel="tag"># hdfs</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/nfs-server/" rel="tag"># nfs-server</a>
           </div>
 
         
@@ -332,12 +324,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/kube-prometheus-bigdata/" rel="prev" title="基于kube-prometheus的大数据平台监控系统设计">
-      <i class="fa fa-chevron-left"></i> 基于kube-prometheus的大数据平台监控系统设计
+    <a href="/tailscale-derper-docker/" rel="prev" title="我的服务器系列：tailscale使用自定义derper服务器（docker部署）">
+      <i class="fa fa-chevron-left"></i> 我的服务器系列：tailscale使用自定义derper服务器（docker部署）
     </a></div>
       <div class="post-nav-item">
-    <a href="/vbs-wincc-mysql-csv/" rel="next" title="vbs实现wincc或mysql数据导出成csv">
-      vbs实现wincc或mysql数据导出成csv <i class="fa fa-chevron-right"></i>
+    <a href="/my-server-overall-design/" rel="next" title="我的服务器系列：总体设计">
+      我的服务器系列：总体设计 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -408,7 +400,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%89%88"><span class="nav-text">第一版</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%9C%80%E6%B1%82"><span class="nav-text">1 需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%80%9D%E8%B7%AF"><span class="nav-text">2 思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AD%98%E5%9C%A8%E9%97%AE%E9%A2%98"><span class="nav-text">3 存在问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%89%88"><span class="nav-text">第二版</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E8%B0%83%E7%A0%94%E5%8F%8A%E9%80%89%E5%9E%8B"><span class="nav-text">技术调研及选型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%90%E6%9E%9C%E6%80%BB%E7%BB%93"><span class="nav-text">成果总结</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#v3"><span class="nav-text">v3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#v4"><span class="nav-text">v4</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
