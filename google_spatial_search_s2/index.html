@@ -1,26 +1,22 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/bear_polar_32px.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/bear_polar_16px.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="geohash对于大区域查询表现极不良好，经调研测试，改用google的s2。因为涉及的资料、工具较多，特此记录，以备后用。">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/header.jpg">
+  <link rel="icon" href="/img/header.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="林泽浩">
+  <meta name="keywords" content="大数据">
+  
+    <meta name="description" content="geohash对于大区域查询表现极不良好，经调研测试，改用google的s2。因为涉及的资料、工具较多，特此记录，以备后用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="空间索引 S2 学习指南及Java工具类实践">
 <meta property="og:url" content="https://linshenkx.github.io/google_spatial_search_s2/index.html">
@@ -39,257 +35,312 @@
 <meta property="article:modified_time" content="2021-09-01T08:02:17.793Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="s2">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200429231333130.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70">
+  
+  
+  
+  <title>空间索引 S2 学习指南及Java工具类实践 - 且炼时光</title>
 
-<link rel="canonical" href="https://linshenkx.github.io/google_spatial_search_s2/">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>空间索引 S2 学习指南及Java工具类实践 | 且炼时光</title>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
 
 
 
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
 
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
+<body>
+  
 
-  <div class="site-meta">
+  <header>
+    
 
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">且炼时光</h1>
-      <span class="logo-line-after"><i></i></span>
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>且炼时光</strong>
     </a>
-      <p class="site-subtitle" itemprop="description">韶华未褪，且炼时光</p>
-  </div>
 
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/productions/">
+                <i class="iconfont icon-archive-fill"></i>
+                作品展示
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/linshenkx">
+                <i class="iconfont icon-github-fill"></i>
+                github
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://blog.csdn.net/alinyua">
+                <i class="iconfont icon-copyright"></i>
+                csdn
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
     </div>
   </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-mysite">
-
-    <a href="http://linshenkx.cn/" rel="noopener" target="_blank"><i class="fa fa-heartbeat fa-fw"></i>切换到【个性版】个人网站</a>
-
-  </li>
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-productions">
-
-    <a href="/productions/" rel="section"><i class="fas fa-store fa-fw"></i>作品展示</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
 </nav>
 
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
   
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/google_spatial_search_s2/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="林泽浩">
-      <meta itemprop="description" content="林泽浩的个人小站">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="且炼时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          空间索引 S2 学习指南及Java工具类实践
-        </h1>
-
-        <div class="post-meta">
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
           
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-29 01:23:21" itemprop="dateCreated datePublished" datetime="2020-04-29T01:23:21+08:00">2020-04-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-01 16:02:17" itemprop="dateModified" datetime="2021-09-01T16:02:17+08:00">2021-09-01</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">后端开发</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
+            <span id="subtitle" data-typed-text="空间索引 S2 学习指南及Java工具类实践"></span>
+          
         </div>
-      </header>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-04-29 01:23" pubdate>
+          2020年4月29日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          96 分钟
+        
+      </span>
+    
 
     
     
-    
-    <div class="post-body" itemprop="articleBody">
+  </div>
+
+
+        
+      </div>
 
       
-        <p>geohash对于大区域查询表现极不良好，经调研测试，改用google的s2。因为涉及的资料、工具较多，特此记录，以备后用。</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">空间索引 S2 学习指南及Java工具类实践</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>geohash对于大区域查询表现极不良好，经调研测试，改用google的s2。因为涉及的资料、工具较多，特此记录，以备后用。</p>
 <span id="more"></span>
 <h2 id="一-学习指南"><a href="#一-学习指南" class="headerlink" title="一 学习指南"></a>一 学习指南</h2><h3 id="0-介绍说明"><a href="#0-介绍说明" class="headerlink" title="0 介绍说明"></a>0 介绍说明</h3><p>班门不弄斧，这里推荐 halfrost 大神的空间搜索系列文章，推荐先浏览一遍。<br>这一篇是对S2的概念介绍：<a target="_blank" rel="noopener" href="https://github.com/halfrost/Halfrost-Field/blob/master/contents/Go/go_spatial_search.md">高效的多维空间点索引算法 — Geohash 和 Google S2</a><br>这一篇是对S2里面的各个组件的介绍：<a target="_blank" rel="noopener" href="https://github.com/halfrost/Halfrost-Field/blob/master/contents/Go/go_s2_regionCoverer.md">Google S2 是如何解决空间覆盖最优解问题的?</a></p>
 <h3 id="1-s2-对比-geohash-的优点"><a href="#1-s2-对比-geohash-的优点" class="headerlink" title="1 s2 对比 geohash 的优点"></a>1 s2 对比 geohash 的优点</h3><ol>
 <li>s2有30级，geohash只有12级。s2的层级变化较平缓，方便选择。</li>
 <li>s2功能强大，解决了向量计算，面积计算，多边形覆盖，距离计算等问题，减少了开发工作量。</li>
-<li><em><strong>s2解决了多边形覆盖问题</strong></em>。个人认为这是其与geohash功能上最本质的不同。给定不规则范围，s2可以计算出一个多边形近似覆盖这个范围。其覆盖用的格子数量根据精确度可控。geohash在这方面十分不友好，划定一个大一点的区域，其格子数可能达到数千，若减少格子数则丢失精度，查询区域过大。<br>如下，在min level和max level不变的情况下，只需设置可接受的max cells数值，即可控制覆盖精度。而且其cell的region大小自动适配。geohash要在如此大范围实现高精度覆盖则会产生极为庞大的网格数。<br>另外需要注意的是,在minLevel,maxLevel,maxCells这3个参数中,不一定能完全满足.一般而言是优先满足maxLevel即最精细的网格大小,再尽可能控制cell数量在maxCells里面.而minLevel由于会合并网格,所以很难满足(在查询大区域的时候可能会出现一个大网格和很多个小网格,导致木桶效应.这个时候可能将大网格划分为指定等级的小网格,即最终效果为,严格遵循minLevel和maxLevel,为此牺牲maxCells,后面有代码)<br><img src="https://img-blog.csdnimg.cn/20200429231333130.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="max cells 为10"><br><img src="https://img-blog.csdnimg.cn/20200429231612572.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="max cells 为45"><h3 id="2-精度表"><a href="#2-精度表" class="headerlink" title="2 精度表"></a>2 精度表</h3></li>
+<li><em><strong>s2解决了多边形覆盖问题</strong></em>。个人认为这是其与geohash功能上最本质的不同。给定不规则范围，s2可以计算出一个多边形近似覆盖这个范围。其覆盖用的格子数量根据精确度可控。geohash在这方面十分不友好，划定一个大一点的区域，其格子数可能达到数千，若减少格子数则丢失精度，查询区域过大。<br>如下，在min level和max level不变的情况下，只需设置可接受的max cells数值，即可控制覆盖精度。而且其cell的region大小自动适配。geohash要在如此大范围实现高精度覆盖则会产生极为庞大的网格数。<br>另外需要注意的是,在minLevel,maxLevel,maxCells这3个参数中,不一定能完全满足.一般而言是优先满足maxLevel即最精细的网格大小,再尽可能控制cell数量在maxCells里面.而minLevel由于会合并网格,所以很难满足(在查询大区域的时候可能会出现一个大网格和很多个小网格,导致木桶效应.这个时候可能将大网格划分为指定等级的小网格,即最终效果为,严格遵循minLevel和maxLevel,为此牺牲maxCells,后面有代码)<br><img src="https://img-blog.csdnimg.cn/20200429231333130.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="max cells 为10"><br><img src="https://img-blog.csdnimg.cn/20200429231612572.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="max cells 为45"><h3 id="2-精度表"><a href="#2-精度表" class="headerlink" title="2 精度表"></a>2 精度表</h3></li>
 </ol>
 <table>
 <thead>
@@ -696,280 +747,382 @@
 <p>注意事项：</p>
 <ol>
 <li>该S2RegionCoverer不确定是否线程安全，待测试，不建议动态修改其配置参数</li>
-<li>原生的矩形Rect在某些参数下表现不正常，待确认，这里将其转为多边形对待。<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">S2Util</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 实例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    INSTANCE;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> minLevel = <span class="number">11</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> maxLevel = <span class="number">16</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> maxCells = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> S2RegionCoverer COVERER = <span class="keyword">new</span> S2RegionCoverer();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        COVERER.setMinLevel(minLevel);</span><br><span class="line">        COVERER.setMaxLevel(maxLevel);</span><br><span class="line">        COVERER.setMaxCells(maxCells);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将单个cellId转换为多个指定level的cellId</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> s2CellId</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> desLevel</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;S2CellId&gt; <span class="title">childrenCellId</span><span class="params">(S2CellId s2CellId, Integer desLevel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> childrenCellId(s2CellId, s2CellId.level(), desLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> List&lt;S2CellId&gt; <span class="title">childrenCellId</span><span class="params">(S2CellId s2CellId, Integer curLevel, Integer desLevel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (curLevel &lt; desLevel) &#123;</span><br><span class="line">            <span class="keyword">long</span> interval = (s2CellId.childEnd().id() - s2CellId.childBegin().id()) / <span class="number">4</span>;</span><br><span class="line">            List&lt;S2CellId&gt; s2CellIds = Lists.newArrayList();</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">                <span class="keyword">long</span> id = s2CellId.childBegin().id() + interval * i;</span><br><span class="line">                s2CellIds.addAll(childrenCellId(<span class="keyword">new</span> S2CellId(id), curLevel + <span class="number">1</span>, desLevel));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> s2CellIds;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> Lists.newArrayList(s2CellId);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将cellToken转换为经纬度</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> token</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Tuple2&lt;Double, Double&gt; <span class="title">toLatLon</span><span class="params">(String token)</span> </span>&#123;</span><br><span class="line">        S2LatLng latLng = <span class="keyword">new</span> S2LatLng(S2CellId.fromToken(token).toPoint());</span><br><span class="line">        <span class="keyword">return</span> Tuple2.tuple(latLng.latDegrees(), latLng.lngDegrees());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将经纬度转换为cellId</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> lat</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> lon</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> S2CellId <span class="title">toCellId</span><span class="params">(<span class="keyword">double</span> lat, <span class="keyword">double</span> lon)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> S2CellId.fromLatLng(S2LatLng.fromDegrees(lat, lon));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断region是否包含指定cellToken</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> region</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> cellToken</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(S2Region region, String cellToken)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> region.contains(<span class="keyword">new</span> S2Cell(S2CellId.fromToken(cellToken)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断region是否包含指定经纬度坐标</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> region</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> lat</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> lon</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(S2Region region, <span class="keyword">double</span> lat, <span class="keyword">double</span> lon)</span> </span>&#123;</span><br><span class="line">        S2LatLng s2LatLng = S2LatLng.fromDegrees(lat, lon);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">boolean</span> contains = region.contains(<span class="keyword">new</span> S2Cell(s2LatLng));</span><br><span class="line">            <span class="keyword">return</span> contains;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NullPointerException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根据region获取cellId列表</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> region</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;S2CellId&gt; <span class="title">getCellIdList</span><span class="params">(S2Region region)</span> </span>&#123;</span><br><span class="line">        List&lt;S2CellId&gt; primeS2CellIdList = COVERER.getCovering(region).cellIds();</span><br><span class="line">        <span class="keyword">return</span> primeS2CellIdList.stream().flatMap(s2CellId -&gt; S2Util.childrenCellId(s2CellId, S2Util.minLevel).stream()).collect(Collectors.toList());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根据region获取合并后的cellId列表</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> region</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;S2CellId&gt; <span class="title">getCompactCellIdList</span><span class="params">(S2Region region)</span> </span>&#123;</span><br><span class="line">        List&lt;S2CellId&gt; primeS2CellIdList = COVERER.getCovering(region).cellIds();</span><br><span class="line">        <span class="keyword">return</span> primeS2CellIdList;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/////////////     获取圆形region       ///////////////</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> S2Region <span class="title">getS2RegionByCircle</span><span class="params">(<span class="keyword">double</span> lat, <span class="keyword">double</span> lon, <span class="keyword">double</span> radius)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> capHeight = (<span class="number">2</span> * S2.M_PI) * (radius / <span class="number">40075017</span>);</span><br><span class="line">        S2Cap cap = S2Cap.fromAxisHeight(S2LatLng.fromDegrees(lat, lon).toPoint(), capHeight * capHeight / <span class="number">2</span>);</span><br><span class="line">        S2CellUnion s2CellUnion = COVERER.getCovering(cap);</span><br><span class="line">        <span class="keyword">return</span> cap;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> S2Region <span class="title">getS2RegionByCircle</span><span class="params">(WGS84Point point, <span class="keyword">double</span> radius)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> getS2RegionByCircle(point.getLatitude(), point.getLongitude(), radius);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/////////////     获取矩形region       ///////////////</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> S2Region <span class="title">geS2RegionByRect</span><span class="params">(WGS84Point point1, WGS84Point point2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> getS2RegionByRect(point1.getLatitude(), point1.getLongitude(), point2.getLatitude(), point2.getLongitude());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> S2Region <span class="title">getS2RegionByRect</span><span class="params">(Tuple2&lt;Double, Double&gt; point1, Tuple2&lt;Double, Double&gt; point2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> getS2RegionByRect(point1.getVal1(), point1.getVal2(), point2.getVal1(), point2.getVal2());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> S2Region <span class="title">getS2RegionByRect</span><span class="params">(<span class="keyword">double</span> lat1, <span class="keyword">double</span> lon1, <span class="keyword">double</span> lat2, <span class="keyword">double</span> lon2)</span> </span>&#123;</span><br><span class="line">        List&lt;Tuple2&lt;Double, Double&gt;&gt; latLonTuple2List = Lists.newArrayList(Tuple2.tuple(lat1, lon1), Tuple2.tuple(lat1, lon2), Tuple2.tuple(lat2, lon2), Tuple2.tuple(lat2, lon1));</span><br><span class="line">        <span class="keyword">return</span> getS2RegionByPolygon(latLonTuple2List);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/////////////     获取多边形region       ///////////////</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> S2Region <span class="title">getS2RegionByPolygon</span><span class="params">(WGS84Point[] pointArray)</span> </span>&#123;</span><br><span class="line">        List&lt;Tuple2&lt;Double, Double&gt;&gt; latLonTuple2List = Lists.newArrayListWithExpectedSize(pointArray.length);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pointArray.length; ++i) &#123;</span><br><span class="line">            latLonTuple2List.add(Tuple2.tuple(pointArray[i].getLatitude(), pointArray[i].getLongitude()));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> getS2RegionByPolygon(latLonTuple2List);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> S2Region <span class="title">getS2RegionByPolygon</span><span class="params">(Tuple2&lt;Double, Double&gt;[] tuple2Array)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> getS2RegionByPolygon(Lists.newArrayList(tuple2Array));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 注意需要以逆时针方向添加坐标点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> S2Region <span class="title">getS2RegionByPolygon</span><span class="params">(List&lt;Tuple2&lt;Double, Double&gt;&gt; latLonTuple2List)</span> </span>&#123;</span><br><span class="line">        List&lt;S2Point&gt; pointList = Lists.newArrayList();</span><br><span class="line">        <span class="keyword">for</span> (Tuple2&lt;Double, Double&gt; latlonTuple2 : latLonTuple2List) &#123;</span><br><span class="line">            pointList.add(S2LatLng.fromDegrees(latlonTuple2.getVal1(), latlonTuple2.getVal2()).toPoint());</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        S2Loop s2Loop = <span class="keyword">new</span> S2Loop(pointList);</span><br><span class="line">        S2PolygonBuilder builder = <span class="keyword">new</span> S2PolygonBuilder(S2PolygonBuilder.Options.DIRECTED_XOR);</span><br><span class="line">        builder.addLoop(s2Loop);</span><br><span class="line">        <span class="keyword">return</span> builder.assemblePolygon();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/////////////     配置coverer参数       ///////////////</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getMinLevel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> minLevel;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setMinLevel</span><span class="params">(<span class="keyword">int</span> minLevel)</span> </span>&#123;</span><br><span class="line">        S2Util.minLevel = minLevel;</span><br><span class="line">        COVERER.setMinLevel(minLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getMaxLevel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> maxLevel;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setMaxLevel</span><span class="params">(<span class="keyword">int</span> maxLevel)</span> </span>&#123;</span><br><span class="line">        S2Util.maxLevel = maxLevel;</span><br><span class="line">        COVERER.setMaxLevel(maxLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getMaxCells</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> maxCells;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setMaxCells</span><span class="params">(<span class="keyword">int</span> maxCells)</span> </span>&#123;</span><br><span class="line">        S2Util.maxCells = maxCells;</span><br><span class="line">        COVERER.setMaxCells(maxCells);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br></pre></td></tr></table></figure></li>
+<li>原生的矩形Rect在某些参数下表现不正常，待确认，这里将其转为多边形对待。<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">S2Util</span> </span>&#123;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 实例</span><br><span class="hljs-comment">     */</span><br>    INSTANCE;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> minLevel = <span class="hljs-number">11</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> maxLevel = <span class="hljs-number">16</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> maxCells = <span class="hljs-number">100</span>;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> S2RegionCoverer COVERER = <span class="hljs-keyword">new</span> S2RegionCoverer();<br><br>    <span class="hljs-keyword">static</span> &#123;<br>        COVERER.setMinLevel(minLevel);<br>        COVERER.setMaxLevel(maxLevel);<br>        COVERER.setMaxCells(maxCells);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 将单个cellId转换为多个指定level的cellId</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> s2CellId</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> desLevel</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;S2CellId&gt; <span class="hljs-title">childrenCellId</span><span class="hljs-params">(S2CellId s2CellId, Integer desLevel)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> childrenCellId(s2CellId, s2CellId.level(), desLevel);<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> List&lt;S2CellId&gt; <span class="hljs-title">childrenCellId</span><span class="hljs-params">(S2CellId s2CellId, Integer curLevel, Integer desLevel)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (curLevel &lt; desLevel) &#123;<br>            <span class="hljs-keyword">long</span> interval = (s2CellId.childEnd().id() - s2CellId.childBegin().id()) / <span class="hljs-number">4</span>;<br>            List&lt;S2CellId&gt; s2CellIds = Lists.newArrayList();<br>            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">4</span>; i++) &#123;<br>                <span class="hljs-keyword">long</span> id = s2CellId.childBegin().id() + interval * i;<br>                s2CellIds.addAll(childrenCellId(<span class="hljs-keyword">new</span> S2CellId(id), curLevel + <span class="hljs-number">1</span>, desLevel));<br>            &#125;<br>            <span class="hljs-keyword">return</span> s2CellIds;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> Lists.newArrayList(s2CellId);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 将cellToken转换为经纬度</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> token</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Tuple2&lt;Double, Double&gt; <span class="hljs-title">toLatLon</span><span class="hljs-params">(String token)</span> </span>&#123;<br>        S2LatLng latLng = <span class="hljs-keyword">new</span> S2LatLng(S2CellId.fromToken(token).toPoint());<br>        <span class="hljs-keyword">return</span> Tuple2.tuple(latLng.latDegrees(), latLng.lngDegrees());<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 将经纬度转换为cellId</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> lat</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> lon</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> S2CellId <span class="hljs-title">toCellId</span><span class="hljs-params">(<span class="hljs-keyword">double</span> lat, <span class="hljs-keyword">double</span> lon)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> S2CellId.fromLatLng(S2LatLng.fromDegrees(lat, lon));<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 判断region是否包含指定cellToken</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> region</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> cellToken</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">contains</span><span class="hljs-params">(S2Region region, String cellToken)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> region.contains(<span class="hljs-keyword">new</span> S2Cell(S2CellId.fromToken(cellToken)));<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 判断region是否包含指定经纬度坐标</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> region</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> lat</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> lon</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">contains</span><span class="hljs-params">(S2Region region, <span class="hljs-keyword">double</span> lat, <span class="hljs-keyword">double</span> lon)</span> </span>&#123;<br>        S2LatLng s2LatLng = S2LatLng.fromDegrees(lat, lon);<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-keyword">boolean</span> contains = region.contains(<span class="hljs-keyword">new</span> S2Cell(s2LatLng));<br>            <span class="hljs-keyword">return</span> contains;<br>        &#125; <span class="hljs-keyword">catch</span> (NullPointerException e) &#123;<br>            e.printStackTrace();<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;<br>        &#125;<br>    &#125;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 根据region获取cellId列表</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> region</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;S2CellId&gt; <span class="hljs-title">getCellIdList</span><span class="hljs-params">(S2Region region)</span> </span>&#123;<br>        List&lt;S2CellId&gt; primeS2CellIdList = COVERER.getCovering(region).cellIds();<br>        <span class="hljs-keyword">return</span> primeS2CellIdList.stream().flatMap(s2CellId -&gt; S2Util.childrenCellId(s2CellId, S2Util.minLevel).stream()).collect(Collectors.toList());<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 根据region获取合并后的cellId列表</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> region</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;S2CellId&gt; <span class="hljs-title">getCompactCellIdList</span><span class="hljs-params">(S2Region region)</span> </span>&#123;<br>        List&lt;S2CellId&gt; primeS2CellIdList = COVERER.getCovering(region).cellIds();<br>        <span class="hljs-keyword">return</span> primeS2CellIdList;<br>    &#125;<br><br>    <span class="hljs-comment">/////////////     获取圆形region       ///////////////</span><br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> S2Region <span class="hljs-title">getS2RegionByCircle</span><span class="hljs-params">(<span class="hljs-keyword">double</span> lat, <span class="hljs-keyword">double</span> lon, <span class="hljs-keyword">double</span> radius)</span> </span>&#123;<br>        <span class="hljs-keyword">double</span> capHeight = (<span class="hljs-number">2</span> * S2.M_PI) * (radius / <span class="hljs-number">40075017</span>);<br>        S2Cap cap = S2Cap.fromAxisHeight(S2LatLng.fromDegrees(lat, lon).toPoint(), capHeight * capHeight / <span class="hljs-number">2</span>);<br>        S2CellUnion s2CellUnion = COVERER.getCovering(cap);<br>        <span class="hljs-keyword">return</span> cap;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> S2Region <span class="hljs-title">getS2RegionByCircle</span><span class="hljs-params">(WGS84Point point, <span class="hljs-keyword">double</span> radius)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> getS2RegionByCircle(point.getLatitude(), point.getLongitude(), radius);<br>    &#125;<br><br>    <span class="hljs-comment">/////////////     获取矩形region       ///////////////</span><br><br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> S2Region <span class="hljs-title">geS2RegionByRect</span><span class="hljs-params">(WGS84Point point1, WGS84Point point2)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> getS2RegionByRect(point1.getLatitude(), point1.getLongitude(), point2.getLatitude(), point2.getLongitude());<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> S2Region <span class="hljs-title">getS2RegionByRect</span><span class="hljs-params">(Tuple2&lt;Double, Double&gt; point1, Tuple2&lt;Double, Double&gt; point2)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> getS2RegionByRect(point1.getVal1(), point1.getVal2(), point2.getVal1(), point2.getVal2());<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> S2Region <span class="hljs-title">getS2RegionByRect</span><span class="hljs-params">(<span class="hljs-keyword">double</span> lat1, <span class="hljs-keyword">double</span> lon1, <span class="hljs-keyword">double</span> lat2, <span class="hljs-keyword">double</span> lon2)</span> </span>&#123;<br>        List&lt;Tuple2&lt;Double, Double&gt;&gt; latLonTuple2List = Lists.newArrayList(Tuple2.tuple(lat1, lon1), Tuple2.tuple(lat1, lon2), Tuple2.tuple(lat2, lon2), Tuple2.tuple(lat2, lon1));<br>        <span class="hljs-keyword">return</span> getS2RegionByPolygon(latLonTuple2List);<br>    &#125;<br><br>    <span class="hljs-comment">/////////////     获取多边形region       ///////////////</span><br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> S2Region <span class="hljs-title">getS2RegionByPolygon</span><span class="hljs-params">(WGS84Point[] pointArray)</span> </span>&#123;<br>        List&lt;Tuple2&lt;Double, Double&gt;&gt; latLonTuple2List = Lists.newArrayListWithExpectedSize(pointArray.length);<br>        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; pointArray.length; ++i) &#123;<br>            latLonTuple2List.add(Tuple2.tuple(pointArray[i].getLatitude(), pointArray[i].getLongitude()));<br>        &#125;<br>        <span class="hljs-keyword">return</span> getS2RegionByPolygon(latLonTuple2List);<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> S2Region <span class="hljs-title">getS2RegionByPolygon</span><span class="hljs-params">(Tuple2&lt;Double, Double&gt;[] tuple2Array)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> getS2RegionByPolygon(Lists.newArrayList(tuple2Array));<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 注意需要以逆时针方向添加坐标点</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> S2Region <span class="hljs-title">getS2RegionByPolygon</span><span class="hljs-params">(List&lt;Tuple2&lt;Double, Double&gt;&gt; latLonTuple2List)</span> </span>&#123;<br>        List&lt;S2Point&gt; pointList = Lists.newArrayList();<br>        <span class="hljs-keyword">for</span> (Tuple2&lt;Double, Double&gt; latlonTuple2 : latLonTuple2List) &#123;<br>            pointList.add(S2LatLng.fromDegrees(latlonTuple2.getVal1(), latlonTuple2.getVal2()).toPoint());<br><br>        &#125;<br>        S2Loop s2Loop = <span class="hljs-keyword">new</span> S2Loop(pointList);<br>        S2PolygonBuilder builder = <span class="hljs-keyword">new</span> S2PolygonBuilder(S2PolygonBuilder.Options.DIRECTED_XOR);<br>        builder.addLoop(s2Loop);<br>        <span class="hljs-keyword">return</span> builder.assemblePolygon();<br>    &#125;<br><br><br>    <span class="hljs-comment">/////////////     配置coverer参数       ///////////////</span><br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getMinLevel</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> minLevel;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setMinLevel</span><span class="hljs-params">(<span class="hljs-keyword">int</span> minLevel)</span> </span>&#123;<br>        S2Util.minLevel = minLevel;<br>        COVERER.setMinLevel(minLevel);<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getMaxLevel</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> maxLevel;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setMaxLevel</span><span class="hljs-params">(<span class="hljs-keyword">int</span> maxLevel)</span> </span>&#123;<br>        S2Util.maxLevel = maxLevel;<br>        COVERER.setMaxLevel(maxLevel);<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getMaxCells</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> maxCells;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setMaxCells</span><span class="hljs-params">(<span class="hljs-keyword">int</span> maxCells)</span> </span>&#123;<br>        S2Util.maxCells = maxCells;<br>        COVERER.setMaxCells(maxCells);<br>    &#125;<br>&#125;<br>	<br></code></pre></td></tr></table></figure></li>
 </ol>
 <h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><h5 id="1-不规则-多边形"><a href="#1-不规则-多边形" class="headerlink" title="1. (不规则)多边形"></a>1. (不规则)多边形</h5><ol>
-<li>去<a target="_blank" rel="noopener" href="http://apps.headwallphotonics.com/%E7%94%BB%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2,%E8%BF%99%E9%87%8C%E6%88%91%E7%94%BB%E4%BA%86%E4%B8%AA%E6%9C%89%E6%A3%B1%E6%9C%89%E8%A7%92%E7%9A%84%E7%88%B1%E5%BF%83%E6%A0%87%E5%BF%97,%E5%A6%82%E4%B8%8B">http://apps.headwallphotonics.com/画个多边形,这里我画了个有棱有角的爱心标志,如下</a>.<br><img src="https://img-blog.csdnimg.cn/20200502173431384.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="爱心标志"></li>
-<li>将左下角的坐标信息作为参数,调用,测试代码如下<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getCellIdListByPolygon</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Map&lt;Integer,Integer&gt; sizeCountMap= Maps.newHashMap();</span><br><span class="line">    StringBuilder sb3=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">    S2Region s2Region = S2Util.getS2RegionByPolygon(Lists.newArrayList(Tuple2.tuple(<span class="number">23.851458634747043</span>, <span class="number">113.66432546548037</span>),  Tuple2.tuple(<span class="number">21.60205563594303</span>, <span class="number">114.82887624673037</span>),Tuple2.tuple(<span class="number">23.771049234941454</span>, <span class="number">116.18019460610537</span>),Tuple2.tuple(<span class="number">23.16640234327511</span>, <span class="number">114.94423269204286</span>)));</span><br><span class="line">    List&lt;S2CellId&gt; cellIdListByPolygon = S2Util.getCellIdList(s2Region);</span><br><span class="line">    cellIdListByPolygon.forEach(s2CellId -&gt; &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Level:&quot;</span> + s2CellId.level() + <span class="string">&quot;,ID:&quot;</span> + s2CellId.toToken() + <span class="string">&quot;,Min:&quot;</span> + s2CellId.rangeMin().toToken() + <span class="string">&quot;,Max:&quot;</span> + s2CellId.rangeMax().toToken());</span><br><span class="line">        sb3.append(<span class="string">&quot;,&quot;</span>).append(s2CellId.toToken());</span><br><span class="line">        sizeCountMap.put(s2CellId.level(),sizeCountMap.getOrDefault(s2CellId.level(),<span class="number">0</span>)+<span class="number">1</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    System.out.println(sb3.substring(<span class="number">1</span>));</span><br><span class="line">    System.out.println(<span class="string">&quot;totalSize:&quot;</span>+cellIdListByPolygon.size());</span><br><span class="line">    sizeCountMap.entrySet().forEach(integerIntegerEntry -&gt; &#123;</span><br><span class="line">        System.out.printf(<span class="string">&quot;level:%d,size:%d\n&quot;</span>,integerIntegerEntry.getKey(),integerIntegerEntry.getValue());</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li>执行结果如下<br><img src="https://img-blog.csdnimg.cn/20200502173708151.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>可以看到网格数远远超出了设定的100,不过网格大小严格控制在了11到16之间.</li>
-<li>将cellToken列表(逗号分隔)复制到 <a target="_blank" rel="noopener" href="http://s2.sidewalklabs.com/regioncoverer/">http://s2.sidewalklabs.com/regioncoverer/</a> ,点击那个网格(data)标志即可,如下<br><img src="https://img-blog.csdnimg.cn/20200502174203269.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
-<li>如果调用的是getCompactCellIdList,则结果如下,其cell数从1000多压缩到200多.<br><img src="https://img-blog.csdnimg.cn/20200502174644676.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h5 id="2-圆形"><a href="#2-圆形" class="headerlink" title="2 圆形"></a>2 圆形</h5></li>
-<li>这次我们再用 <a target="_blank" rel="noopener" href="https://www.mapdevelopers.com/draw-circle-tool.php">https://www.mapdevelopers.com/draw-circle-tool.php</a> 到台湾省上面画个圈圈,如下<br><img src="https://img-blog.csdnimg.cn/20200502175137239.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="圈圈"></li>
-<li>然后将其经纬度和坐标信息作为参数,调用,测试方法如下,使用的是getCompactCellIdList<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getCellIdListByCircle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Map&lt;Integer,Integer&gt; sizeCountMap= Maps.newHashMap();</span><br><span class="line">    StringBuilder sb3=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">    S2Region s2Region = S2Util.getS2RegionByCircle(<span class="number">23.753954</span>,<span class="number">120.749615</span>,<span class="number">193511.10</span>);</span><br><span class="line">    List&lt;S2CellId&gt; cellIdListByPolygon = S2Util.getCompactCellIdList(s2Region);</span><br><span class="line">    cellIdListByPolygon.forEach(s2CellId -&gt; &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Level:&quot;</span> + s2CellId.level() + <span class="string">&quot;,ID:&quot;</span> + s2CellId.toToken() + <span class="string">&quot;,Min:&quot;</span> + s2CellId.rangeMin().toToken() + <span class="string">&quot;,Max:&quot;</span> + s2CellId.rangeMax().toToken());</span><br><span class="line">        sb3.append(<span class="string">&quot;,&quot;</span>).append(s2CellId.toToken());</span><br><span class="line">        sizeCountMap.put(s2CellId.level(),sizeCountMap.getOrDefault(s2CellId.level(),<span class="number">0</span>)+<span class="number">1</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    System.out.println(sb3.substring(<span class="number">1</span>));</span><br><span class="line">    System.out.println(<span class="string">&quot;totalSize:&quot;</span>+cellIdListByPolygon.size());</span><br><span class="line">    sizeCountMap.entrySet().forEach(integerIntegerEntry -&gt; &#123;</span><br><span class="line">        System.out.printf(<span class="string">&quot;level:%d,size:%d\n&quot;</span>,integerIntegerEntry.getKey(),integerIntegerEntry.getValue());</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li>结果如下<br><img src="https://img-blog.csdnimg.cn/20200502175555629.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>去<a target="_blank" rel="noopener" href="http://apps.headwallphotonics.com/%E7%94%BB%E4%B8%AA%E5%A4%9A%E8%BE%B9%E5%BD%A2,%E8%BF%99%E9%87%8C%E6%88%91%E7%94%BB%E4%BA%86%E4%B8%AA%E6%9C%89%E6%A3%B1%E6%9C%89%E8%A7%92%E7%9A%84%E7%88%B1%E5%BF%83%E6%A0%87%E5%BF%97,%E5%A6%82%E4%B8%8B">http://apps.headwallphotonics.com/画个多边形,这里我画了个有棱有角的爱心标志,如下</a>.<br><img src="https://img-blog.csdnimg.cn/20200502173431384.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="爱心标志"></li>
+<li>将左下角的坐标信息作为参数,调用,测试代码如下<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">getCellIdListByPolygon</span><span class="hljs-params">()</span> </span>&#123;<br>    Map&lt;Integer,Integer&gt; sizeCountMap= Maps.newHashMap();<br>    StringBuilder sb3=<span class="hljs-keyword">new</span> StringBuilder();<br>    S2Region s2Region = S2Util.getS2RegionByPolygon(Lists.newArrayList(Tuple2.tuple(<span class="hljs-number">23.851458634747043</span>, <span class="hljs-number">113.66432546548037</span>),  Tuple2.tuple(<span class="hljs-number">21.60205563594303</span>, <span class="hljs-number">114.82887624673037</span>),Tuple2.tuple(<span class="hljs-number">23.771049234941454</span>, <span class="hljs-number">116.18019460610537</span>),Tuple2.tuple(<span class="hljs-number">23.16640234327511</span>, <span class="hljs-number">114.94423269204286</span>)));<br>    List&lt;S2CellId&gt; cellIdListByPolygon = S2Util.getCellIdList(s2Region);<br>    cellIdListByPolygon.forEach(s2CellId -&gt; &#123;<br>        System.out.println(<span class="hljs-string">&quot;Level:&quot;</span> + s2CellId.level() + <span class="hljs-string">&quot;,ID:&quot;</span> + s2CellId.toToken() + <span class="hljs-string">&quot;,Min:&quot;</span> + s2CellId.rangeMin().toToken() + <span class="hljs-string">&quot;,Max:&quot;</span> + s2CellId.rangeMax().toToken());<br>        sb3.append(<span class="hljs-string">&quot;,&quot;</span>).append(s2CellId.toToken());<br>        sizeCountMap.put(s2CellId.level(),sizeCountMap.getOrDefault(s2CellId.level(),<span class="hljs-number">0</span>)+<span class="hljs-number">1</span>);<br>    &#125;);<br>    System.out.println(sb3.substring(<span class="hljs-number">1</span>));<br>    System.out.println(<span class="hljs-string">&quot;totalSize:&quot;</span>+cellIdListByPolygon.size());<br>    sizeCountMap.entrySet().forEach(integerIntegerEntry -&gt; &#123;<br>        System.out.printf(<span class="hljs-string">&quot;level:%d,size:%d\n&quot;</span>,integerIntegerEntry.getKey(),integerIntegerEntry.getValue());<br>    &#125;);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>执行结果如下<br><img src="https://img-blog.csdnimg.cn/20200502173708151.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"><br>可以看到网格数远远超出了设定的100,不过网格大小严格控制在了11到16之间.</li>
+<li>将cellToken列表(逗号分隔)复制到 <a target="_blank" rel="noopener" href="http://s2.sidewalklabs.com/regioncoverer/">http://s2.sidewalklabs.com/regioncoverer/</a> ,点击那个网格(data)标志即可,如下<br><img src="https://img-blog.csdnimg.cn/20200502174203269.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"></li>
+<li>如果调用的是getCompactCellIdList,则结果如下,其cell数从1000多压缩到200多.<br><img src="https://img-blog.csdnimg.cn/20200502174644676.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"><h5 id="2-圆形"><a href="#2-圆形" class="headerlink" title="2 圆形"></a>2 圆形</h5></li>
+<li>这次我们再用 <a target="_blank" rel="noopener" href="https://www.mapdevelopers.com/draw-circle-tool.php">https://www.mapdevelopers.com/draw-circle-tool.php</a> 到台湾省上面画个圈圈,如下<br><img src="https://img-blog.csdnimg.cn/20200502175137239.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="圈圈"></li>
+<li>然后将其经纬度和坐标信息作为参数,调用,测试方法如下,使用的是getCompactCellIdList<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">getCellIdListByCircle</span><span class="hljs-params">()</span> </span>&#123;<br>    Map&lt;Integer,Integer&gt; sizeCountMap= Maps.newHashMap();<br>    StringBuilder sb3=<span class="hljs-keyword">new</span> StringBuilder();<br>    S2Region s2Region = S2Util.getS2RegionByCircle(<span class="hljs-number">23.753954</span>,<span class="hljs-number">120.749615</span>,<span class="hljs-number">193511.10</span>);<br>    List&lt;S2CellId&gt; cellIdListByPolygon = S2Util.getCompactCellIdList(s2Region);<br>    cellIdListByPolygon.forEach(s2CellId -&gt; &#123;<br>        System.out.println(<span class="hljs-string">&quot;Level:&quot;</span> + s2CellId.level() + <span class="hljs-string">&quot;,ID:&quot;</span> + s2CellId.toToken() + <span class="hljs-string">&quot;,Min:&quot;</span> + s2CellId.rangeMin().toToken() + <span class="hljs-string">&quot;,Max:&quot;</span> + s2CellId.rangeMax().toToken());<br>        sb3.append(<span class="hljs-string">&quot;,&quot;</span>).append(s2CellId.toToken());<br>        sizeCountMap.put(s2CellId.level(),sizeCountMap.getOrDefault(s2CellId.level(),<span class="hljs-number">0</span>)+<span class="hljs-number">1</span>);<br>    &#125;);<br>    System.out.println(sb3.substring(<span class="hljs-number">1</span>));<br>    System.out.println(<span class="hljs-string">&quot;totalSize:&quot;</span>+cellIdListByPolygon.size());<br>    sizeCountMap.entrySet().forEach(integerIntegerEntry -&gt; &#123;<br>        System.out.printf(<span class="hljs-string">&quot;level:%d,size:%d\n&quot;</span>,integerIntegerEntry.getKey(),integerIntegerEntry.getValue());<br>    &#125;);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>结果如下<br><img src="https://img-blog.csdnimg.cn/20200502175555629.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"></li>
 </ol>
 
-    </div>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
 
+<span class="category-chains">
+  
+  
     
-    
-    
+      <span class="category-chain">
         
+  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" class="category-chain-item">后端开发</a>
+  
+  
 
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>林泽浩
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="https://linshenkx.github.io/google_spatial_search_s2/" title="空间索引 S2 学习指南及Java工具类实践">https://linshenkx.github.io/google_spatial_search_s2/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/s2/">#s2</a>
+      
+    </div>
+  
 </div>
 
 
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/s2/" rel="tag"># s2</a>
-          </div>
+              
+  
 
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/hbck2_rit/" rel="prev" title="HBCK2修复RIT实践笔记">
-      <i class="fa fa-chevron-left"></i> HBCK2修复RIT实践笔记
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/centos-yumdownloader-rpm-package/" rel="next" title="centos利用yumdownloader获取含依赖的rpm安装包">
-      centos利用yumdownloader获取含依赖的rpm安装包 <i class="fa fa-chevron-right"></i>
-    </a></div>
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>空间索引 S2 学习指南及Java工具类实践</div>
+      <div>https://linshenkx.github.io/google_spatial_search_s2/</div>
     </div>
-      </footer>
-    
-  </article>
-  
-  
-  
- 
-   <div>
-     <div>
-    
-        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
-    
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>林泽浩</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年4月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/centos-yumdownloader-rpm-package/" title="centos利用yumdownloader获取含依赖的rpm安装包">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">centos利用yumdownloader获取含依赖的rpm安装包</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/hbck2_rit/" title="HBCK2修复RIT实践笔记">
+                        <span class="hidden-mobile">HBCK2修复RIT实践笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
 </div>
 
-   </div>
- 
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
 
 
 
-          </div>
-          
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
       }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
     }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
     });
-  }
+  });
 </script>
 
-        </div>
-          
-  
 
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 
-  <aside class="sidebar">
-    <div class="sidebar-inner">
+  <script>Fluid.plugins.codeWidget();</script>
 
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97"><span class="nav-text">一 学习指南</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-%E4%BB%8B%E7%BB%8D%E8%AF%B4%E6%98%8E"><span class="nav-text">0 介绍说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-s2-%E5%AF%B9%E6%AF%94-geohash-%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-text">1 s2 对比 geohash 的优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%B2%BE%E5%BA%A6%E8%A1%A8"><span class="nav-text">2 精度表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%9B%B8%E5%85%B3%E8%B5%84%E6%96%99"><span class="nav-text">3 相关资料</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E5%B7%A5%E5%85%B7%E7%B1%BB%E5%8F%8A%E6%B5%8B%E8%AF%95"><span class="nav-text">二 工具类及测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E7%B1%BB"><span class="nav-text">工具类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-text">说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text">代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E4%B8%8D%E8%A7%84%E5%88%99-%E5%A4%9A%E8%BE%B9%E5%BD%A2"><span class="nav-text">1. (不规则)多边形</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%9C%86%E5%BD%A2"><span class="nav-text">2 圆形</span></a></li></ol></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="林泽浩"
-      src="/images/header.jpg">
-  <p class="site-author-name" itemprop="name">林泽浩</p>
-  <div class="site-description" itemprop="description">林泽浩的个人小站</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">32</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">10</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">41</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://blog.csdn.net/alinyua" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;alinyua" rel="noopener" target="_blank"><i class="fab fa-csdn fa-fw"></i>CSDN</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://github.com/linshenkx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;linshenkx" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-  </div>
-
-
-  <div class="links-of-blogroll motion-element">
-    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
-      作品链接
-    </div>
-    <ul class="links-of-blogroll-list">
-        <li class="links-of-blogroll-item">
-          <a href="/productions/" title="&#x2F;productions&#x2F;">作品介绍页</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="https://dbm.linshenkx.cn/" title="https:&#x2F;&#x2F;dbm.linshenkx.cn" rel="noopener" target="_blank">web数据库管理终端(登录：test/test)</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="https://linshenkx.cn/" title="https:&#x2F;&#x2F;linshenkx.cn" rel="noopener" target="_blank">个人网站</a>
-        </li>
-    </ul>
-  </div>
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">林泽浩</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">73k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">1:06</span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
 
-<script src="/js/utils.js"></script>
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
 
-<script src="/js/motion.js"></script>
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
 
 
-<script src="/js/next-boot.js"></script>
 
 
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
 
 
   
 
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"./live2d_models/崩坏学院2/Kiro/model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"react":{"opacity":1},"log":false});</script></body>
 </html>

@@ -1,26 +1,22 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/bear_polar_32px.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/bear_polar_16px.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="本文记录了 ranger2.1版本的编译过程，与遇到的一些bug的解决方法。">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/header.jpg">
+  <link rel="icon" href="/img/header.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="林泽浩">
+  <meta name="keywords" content="大数据">
+  
+    <meta name="description" content="本文记录了 ranger2.1版本的编译过程，与遇到的一些bug的解决方法。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Ranger2.1编译笔记">
 <meta property="og:url" content="https://linshenkx.github.io/ranger-compile/index.html">
@@ -31,258 +27,313 @@
 <meta property="article:modified_time" content="2021-09-01T08:02:17.797Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="大数据">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Ranger2.1编译笔记 - 且炼时光</title>
 
-<link rel="canonical" href="https://linshenkx.github.io/ranger-compile/">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>Ranger2.1编译笔记 | 且炼时光</title>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
 
 
 
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
 
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
+<body>
+  
 
-  <div class="site-meta">
+  <header>
+    
 
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">且炼时光</h1>
-      <span class="logo-line-after"><i></i></span>
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>且炼时光</strong>
     </a>
-      <p class="site-subtitle" itemprop="description">韶华未褪，且炼时光</p>
-  </div>
 
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/productions/">
+                <i class="iconfont icon-archive-fill"></i>
+                作品展示
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/linshenkx">
+                <i class="iconfont icon-github-fill"></i>
+                github
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://blog.csdn.net/alinyua">
+                <i class="iconfont icon-copyright"></i>
+                csdn
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
     </div>
   </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-mysite">
-
-    <a href="http://linshenkx.cn/" rel="noopener" target="_blank"><i class="fa fa-heartbeat fa-fw"></i>切换到【个性版】个人网站</a>
-
-  </li>
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-productions">
-
-    <a href="/productions/" rel="section"><i class="fas fa-store fa-fw"></i>作品展示</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
 </nav>
 
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
   
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/ranger-compile/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="林泽浩">
-      <meta itemprop="description" content="林泽浩的个人小站">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="且炼时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Ranger2.1编译笔记
-        </h1>
-
-        <div class="post-meta">
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
           
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-06-21 20:55:09" itemprop="dateCreated datePublished" datetime="2021-06-21T20:55:09+08:00">2021-06-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-01 16:02:17" itemprop="dateModified" datetime="2021-09-01T16:02:17+08:00">2021-09-01</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ranger/" itemprop="url" rel="index"><span itemprop="name">ranger</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>779</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
+            <span id="subtitle" data-typed-text="Ranger2.1编译笔记"></span>
+          
         </div>
-      </header>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-06-21 20:55" pubdate>
+          2021年6月21日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          49 分钟
+        
+      </span>
+    
 
     
     
-    
-    <div class="post-body" itemprop="articleBody">
+  </div>
+
+
+        
+      </div>
 
       
-        <p>本文记录了 ranger2.1版本的编译过程，与遇到的一些bug的解决方法。</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Ranger2.1编译笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文记录了 ranger2.1版本的编译过程，与遇到的一些bug的解决方法。</p>
 <span id="more"></span>
 <h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><h3 id="1-外部工具依赖"><a href="#1-外部工具依赖" class="headerlink" title="1 外部工具依赖"></a>1 外部工具依赖</h3><p>需要linux环境，保证python命令可用，如果只装了python3，推荐</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt install -y python-is-python3</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt install -y python-is-python3<br><br></code></pre></td></tr></table></figure>
 <p>另外还需要安装gcc</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt install gcc -y</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt install gcc -y<br><br></code></pre></td></tr></table></figure>
 <h3 id="2-排除kylin模块"><a href="#2-排除kylin模块" class="headerlink" title="2 排除kylin模块"></a>2 排除kylin模块</h3><p>kylin2.6.4依赖calcite-linq4j-1.16.0-kylin-r2<br>这个jar包在外部maven仓库是找不到的，导致build失败，参考：<br><a target="_blank" rel="noopener" href="https://issues.apache.org/jira/browse/RANGER-2994">https://issues.apache.org/jira/browse/RANGER-2994</a><br><a target="_blank" rel="noopener" href="https://issues.apache.org/jira/browse/RANGER-2999">https://issues.apache.org/jira/browse/RANGER-2999</a></p>
 <p>因为是kylin本身的依赖问题，不是ranger的锅，这里谴责一下kylin然后对其选择性放弃<br>放弃方法：在pom.xml将其所有的module注释掉，如下</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--                &lt;module&gt;plugin-kylin&lt;/module&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--                &lt;module&gt;ranger-kylin-plugin-shim&lt;/module&gt;--&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--                &lt;module&gt;plugin-kylin&lt;/module&gt;--&gt;</span><br><span class="hljs-comment">&lt;!--                &lt;module&gt;ranger-kylin-plugin-shim&lt;/module&gt;--&gt;</span><br></code></pre></td></tr></table></figure>
 <h3 id="3-ranger-examples-distro错误"><a href="#3-ranger-examples-distro错误" class="headerlink" title="3 ranger-examples-distro错误"></a>3 ranger-examples-distro错误</h3><p>参考：<a target="_blank" rel="noopener" href="https://github.com/apache/ranger/pull/71">https://github.com/apache/ranger/pull/71</a><br>根据issue，修改 sampleapp.xml 和 plugin-sampleapp.xml</p>
 <h3 id="4-ranger-client"><a href="#4-ranger-client" class="headerlink" title="4 ranger client"></a>4 ranger client</h3><p>官方的rangerClient有bug，新版本已修复，但还没发布，需要自行编译<br>步骤：</p>
 <ol>
@@ -290,271 +341,369 @@
 <li>将 ranger/intg/pom.xml 中 ranger-plugins-common 的版本从${project.version} 改为2.1.0（即公网仓库能找到的最新版本）</li>
 </ol>
 <h2 id="执行编译"><a href="#执行编译" class="headerlink" title="执行编译"></a>执行编译</h2><h3 id="1-编译各个组件-tar-gz包"><a href="#1-编译各个组件-tar-gz包" class="headerlink" title="1 编译各个组件 tar.gz包"></a>1 编译各个组件 tar.gz包</h3><p>在ranger工程下执行，执行成功可以在target下看到包</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mvn clean compile package assembly:assembly -DskipTests -DskipJSTests -Dpmd.skip=true</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">mvn clean compile package assembly:assembly -DskipTests -DskipJSTests -Dpmd.skip=true<br><br></code></pre></td></tr></table></figure>
 <p>日志参考：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] Reactor Summary for ranger 2.1.1-SNAPSHOT:</span><br><span class="line">[INFO] </span><br><span class="line">[INFO] ranger ............................................. SUCCESS [02:31 min]</span><br><span class="line">[INFO] Jdbc SQL Connector ................................. SUCCESS [ 12.635 s]</span><br><span class="line">[INFO] Credential Support ................................. SUCCESS [ 14.241 s]</span><br><span class="line">[INFO] Audit Component .................................... SUCCESS [ 40.494 s]</span><br><span class="line">[INFO] ranger-plugin-classloader .......................... SUCCESS [  8.902 s]</span><br><span class="line">[INFO] Common library for Plugins ......................... SUCCESS [02:43 min]</span><br><span class="line">[INFO] ranger-intg ........................................ SUCCESS [ 15.121 s]</span><br><span class="line">[INFO] Installer Support Component ........................ SUCCESS [  4.590 s]</span><br><span class="line">[INFO] Credential Builder ................................. SUCCESS [  7.686 s]</span><br><span class="line">[INFO] Embedded Web Server Invoker ........................ SUCCESS [ 12.830 s]</span><br><span class="line">[INFO] Key Management Service ............................. SUCCESS [ 52.264 s]</span><br><span class="line">[INFO] HBase Security Plugin Shim ......................... SUCCESS [ 15.598 s]</span><br><span class="line">[INFO] HBase Security Plugin .............................. SUCCESS [ 32.827 s]</span><br><span class="line">[INFO] Hdfs Security Plugin ............................... SUCCESS [ 34.502 s]</span><br><span class="line">[INFO] Hive Security Plugin ............................... SUCCESS [ 35.109 s]</span><br><span class="line">[INFO] Knox Security Plugin Shim .......................... SUCCESS [ 11.906 s]</span><br><span class="line">[INFO] Knox Security Plugin ............................... SUCCESS [ 49.254 s]</span><br><span class="line">[INFO] Storm Security Plugin .............................. SUCCESS [ 23.171 s]</span><br><span class="line">[INFO] YARN Security Plugin ............................... SUCCESS [ 16.011 s]</span><br><span class="line">[INFO] Ozone Security Plugin .............................. SUCCESS [ 16.418 s]</span><br><span class="line">[INFO] Ranger Util ........................................ SUCCESS [01:43 min]</span><br><span class="line">[INFO] Unix Authentication Client ......................... SUCCESS [  8.165 s]</span><br><span class="line">[INFO] Security Admin Web Application ..................... SUCCESS [21:33 min]</span><br><span class="line">[INFO] KAFKA Security Plugin .............................. SUCCESS [ 21.139 s]</span><br><span class="line">[INFO] SOLR Security Plugin ............................... SUCCESS [ 16.487 s]</span><br><span class="line">[INFO] NiFi Security Plugin ............................... SUCCESS [ 18.495 s]</span><br><span class="line">[INFO] NiFi Registry Security Plugin ...................... SUCCESS [ 15.196 s]</span><br><span class="line">[INFO] Kudu Security Plugin ............................... SUCCESS [  9.105 s]</span><br><span class="line">[INFO] Unix User Group Synchronizer ....................... SUCCESS [ 47.248 s]</span><br><span class="line">[INFO] Ldap Config Check Tool ............................. SUCCESS [  8.631 s]</span><br><span class="line">[INFO] Unix Authentication Service ........................ SUCCESS [  9.789 s]</span><br><span class="line">[INFO] Unix Native Authenticator .......................... SUCCESS [  4.242 s]</span><br><span class="line">[INFO] KMS Security Plugin ................................ SUCCESS [ 34.582 s]</span><br><span class="line">[INFO] Tag Synchronizer ................................... SUCCESS [ 28.172 s]</span><br><span class="line">[INFO] Hdfs Security Plugin Shim .......................... SUCCESS [  7.847 s]</span><br><span class="line">[INFO] Hive Security Plugin Shim .......................... SUCCESS [ 13.040 s]</span><br><span class="line">[INFO] YARN Security Plugin Shim .......................... SUCCESS [ 10.582 s]</span><br><span class="line">[INFO] OZONE Security Plugin Shim ......................... SUCCESS [ 16.250 s]</span><br><span class="line">[INFO] Storm Security Plugin shim ......................... SUCCESS [ 10.807 s]</span><br><span class="line">[INFO] KAFKA Security Plugin Shim ......................... SUCCESS [  8.435 s]</span><br><span class="line">[INFO] SOLR Security Plugin Shim .......................... SUCCESS [ 10.037 s]</span><br><span class="line">[INFO] Atlas Security Plugin Shim ......................... SUCCESS [  9.938 s]</span><br><span class="line">[INFO] KMS Security Plugin Shim ........................... SUCCESS [ 13.735 s]</span><br><span class="line">[INFO] ranger-examples .................................... SUCCESS [  2.577 s]</span><br><span class="line">[INFO] Ranger Examples - Conditions and ContextEnrichers .. SUCCESS [ 13.963 s]</span><br><span class="line">[INFO] Ranger Examples - SampleApp ........................ SUCCESS [ 14.751 s]</span><br><span class="line">[INFO] Ranger Examples - Ranger Plugin for SampleApp ...... SUCCESS [  9.067 s]</span><br><span class="line">[INFO] sample-client ...................................... SUCCESS [ 21.965 s]</span><br><span class="line">[INFO] Apache Ranger Examples Distribution ................ SUCCESS [ 17.195 s]</span><br><span class="line">[INFO] Ranger Tools ....................................... SUCCESS [ 32.274 s]</span><br><span class="line">[INFO] Atlas Security Plugin .............................. SUCCESS [ 15.610 s]</span><br><span class="line">[INFO] SchemaRegistry Security Plugin ..................... SUCCESS [ 33.643 s]</span><br><span class="line">[INFO] Sqoop Security Plugin .............................. SUCCESS [ 32.979 s]</span><br><span class="line">[INFO] Sqoop Security Plugin Shim ......................... SUCCESS [  8.851 s]</span><br><span class="line">[INFO] Presto Security Plugin ............................. SUCCESS [ 36.558 s]</span><br><span class="line">[INFO] Presto Security Plugin Shim ........................ SUCCESS [01:06 min]</span><br><span class="line">[INFO] Elasticsearch Security Plugin Shim ................. SUCCESS [ 14.989 s]</span><br><span class="line">[INFO] Elasticsearch Security Plugin ...................... SUCCESS [ 13.180 s]</span><br><span class="line">[INFO] Apache Ranger Distribution ......................... SUCCESS [38:46 min]</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] BUILD SUCCESS</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] Total time:  01:24 h</span><br><span class="line">[INFO] Finished at: 2021-05-27T15:47:58+08:00</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><code class="hljs log">[INFO] ------------------------------------------------------------------------<br>[INFO] Reactor Summary for ranger 2.1.1-SNAPSHOT:<br>[INFO] <br>[INFO] ranger ............................................. SUCCESS [02:31 min]<br>[INFO] Jdbc SQL Connector ................................. SUCCESS [ 12.635 s]<br>[INFO] Credential Support ................................. SUCCESS [ 14.241 s]<br>[INFO] Audit Component .................................... SUCCESS [ 40.494 s]<br>[INFO] ranger-plugin-classloader .......................... SUCCESS [  8.902 s]<br>[INFO] Common library for Plugins ......................... SUCCESS [02:43 min]<br>[INFO] ranger-intg ........................................ SUCCESS [ 15.121 s]<br>[INFO] Installer Support Component ........................ SUCCESS [  4.590 s]<br>[INFO] Credential Builder ................................. SUCCESS [  7.686 s]<br>[INFO] Embedded Web Server Invoker ........................ SUCCESS [ 12.830 s]<br>[INFO] Key Management Service ............................. SUCCESS [ 52.264 s]<br>[INFO] HBase Security Plugin Shim ......................... SUCCESS [ 15.598 s]<br>[INFO] HBase Security Plugin .............................. SUCCESS [ 32.827 s]<br>[INFO] Hdfs Security Plugin ............................... SUCCESS [ 34.502 s]<br>[INFO] Hive Security Plugin ............................... SUCCESS [ 35.109 s]<br>[INFO] Knox Security Plugin Shim .......................... SUCCESS [ 11.906 s]<br>[INFO] Knox Security Plugin ............................... SUCCESS [ 49.254 s]<br>[INFO] Storm Security Plugin .............................. SUCCESS [ 23.171 s]<br>[INFO] YARN Security Plugin ............................... SUCCESS [ 16.011 s]<br>[INFO] Ozone Security Plugin .............................. SUCCESS [ 16.418 s]<br>[INFO] Ranger Util ........................................ SUCCESS [01:43 min]<br>[INFO] Unix Authentication Client ......................... SUCCESS [  8.165 s]<br>[INFO] Security Admin Web Application ..................... SUCCESS [21:33 min]<br>[INFO] KAFKA Security Plugin .............................. SUCCESS [ 21.139 s]<br>[INFO] SOLR Security Plugin ............................... SUCCESS [ 16.487 s]<br>[INFO] NiFi Security Plugin ............................... SUCCESS [ 18.495 s]<br>[INFO] NiFi Registry Security Plugin ...................... SUCCESS [ 15.196 s]<br>[INFO] Kudu Security Plugin ............................... SUCCESS [  9.105 s]<br>[INFO] Unix User Group Synchronizer ....................... SUCCESS [ 47.248 s]<br>[INFO] Ldap Config Check Tool ............................. SUCCESS [  8.631 s]<br>[INFO] Unix Authentication Service ........................ SUCCESS [  9.789 s]<br>[INFO] Unix Native Authenticator .......................... SUCCESS [  4.242 s]<br>[INFO] KMS Security Plugin ................................ SUCCESS [ 34.582 s]<br>[INFO] Tag Synchronizer ................................... SUCCESS [ 28.172 s]<br>[INFO] Hdfs Security Plugin Shim .......................... SUCCESS [  7.847 s]<br>[INFO] Hive Security Plugin Shim .......................... SUCCESS [ 13.040 s]<br>[INFO] YARN Security Plugin Shim .......................... SUCCESS [ 10.582 s]<br>[INFO] OZONE Security Plugin Shim ......................... SUCCESS [ 16.250 s]<br>[INFO] Storm Security Plugin shim ......................... SUCCESS [ 10.807 s]<br>[INFO] KAFKA Security Plugin Shim ......................... SUCCESS [  8.435 s]<br>[INFO] SOLR Security Plugin Shim .......................... SUCCESS [ 10.037 s]<br>[INFO] Atlas Security Plugin Shim ......................... SUCCESS [  9.938 s]<br>[INFO] KMS Security Plugin Shim ........................... SUCCESS [ 13.735 s]<br>[INFO] ranger-examples .................................... SUCCESS [  2.577 s]<br>[INFO] Ranger Examples - Conditions and ContextEnrichers .. SUCCESS [ 13.963 s]<br>[INFO] Ranger Examples - SampleApp ........................ SUCCESS [ 14.751 s]<br>[INFO] Ranger Examples - Ranger Plugin for SampleApp ...... SUCCESS [  9.067 s]<br>[INFO] sample-client ...................................... SUCCESS [ 21.965 s]<br>[INFO] Apache Ranger Examples Distribution ................ SUCCESS [ 17.195 s]<br>[INFO] Ranger Tools ....................................... SUCCESS [ 32.274 s]<br>[INFO] Atlas Security Plugin .............................. SUCCESS [ 15.610 s]<br>[INFO] SchemaRegistry Security Plugin ..................... SUCCESS [ 33.643 s]<br>[INFO] Sqoop Security Plugin .............................. SUCCESS [ 32.979 s]<br>[INFO] Sqoop Security Plugin Shim ......................... SUCCESS [  8.851 s]<br>[INFO] Presto Security Plugin ............................. SUCCESS [ 36.558 s]<br>[INFO] Presto Security Plugin Shim ........................ SUCCESS [01:06 min]<br>[INFO] Elasticsearch Security Plugin Shim ................. SUCCESS [ 14.989 s]<br>[INFO] Elasticsearch Security Plugin ...................... SUCCESS [ 13.180 s]<br>[INFO] Apache Ranger Distribution ......................... SUCCESS [38:46 min]<br>[INFO] ------------------------------------------------------------------------<br>[INFO] BUILD SUCCESS<br>[INFO] ------------------------------------------------------------------------<br>[INFO] Total time:  01:24 h<br>[INFO] Finished at: 2021-05-27T15:47:58+08:00<br>[INFO] ------------------------------------------------------------------------<br></code></pre></td></tr></table></figure>
 <h3 id="2-编译-ranger-client-jar包"><a href="#2-编译-ranger-client-jar包" class="headerlink" title="2 编译 ranger_client jar包"></a>2 编译 ranger_client jar包</h3><p>在ranger/intg下执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn clean compile package install -DskipTests</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">mvn clean compile package install -DskipTests<br></code></pre></td></tr></table></figure>
 <p>可以在 ranger/intg/target 看到生成后的jar包</p>
 
-    </div>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
 
+<span class="category-chains">
+  
+  
     
-    
-    
+      <span class="category-chain">
         
+  <a href="/categories/ranger/" class="category-chain-item">ranger</a>
+  
+  
 
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>林泽浩
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="https://linshenkx.github.io/ranger-compile/" title="Ranger2.1编译笔记">https://linshenkx.github.io/ranger-compile/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
 </div>
 
 
-      <footer class="post-footer">
+              
+  
 
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/wsl2_idea2021/" rel="prev" title="WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑）">
-      <i class="fa fa-chevron-left"></i> WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑）
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/ubuntu-offline-sources/" rel="next" title="ubuntu制作离线源">
-      ubuntu制作离线源 <i class="fa fa-chevron-right"></i>
-    </a></div>
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Ranger2.1编译笔记</div>
+      <div>https://linshenkx.github.io/ranger-compile/</div>
     </div>
-      </footer>
-    
-  </article>
-  
-  
-  
- 
-   <div>
-     <div>
-    
-        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
-    
-</div>
-
-   </div>
- 
-
-
-
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>林泽浩</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年6月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
           </div>
-          
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/ubuntu-offline-sources/" title="ubuntu制作离线源">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ubuntu制作离线源</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/wsl2_idea2021/" title="WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑）">
+                        <span class="hidden-mobile">WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
       }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
     }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
     });
-  }
+  });
 </script>
 
-        </div>
-          
-  
 
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 
-  <aside class="sidebar">
-    <div class="sidebar-inner">
+  <script>Fluid.plugins.codeWidget();</script>
 
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-text">准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%A4%96%E9%83%A8%E5%B7%A5%E5%85%B7%E4%BE%9D%E8%B5%96"><span class="nav-text">1 外部工具依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8E%92%E9%99%A4kylin%E6%A8%A1%E5%9D%97"><span class="nav-text">2 排除kylin模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-ranger-examples-distro%E9%94%99%E8%AF%AF"><span class="nav-text">3 ranger-examples-distro错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-ranger-client"><span class="nav-text">4 ranger client</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E7%BC%96%E8%AF%91"><span class="nav-text">执行编译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%BC%96%E8%AF%91%E5%90%84%E4%B8%AA%E7%BB%84%E4%BB%B6-tar-gz%E5%8C%85"><span class="nav-text">1 编译各个组件 tar.gz包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%BC%96%E8%AF%91-ranger-client-jar%E5%8C%85"><span class="nav-text">2 编译 ranger_client jar包</span></a></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="林泽浩"
-      src="/images/header.jpg">
-  <p class="site-author-name" itemprop="name">林泽浩</p>
-  <div class="site-description" itemprop="description">林泽浩的个人小站</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">32</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">10</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">41</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://blog.csdn.net/alinyua" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;alinyua" rel="noopener" target="_blank"><i class="fab fa-csdn fa-fw"></i>CSDN</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://github.com/linshenkx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;linshenkx" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-  </div>
-
-
-  <div class="links-of-blogroll motion-element">
-    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
-      作品链接
-    </div>
-    <ul class="links-of-blogroll-list">
-        <li class="links-of-blogroll-item">
-          <a href="/productions/" title="&#x2F;productions&#x2F;">作品介绍页</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="https://dbm.linshenkx.cn/" title="https:&#x2F;&#x2F;dbm.linshenkx.cn" rel="noopener" target="_blank">web数据库管理终端(登录：test/test)</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="https://linshenkx.cn/" title="https:&#x2F;&#x2F;linshenkx.cn" rel="noopener" target="_blank">个人网站</a>
-        </li>
-    </ul>
-  </div>
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">林泽浩</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">73k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">1:06</span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
 
-<script src="/js/utils.js"></script>
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
 
-<script src="/js/motion.js"></script>
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
 
 
-<script src="/js/next-boot.js"></script>
 
 
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
 
 
   
 
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"./live2d_models/崩坏学院2/Kiro/model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"react":{"opacity":1},"log":false});</script></body>
 </html>

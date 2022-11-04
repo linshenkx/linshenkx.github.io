@@ -1,26 +1,22 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/bear_polar_32px.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/bear_polar_16px.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="Spring对应枚举传参&#x2F;返回值默认是用字面量实现的（实际情况更复杂），而《阿里巴巴Java开发手册》规定接口返回值不可以使用枚举类型（包括含枚举类型的POJO对象），为此，本文探究了Spring内部对枚举参数的传递和处理机制，并提供了一套自定义方案。">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/header.jpg">
+  <link rel="icon" href="/img/header.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="林泽浩">
+  <meta name="keywords" content="大数据">
+  
+    <meta name="description" content="Spring对应枚举传参&#x2F;返回值默认是用字面量实现的（实际情况更复杂），而《阿里巴巴Java开发手册》规定接口返回值不可以使用枚举类型（包括含枚举类型的POJO对象），为此，本文探究了Spring内部对枚举参数的传递和处理机制，并提供了一套自定义方案。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践">
 <meta property="og:url" content="https://linshenkx.github.io/spring_enum/index.html">
@@ -39,255 +35,306 @@
 <meta property="article:modified_time" content="2021-09-01T08:02:17.791Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="Spring">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/2019011409281053.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70">
+  
+  
+  
+  <title>深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践 - 且炼时光</title>
 
-<link rel="canonical" href="https://linshenkx.github.io/spring_enum/">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践 | 且炼时光</title>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
 
 
 
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
 
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
+<body>
+  
 
-  <div class="site-meta">
+  <header>
+    
 
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">且炼时光</h1>
-      <span class="logo-line-after"><i></i></span>
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>且炼时光</strong>
     </a>
-      <p class="site-subtitle" itemprop="description">韶华未褪，且炼时光</p>
-  </div>
 
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/productions/">
+                <i class="iconfont icon-archive-fill"></i>
+                作品展示
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/linshenkx">
+                <i class="iconfont icon-github-fill"></i>
+                github
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://blog.csdn.net/alinyua">
+                <i class="iconfont icon-copyright"></i>
+                csdn
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
     </div>
   </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-mysite">
-
-    <a href="http://linshenkx.cn/" rel="noopener" target="_blank"><i class="fa fa-heartbeat fa-fw"></i>切换到【个性版】个人网站</a>
-
-  </li>
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-productions">
-
-    <a href="/productions/" rel="section"><i class="fas fa-store fa-fw"></i>作品展示</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
 </nav>
 
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
   
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/spring_enum/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="林泽浩">
-      <meta itemprop="description" content="林泽浩的个人小站">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="且炼时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践
-        </h1>
-
-        <div class="post-meta">
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
           
-            <i class="fa fa-thumb-tack"></i>
-            <font color=7D26CD>置顶</font>
-            <span class="post-meta-divider">|</span>
+            <span id="subtitle" data-typed-text="深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践"></span>
           
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-01-14 09:54:10" itemprop="dateCreated datePublished" datetime="2019-01-14T09:54:10+08:00">2019-01-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-01 16:02:17" itemprop="dateModified" datetime="2021-09-01T16:02:17+08:00">2021-09-01</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">后端开发</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>6.4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
-            </span>
-
         </div>
-      </header>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-01-14 09:54" pubdate>
+          2019年1月14日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          95 分钟
+        
+      </span>
+    
 
     
     
-    
-    <div class="post-body" itemprop="articleBody">
+  </div>
+
+
+        
+      </div>
 
       
-        <p>Spring对应枚举传参/返回值默认是用字面量实现的（实际情况更复杂），而《阿里巴巴Java开发手册》规定接口返回值不可以使用枚举类型（包括含枚举类型的POJO对象），为此，本文探究了Spring内部对枚举参数的传递和处理机制，并提供了一套自定义方案。</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Spring对应枚举传参/返回值默认是用字面量实现的（实际情况更复杂），而《阿里巴巴Java开发手册》规定接口返回值不可以使用枚举类型（包括含枚举类型的POJO对象），为此，本文探究了Spring内部对枚举参数的传递和处理机制，并提供了一套自定义方案。</p>
 <span id="more"></span>
 <h2 id="一-目标与思路"><a href="#一-目标与思路" class="headerlink" title="一 目标与思路"></a>一 目标与思路</h2><h3 id="0-起因"><a href="#0-起因" class="headerlink" title="0 起因"></a>0 起因</h3><p>《阿里巴巴Java开发手册》将接口中枚举的使用分为两类，即 接口参数和接口返回值，并规定：<br><strong>接口参数可以使用枚举类型，但接口返回值不可以使用枚举类型（包括含枚举类型的POJO对象）</strong>。</p>
 <p>知乎有相关讨论和作者亲答，详情可见：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/52760637">Java枚举什么不好，《阿里巴巴JAVA开发手册》对于枚举规定的考量是什么？</a></p>
@@ -308,7 +355,7 @@
 <p>主要是从防止这种序列化异常角度来考虑，使用code至少不会出大乱子。而catch序列化异常，有点像catch(NullPointerException e)一样代码过度，因为它是可预检异常。</p>
 </blockquote>
 <h3 id="1-统一称谓"><a href="#1-统一称谓" class="headerlink" title="1 统一称谓"></a>1 统一称谓</h3><p>假如有一枚举类如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">ReturnCodeEnum</span> </span>&#123;</span><br><span class="line">    OK(<span class="number">200</span>),</span><br><span class="line">    ERROR(<span class="number">500</span>)</span><br><span class="line">    ;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> code;</span><br><span class="line">    ReturnCodeEnum(<span class="keyword">int</span> code)&#123;</span><br><span class="line">        <span class="keyword">this</span>.code=code;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> code;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">ReturnCodeEnum</span> </span>&#123;<br>    OK(<span class="hljs-number">200</span>),<br>    ERROR(<span class="hljs-number">500</span>)<br>    ;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> code;<br>    ReturnCodeEnum(<span class="hljs-keyword">int</span> code)&#123;<br>        <span class="hljs-keyword">this</span>.code=code;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getCode</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> code;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <blockquote>
 <p>枚举实例有两个默认属性，<code>name</code> 和 <code>ordinal</code>，可通过 name()和ordinal()方法分别获得。其中 name 为枚举字面量（如 OK），ordinal 为枚举实例默认次序（从0开始）<br>需要注意的是，不建议使用枚举的 ordinal，因为枚举实例应该是无序的，ordinal 提供的顺序是不可靠的，所以我们应该使用自定义的枚举字段 code。</p>
 </blockquote>
@@ -357,7 +404,7 @@
 <ol>
 <li>具体做法<br>使用 <code>@JsonValue</code>注解标记  获取code值的枚举实例方法。</li>
 <li>注意事项<br>该code值是使用jackson<code>序列化</code>/<code>反序列化</code>时枚举对应的值，会覆盖原来从字面量反序列化回枚举的默认实现。<br>如果想要保留原来从字面量反序列化回枚举类的功能，需要自定义一个<code> @JsonCreator</code> 的构造/静态工厂方法。</li>
-<li>相关代码<br>代码如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@JsonValue</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> code;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@JsonCreator</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ReturnCodeEnum <span class="title">create</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ReturnCodeEnum.valueOf(name);</span><br><span class="line">    &#125;<span class="keyword">catch</span> (IllegalArgumentException e)&#123;</span><br><span class="line">        <span class="keyword">int</span> code=Integer.parseInt(name);</span><br><span class="line">        <span class="keyword">for</span> (ReturnCodeEnum value : ReturnCodeEnum.values()) &#123;</span><br><span class="line">            <span class="keyword">if</span>(value.code==code)&#123;</span><br><span class="line">                <span class="keyword">return</span> value;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;No element matches &quot;</span>+name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>相关代码<br>代码如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@JsonValue</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getCode</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-keyword">return</span> code;<br>&#125;<br><br><span class="hljs-meta">@JsonCreator</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ReturnCodeEnum <span class="hljs-title">create</span><span class="hljs-params">(String name)</span></span>&#123;<br>    <span class="hljs-keyword">try</span>&#123;<br>        <span class="hljs-keyword">return</span> ReturnCodeEnum.valueOf(name);<br>    &#125;<span class="hljs-keyword">catch</span> (IllegalArgumentException e)&#123;<br>        <span class="hljs-keyword">int</span> code=Integer.parseInt(name);<br>        <span class="hljs-keyword">for</span> (ReturnCodeEnum value : ReturnCodeEnum.values()) &#123;<br>            <span class="hljs-keyword">if</span>(value.code==code)&#123;<br>                <span class="hljs-keyword">return</span> value;<br>                &#125;<br>        &#125;<br>        &#125;<br>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;No element matches &quot;</span>+name);<br>&#125;<br></code></pre></td></tr></table></figure></li>
 </ol>
 </li>
 <li><p>不可行方案</p>
@@ -392,9 +439,9 @@
 </ol>
 </li>
 </ol>
-<h2 id="二-代码实现"><a href="#二-代码实现" class="headerlink" title="二 代码实现"></a>二 代码实现</h2><h3 id="1-通用code枚举接口"><a href="#1-通用code枚举接口" class="headerlink" title="1 通用code枚举接口"></a>1 通用code枚举接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> V1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: linshenkx</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span>: 2019/1/12</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>: 带编号的枚举接口</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CodedEnum</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用jackson序列化/反序列化时枚举对应的值</span></span><br><span class="line"><span class="comment">     * 如果想要保留原来从字面量反序列化回枚举类的功能，</span></span><br><span class="line"><span class="comment">     * 需要自定义一个 <span class="doctag">@JsonCreator</span> 的构造/静态工厂方法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 自定义枚举code</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@JsonValue</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getCode</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二-代码实现"><a href="#二-代码实现" class="headerlink" title="二 代码实现"></a>二 代码实现</h2><h3 id="1-通用code枚举接口"><a href="#1-通用code枚举接口" class="headerlink" title="1 通用code枚举接口"></a>1 通用code枚举接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@version</span> V1.0</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span>: linshenkx</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span>: 2019/1/12</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@description</span>: 带编号的枚举接口</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">CodedEnum</span> </span>&#123;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 使用jackson序列化/反序列化时枚举对应的值</span><br><span class="hljs-comment">     * 如果想要保留原来从字面量反序列化回枚举类的功能，</span><br><span class="hljs-comment">     * 需要自定义一个 <span class="hljs-doctag">@JsonCreator</span> 的构造/静态工厂方法</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 自定义枚举code</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@JsonValue</span><br>    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">getCode</span><span class="hljs-params">()</span></span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
 <h3 id="2-转换器工厂类"><a href="#2-转换器工厂类" class="headerlink" title="2 转换器工厂类"></a>2 转换器工厂类</h3><p>代码实现</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> V1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: linshenkx</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span>: 2019/1/12</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>: 带编号的枚举转换器 工厂</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CodedEnumConverterFactory</span> <span class="keyword">implements</span> <span class="title">ConverterFactory</span>&lt;<span class="title">String</span>, <span class="title">CodedEnum</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 目标类型与对应转换器的Map</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;Class,Converter&gt; CONVERTER_MAP=<span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根据目标类型获取相应的转换器</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> targetType 目标类型</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> &lt;T&gt; CodedEnum的实现类</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T extends CodedEnum&gt; <span class="function">Converter&lt;String, T&gt; <span class="title">getConverter</span><span class="params">(Class&lt;T&gt; targetType)</span> </span>&#123;</span><br><span class="line">        Converter converter=CONVERTER_MAP.get(targetType);</span><br><span class="line">        <span class="keyword">if</span>(converter==<span class="keyword">null</span>)&#123;</span><br><span class="line">            converter=<span class="keyword">new</span> IntegerStrToEnumConverter&lt;&gt;(targetType);</span><br><span class="line">            CONVERTER_MAP.put(targetType,converter);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> converter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将int对应的字符串转换为目标类型的转换器</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> &lt;T&gt; 目标类型（CodedEnum的实现类）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">IntegerStrToEnumConverter</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">CodedEnum</span>&gt; <span class="keyword">implements</span> <span class="title">Converter</span>&lt;<span class="title">String</span>,<span class="title">T</span>&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">private</span> Map&lt;String,T&gt; enumMap=<span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="title">IntegerStrToEnumConverter</span><span class="params">(Class&lt;T&gt; enumType)</span></span>&#123;</span><br><span class="line">            T[] enums=enumType.getEnumConstants();</span><br><span class="line">            <span class="keyword">for</span> (T e:enums)&#123;</span><br><span class="line">                <span class="comment">//从 code 反序列化回枚举</span></span><br><span class="line">                enumMap.put(e.getCode()+<span class="string">&quot;&quot;</span>,e);</span><br><span class="line">                <span class="comment">//从枚举字面量反序列回枚</span></span><br><span class="line">                <span class="comment">//是Spring默认的方案</span></span><br><span class="line">                <span class="comment">//此处添加可避免下面convert方法抛出IllegalArgumentException异常后被系统捕获再次调用默认方案</span></span><br><span class="line">                enumMap.put(((Enum)e).name()+<span class="string">&quot;&quot;</span>,e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> T <span class="title">convert</span><span class="params">(String source)</span> </span>&#123;</span><br><span class="line">            T result=enumMap.get(source);</span><br><span class="line">            <span class="keyword">if</span>(result==<span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="comment">//抛出该异常后，会调用 spring 的默认转换方案，即使用 枚举字面量进行映射</span></span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;No element matches &quot;</span>+source);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@version</span> V1.0</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span>: linshenkx</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span>: 2019/1/12</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@description</span>: 带编号的枚举转换器 工厂</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CodedEnumConverterFactory</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ConverterFactory</span>&lt;<span class="hljs-title">String</span>, <span class="hljs-title">CodedEnum</span>&gt; </span>&#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 目标类型与对应转换器的Map</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Map&lt;Class,Converter&gt; CONVERTER_MAP=<span class="hljs-keyword">new</span> HashMap&lt;&gt;();<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 根据目标类型获取相应的转换器</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> targetType 目标类型</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> &lt;T&gt; CodedEnum的实现类</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> &lt;T extends CodedEnum&gt; <span class="hljs-function">Converter&lt;String, T&gt; <span class="hljs-title">getConverter</span><span class="hljs-params">(Class&lt;T&gt; targetType)</span> </span>&#123;<br>        Converter converter=CONVERTER_MAP.get(targetType);<br>        <span class="hljs-keyword">if</span>(converter==<span class="hljs-keyword">null</span>)&#123;<br>            converter=<span class="hljs-keyword">new</span> IntegerStrToEnumConverter&lt;&gt;(targetType);<br>            CONVERTER_MAP.put(targetType,converter);<br>        &#125;<br>        <span class="hljs-keyword">return</span> converter;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 将int对应的字符串转换为目标类型的转换器</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> &lt;T&gt; 目标类型（CodedEnum的实现类）</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IntegerStrToEnumConverter</span>&lt;<span class="hljs-title">T</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">CodedEnum</span>&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title">Converter</span>&lt;<span class="hljs-title">String</span>,<span class="hljs-title">T</span>&gt;</span>&#123;<br>        <span class="hljs-keyword">private</span> Map&lt;String,T&gt; enumMap=<span class="hljs-keyword">new</span> HashMap&lt;&gt;();<br><br>        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">IntegerStrToEnumConverter</span><span class="hljs-params">(Class&lt;T&gt; enumType)</span></span>&#123;<br>            T[] enums=enumType.getEnumConstants();<br>            <span class="hljs-keyword">for</span> (T e:enums)&#123;<br>                <span class="hljs-comment">//从 code 反序列化回枚举</span><br>                enumMap.put(e.getCode()+<span class="hljs-string">&quot;&quot;</span>,e);<br>                <span class="hljs-comment">//从枚举字面量反序列回枚</span><br>                <span class="hljs-comment">//是Spring默认的方案</span><br>                <span class="hljs-comment">//此处添加可避免下面convert方法抛出IllegalArgumentException异常后被系统捕获再次调用默认方案</span><br>                enumMap.put(((Enum)e).name()+<span class="hljs-string">&quot;&quot;</span>,e);<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-function"><span class="hljs-keyword">public</span> T <span class="hljs-title">convert</span><span class="hljs-params">(String source)</span> </span>&#123;<br>            T result=enumMap.get(source);<br>            <span class="hljs-keyword">if</span>(result==<span class="hljs-keyword">null</span>)&#123;<br>                <span class="hljs-comment">//抛出该异常后，会调用 spring 的默认转换方案，即使用 枚举字面量进行映射</span><br>                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;No element matches &quot;</span>+source);<br>            &#125;<br>            <span class="hljs-keyword">return</span> result;<br>        &#125;<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
 <h3 id="3-Spring-MVC-配置类"><a href="#3-Spring-MVC-配置类" class="headerlink" title="3 Spring MVC 配置类"></a>3 Spring MVC 配置类</h3><h4 id="1-相关知识"><a href="#1-相关知识" class="headerlink" title="1 相关知识"></a>1 相关知识</h4><ol>
 <li>Spring Boot 默认提供Spring MVC 自动配置，不需要使用@EnableWebMvc注解</li>
 <li>如果需要配置MVC（拦截器、格式化、视图等） 请使用添加@Configuration并实现WebMvcConfigurer接口.不要添加@EnableWebMvc注解。</li>
@@ -403,297 +450,399 @@
 </ol>
 <p>简单来说就是在SpringBoot中不要使用@EnableWebMvc，使用@Configuration标记自定义@WebMvcConfigurer类就行，而且该类允许多个同时存在。</p>
 <p>相关资料：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/zxc123e/article/details/84636521">Spring注解@EnableWebMvc使用坑点解析</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/pinebud55/article/details/53420481">解析@EnableWebMvc 、WebMvcConfigurationSupport和WebMvcConfigurationAdapter</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d47a09532de7">WebMvcConfigurationSupport与WebMvcConfigurer的关系</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/lqadam/article/details/80637335">@EnableWebMvc如何禁止@EnableAutoConfiguration</a></p>
-<h4 id="2-代码实现"><a href="#2-代码实现" class="headerlink" title="2 代码实现"></a>2 代码实现</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> V1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: linshenkx</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span>: 2019/1/12</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>: 将转换器工厂添加到Spring</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CodedEnumWebAppConfigurer</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addFormatters</span><span class="params">(FormatterRegistry registry)</span> </span>&#123;</span><br><span class="line">        registry.addConverterFactory(<span class="keyword">new</span> CodedEnumConverterFactory());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="三-测试及分析"><a href="#三-测试及分析" class="headerlink" title="三 测试及分析"></a>三 测试及分析</h2><h3 id="1-枚举类"><a href="#1-枚举类" class="headerlink" title="1 枚举类"></a>1 枚举类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> V1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: linshenkx</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span>: 2019/1/13</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>: 枚举类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">ReturnCodeEnum</span> <span class="keyword">implements</span> <span class="title">CodedEnum</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 正常</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    OK(<span class="number">200</span>),</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 出错</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    ERROR(<span class="number">500</span>)</span><br><span class="line">    ;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> code;</span><br><span class="line"></span><br><span class="line">    ReturnCodeEnum(<span class="keyword">int</span> code)&#123;</span><br><span class="line">        <span class="keyword">this</span>.code=code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonCreator</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ReturnCodeEnum <span class="title">create</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> ReturnCodeEnum.valueOf(name);</span><br><span class="line">        &#125;<span class="keyword">catch</span> (IllegalArgumentException e)&#123;</span><br><span class="line">            <span class="keyword">int</span> code=Integer.parseInt(name);</span><br><span class="line">            <span class="keyword">for</span> (ReturnCodeEnum value : ReturnCodeEnum.values()) &#123;</span><br><span class="line">                <span class="keyword">if</span>(value.code==code)&#123;</span><br><span class="line">                    <span class="keyword">return</span> value;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;No element matches &quot;</span>+name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="2-包含枚举类的POJO"><a href="#2-包含枚举类的POJO" class="headerlink" title="2 包含枚举类的POJO"></a>2 包含枚举类的POJO</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> V1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: linshenkx</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span>: 2019/1/12</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>: 枚举包装类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyResult</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> ReturnCodeEnum returnCode;</span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="3-测试类"><a href="#3-测试类" class="headerlink" title="3 测试类"></a>3 测试类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> V1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: linshenkx</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span>: 2019/1/12</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>: 测试类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/test&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@PostMapping(value = &quot;/enumForm&quot;)</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> MyResult <span class="title">testEnumForm</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">         <span class="meta">@RequestBody</span> MyResult myResult)</span> </span>&#123;</span><br><span class="line">    ReturnCodeEnum status = myResult.getReturnCode();</span><br><span class="line">    System.out.println(<span class="string">&quot;name():&quot;</span>+status.name());</span><br><span class="line">    System.out.println(<span class="string">&quot;ordinal():&quot;</span>+status.ordinal());</span><br><span class="line">    System.out.println(<span class="string">&quot;getCode():&quot;</span>+status.getCode());</span><br><span class="line">    <span class="keyword">return</span> myResult;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@PostMapping(value = &quot;/enumJson&quot;)</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> MyResult <span class="title">testEnumJson</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">          <span class="meta">@RequestBody</span> MyResult myResult)</span> </span>&#123;</span><br><span class="line">    ReturnCodeEnum status = myResult.getReturnCode();</span><br><span class="line">    System.out.println(<span class="string">&quot;name():&quot;</span>+status.name());</span><br><span class="line">    System.out.println(<span class="string">&quot;ordinal():&quot;</span>+status.ordinal());</span><br><span class="line">    System.out.println(<span class="string">&quot;getCode():&quot;</span>+status.getCode());</span><br><span class="line">    <span class="keyword">return</span> myResult;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@PostMapping(value = &quot;/enumPath/&#123;status&#125;&quot;)</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> ReturnCodeEnum <span class="title">testEnumPath</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">          <span class="meta">@PathVariable</span> ReturnCodeEnum status)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> status;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@PostMapping(value = &quot;/enumParam&quot;)</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> ReturnCodeEnum <span class="title">testEnumParam</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">          <span class="meta">@RequestParam</span> ReturnCodeEnum status)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> status;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-代码实现"><a href="#2-代码实现" class="headerlink" title="2 代码实现"></a>2 代码实现</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@version</span> V1.0</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span>: linshenkx</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span>: 2019/1/12</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@description</span>: 将转换器工厂添加到Spring</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CodedEnumWebAppConfigurer</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">WebMvcConfigurer</span> </span>&#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">addFormatters</span><span class="hljs-params">(FormatterRegistry registry)</span> </span>&#123;<br>        registry.addConverterFactory(<span class="hljs-keyword">new</span> CodedEnumConverterFactory());<br>    &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+<h2 id="三-测试及分析"><a href="#三-测试及分析" class="headerlink" title="三 测试及分析"></a>三 测试及分析</h2><h3 id="1-枚举类"><a href="#1-枚举类" class="headerlink" title="1 枚举类"></a>1 枚举类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@version</span> V1.0</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span>: linshenkx</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span>: 2019/1/13</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@description</span>: 枚举类</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">ReturnCodeEnum</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CodedEnum</span> </span>&#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 正常</span><br><span class="hljs-comment">     */</span><br>    OK(<span class="hljs-number">200</span>),<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 出错</span><br><span class="hljs-comment">     */</span><br>    ERROR(<span class="hljs-number">500</span>)<br>    ;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> code;<br><br>    ReturnCodeEnum(<span class="hljs-keyword">int</span> code)&#123;<br>        <span class="hljs-keyword">this</span>.code=code;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getCode</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> code;<br>    &#125;<br><br>    <span class="hljs-meta">@JsonCreator</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ReturnCodeEnum <span class="hljs-title">create</span><span class="hljs-params">(String name)</span></span>&#123;<br>        <span class="hljs-keyword">try</span>&#123;<br>            <span class="hljs-keyword">return</span> ReturnCodeEnum.valueOf(name);<br>        &#125;<span class="hljs-keyword">catch</span> (IllegalArgumentException e)&#123;<br>            <span class="hljs-keyword">int</span> code=Integer.parseInt(name);<br>            <span class="hljs-keyword">for</span> (ReturnCodeEnum value : ReturnCodeEnum.values()) &#123;<br>                <span class="hljs-keyword">if</span>(value.code==code)&#123;<br>                    <span class="hljs-keyword">return</span> value;<br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;No element matches &quot;</span>+name);<br>    &#125;<br><br><br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="2-包含枚举类的POJO"><a href="#2-包含枚举类的POJO" class="headerlink" title="2 包含枚举类的POJO"></a>2 包含枚举类的POJO</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@version</span> V1.0</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span>: linshenkx</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span>: 2019/1/12</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@description</span>: 枚举包装类</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Data</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyResult</span></span>&#123;<br>    <span class="hljs-keyword">private</span> ReturnCodeEnum returnCode;<br>    <span class="hljs-keyword">private</span> String message;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<h3 id="3-测试类"><a href="#3-测试类" class="headerlink" title="3 测试类"></a>3 测试类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@version</span> V1.0</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span>: linshenkx</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span>: 2019/1/12</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@description</span>: 测试类</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping(&quot;/test&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestController</span> </span>&#123;<br><br>  <span class="hljs-meta">@PostMapping(value = &quot;/enumForm&quot;)</span><br>  <span class="hljs-function"><span class="hljs-keyword">public</span> MyResult <span class="hljs-title">testEnumForm</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">         <span class="hljs-meta">@RequestBody</span> MyResult myResult)</span> </span>&#123;<br>    ReturnCodeEnum status = myResult.getReturnCode();<br>    System.out.println(<span class="hljs-string">&quot;name():&quot;</span>+status.name());<br>    System.out.println(<span class="hljs-string">&quot;ordinal():&quot;</span>+status.ordinal());<br>    System.out.println(<span class="hljs-string">&quot;getCode():&quot;</span>+status.getCode());<br>    <span class="hljs-keyword">return</span> myResult;<br>  &#125;<br><br>  <span class="hljs-meta">@PostMapping(value = &quot;/enumJson&quot;)</span><br>  <span class="hljs-function"><span class="hljs-keyword">public</span> MyResult <span class="hljs-title">testEnumJson</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">          <span class="hljs-meta">@RequestBody</span> MyResult myResult)</span> </span>&#123;<br>    ReturnCodeEnum status = myResult.getReturnCode();<br>    System.out.println(<span class="hljs-string">&quot;name():&quot;</span>+status.name());<br>    System.out.println(<span class="hljs-string">&quot;ordinal():&quot;</span>+status.ordinal());<br>    System.out.println(<span class="hljs-string">&quot;getCode():&quot;</span>+status.getCode());<br>    <span class="hljs-keyword">return</span> myResult;<br>  &#125;<br>  <br>  <span class="hljs-meta">@PostMapping(value = &quot;/enumPath/&#123;status&#125;&quot;)</span><br>  <span class="hljs-function"><span class="hljs-keyword">public</span> ReturnCodeEnum <span class="hljs-title">testEnumPath</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">          <span class="hljs-meta">@PathVariable</span> ReturnCodeEnum status)</span> </span>&#123;<br>    <span class="hljs-keyword">return</span> status;<br>  &#125;<br><br>  <span class="hljs-meta">@PostMapping(value = &quot;/enumParam&quot;)</span><br>  <span class="hljs-function"><span class="hljs-keyword">public</span> ReturnCodeEnum <span class="hljs-title">testEnumParam</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">          <span class="hljs-meta">@RequestParam</span> ReturnCodeEnum status)</span> </span>&#123;<br>    <span class="hljs-keyword">return</span> status;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>另外还需注入上面的转换器工厂，这里不再重复贴出。</p>
 <h3 id="4-测试结果"><a href="#4-测试结果" class="headerlink" title="4 测试结果"></a>4 测试结果</h3><h4 id="预测分析"><a href="#预测分析" class="headerlink" title="预测分析"></a>预测分析</h4><p>如上，因为ReturnCodeEnum 实现了 CodedEnum 接口，并注入对应转换器工厂，所以可以在 表单提交的时候适用code和字面量接收枚举参数。<br>ReturnCodeEnum还写了@JsonValue注解的方法，所以使用Json传参/返回值时使用@JsonValue对应的返回值。<br>因为我们还想实现Json传参的时候支持字面量，所以我们在@JsonCreator注解的方法里写了支持 code 和字面量，该方法会使@JsonValue 对反序列化的支持失效，所以写的时候不仅要支持字面量还要支持原本的目的—–code。<br>由于我们已经覆盖了原来的序列化/反序列化方式，所以 ordinal 的支持已经失效。<br>另外，由于我们可以将参数中的String转化为枚举，所以我们也可以直接使用 @PathVariable 和 @RequestParam（Content-Type: multipart/form-data）来传递枚举参数(相关资料：<a target="_blank" rel="noopener" href="https://www.baeldung.com/spring-type-conversions">Baeldung：Guide to Spring Type Conversions</a>)，但是注意这个时候不能使用 包含枚举类型的POJO类，除非你再定义一个从简单类型到复合类型的转换器。</p>
 <h4 id="1-bean接收（application-x-www-form-urlencoded）"><a href="#1-bean接收（application-x-www-form-urlencoded）" class="headerlink" title="1 bean接收（application/x-www-form-urlencoded）"></a>1 bean接收（application/x-www-form-urlencoded）</h4><ol>
-<li><p>字面量<br><img src="https://img-blog.csdnimg.cn/2019011409281053.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="OK"></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">name():<span class="function">OK</span></span><br><span class="line"><span class="function"><span class="title">ordinal</span><span class="params">()</span>:0</span></span><br><span class="line"><span class="function"><span class="title">getCode</span><span class="params">()</span>:200</span></span><br></pre></td></tr></table></figure></li>
-<li><p>code<br><img src="https://img-blog.csdnimg.cn/20190114092919865.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="code"></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">name():<span class="function">OK</span></span><br><span class="line"><span class="function"><span class="title">ordinal</span><span class="params">()</span>:0</span></span><br><span class="line"><span class="function"><span class="title">getCode</span><span class="params">()</span>:200</span></span><br></pre></td></tr></table></figure></li>
-<li><p>ordinal<br><img src="https://img-blog.csdnimg.cn/20190114093114217.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="ordinal"><br>抛出异常</p>
+<li><p>字面量<br><img src="https://img-blog.csdnimg.cn/2019011409281053.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="OK"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">name():<span class="hljs-function">OK</span><br><span class="hljs-function"><span class="hljs-title">ordinal</span><span class="hljs-params">()</span>:0</span><br><span class="hljs-function"><span class="hljs-title">getCode</span><span class="hljs-params">()</span>:200</span><br></code></pre></td></tr></table></figure></li>
+<li><p>code<br><img src="https://img-blog.csdnimg.cn/20190114092919865.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="code"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">name():<span class="hljs-function">OK</span><br><span class="hljs-function"><span class="hljs-title">ordinal</span><span class="hljs-params">()</span>:0</span><br><span class="hljs-function"><span class="hljs-title">getCode</span><span class="hljs-params">()</span>:200</span><br></code></pre></td></tr></table></figure></li>
+<li><p>ordinal<br><img src="https://img-blog.csdnimg.cn/20190114093114217.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="ordinal"><br>抛出异常</p>
 <blockquote>
 <p>Field error in object ‘myResult’ on field ‘returnCode’: rejected value [0]; codes [typeMismatch.myResult.returnCode,typeMismatch.returnCode,typeMismatch.com.dx.hbdt.system.manager.hongbao.controller.ReturnCodeEnum,typeMismatch]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [myResult.returnCode,returnCode]; arguments []; default message [returnCode]]; default message [Failed to convert property value of type ‘java.lang.String’ to required type ‘com.dx.hbdt.system.manager.hongbao.controller.ReturnCodeEnum’ for property ‘returnCode’; nested exception is org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [com.dx.hbdt.system.manager.hongbao.controller.ReturnCodeEnum] for value ‘0’; nested exception is java.lang.IllegalArgumentException: No element matches 0]]</p>
 </blockquote>
 </li>
 </ol>
 <h4 id="2-RequestBody-接收（application-json）"><a href="#2-RequestBody-接收（application-json）" class="headerlink" title="2 @RequestBody 接收（application/json）"></a>2 @RequestBody 接收（application/json）</h4><ol>
-<li><p>字面量<br><img src="https://img-blog.csdnimg.cn/20190114093238352.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="OK"></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">name():<span class="function">OK</span></span><br><span class="line"><span class="function"><span class="title">ordinal</span><span class="params">()</span>:0</span></span><br><span class="line"><span class="function"><span class="title">getCode</span><span class="params">()</span>:200</span></span><br></pre></td></tr></table></figure></li>
-<li><p>code<br><img src="https://img-blog.csdnimg.cn/20190114093333135.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="200"></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">name():<span class="function">OK</span></span><br><span class="line"><span class="function"><span class="title">ordinal</span><span class="params">()</span>:0</span></span><br><span class="line"><span class="function"><span class="title">getCode</span><span class="params">()</span>:200</span></span><br></pre></td></tr></table></figure></li>
-<li><p>ordinal<br><img src="https://img-blog.csdnimg.cn/2019011409350597.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="异常"><br>调用@JsonCreator的create方法的时候抛出 IllegalArgumentException 异常</p>
+<li><p>字面量<br><img src="https://img-blog.csdnimg.cn/20190114093238352.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="OK"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">name():<span class="hljs-function">OK</span><br><span class="hljs-function"><span class="hljs-title">ordinal</span><span class="hljs-params">()</span>:0</span><br><span class="hljs-function"><span class="hljs-title">getCode</span><span class="hljs-params">()</span>:200</span><br></code></pre></td></tr></table></figure></li>
+<li><p>code<br><img src="https://img-blog.csdnimg.cn/20190114093333135.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="200"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">name():<span class="hljs-function">OK</span><br><span class="hljs-function"><span class="hljs-title">ordinal</span><span class="hljs-params">()</span>:0</span><br><span class="hljs-function"><span class="hljs-title">getCode</span><span class="hljs-params">()</span>:200</span><br></code></pre></td></tr></table></figure></li>
+<li><p>ordinal<br><img src="https://img-blog.csdnimg.cn/2019011409350597.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="异常"><br>调用@JsonCreator的create方法的时候抛出 IllegalArgumentException 异常</p>
 </li>
 <li><p>其他<br>字符串是要携带引号的，如果不携带引号会解析错误，如{    “returnCode”: OK }<br>数字可不携带引号，在反序列化成枚举时仍会看成 String 对待，并获得与上面相同的效果。</p>
 </li>
 </ol>
-<h4 id="3-PathVariable"><a href="#3-PathVariable" class="headerlink" title="3 @PathVariable"></a>3 @PathVariable</h4><p><img src="https://img-blog.csdnimg.cn/20190114101616935.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="路径"></p>
-<h4 id="4-RequestParam（multipart-form-data）"><a href="#4-RequestParam（multipart-form-data）" class="headerlink" title="4 @RequestParam（multipart/form-data）"></a>4 @RequestParam（multipart/form-data）</h4><p><img src="https://img-blog.csdnimg.cn/20190114101654469.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" alt="参数"></p>
+<h4 id="3-PathVariable"><a href="#3-PathVariable" class="headerlink" title="3 @PathVariable"></a>3 @PathVariable</h4><p><img src="https://img-blog.csdnimg.cn/20190114101616935.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="路径"></p>
+<h4 id="4-RequestParam（multipart-form-data）"><a href="#4-RequestParam（multipart-form-data）" class="headerlink" title="4 @RequestParam（multipart/form-data）"></a>4 @RequestParam（multipart/form-data）</h4><p><img src="https://img-blog.csdnimg.cn/20190114101654469.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2FsaW55dWE=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" lazyload alt="参数"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" class="category-chain-item">后端开发</a>
+  
+  
+
+      </span>
+    
+  
+</span>
 
     </div>
-
-    
-    
-    
-        
-
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>林泽浩
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="https://linshenkx.github.io/spring_enum/" title="深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践">https://linshenkx.github.io/spring_enum/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Spring/">#Spring</a>
+      
+    </div>
+  
 </div>
 
 
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Spring/" rel="tag"># Spring</a>
-          </div>
+              
+  
 
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/pc-optimize-notes/" rel="prev" title="个人电脑优化杂记">
-      <i class="fa fa-chevron-left"></i> 个人电脑优化杂记
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/kubernetes-commands/" rel="next" title="k8s常用命令笔记">
-      k8s常用命令笔记 <i class="fa fa-chevron-right"></i>
-    </a></div>
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深入解析Spring使用枚举接收参数和返回值机制并提供自定义最佳实践</div>
+      <div>https://linshenkx.github.io/spring_enum/</div>
     </div>
-      </footer>
-    
-  </article>
-  
-  
-  
- 
-   <div>
-     <div>
-    
-        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
-    
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>林泽浩</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年1月14日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/kubernetes-commands/" title="k8s常用命令笔记">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">k8s常用命令笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/pc-optimize-notes/" title="个人电脑优化杂记">
+                        <span class="hidden-mobile">个人电脑优化杂记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
 </div>
 
-   </div>
- 
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
 
 
 
-          </div>
-          
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
       }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
     }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
     });
-  }
+  });
 </script>
 
-        </div>
-          
-  
 
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 
-  <aside class="sidebar">
-    <div class="sidebar-inner">
+  <script>Fluid.plugins.codeWidget();</script>
 
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E7%9B%AE%E6%A0%87%E4%B8%8E%E6%80%9D%E8%B7%AF"><span class="nav-text">一 目标与思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-%E8%B5%B7%E5%9B%A0"><span class="nav-text">0 起因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%BB%9F%E4%B8%80%E7%A7%B0%E8%B0%93"><span class="nav-text">1 统一称谓</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%9B%AE%E6%A0%87"><span class="nav-text">2 目标</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%95%88%E6%9E%9C"><span class="nav-text">实现效果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-SpringMVC-%E5%AF%B9-%E6%9E%9A%E4%B8%BE%E5%8F%82%E6%95%B0%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-text">3 SpringMVC 对 枚举参数的处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Spring%E4%BD%BF%E7%94%A8Bean%E6%8E%A5%E6%94%B6%E6%9E%9A%E4%B8%BE%E5%8F%82%E6%95%B0"><span class="nav-text">Spring使用Bean接收枚举参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Spring%E4%BD%BF%E7%94%A8-RequestBody-%E6%8E%A5%E6%94%B6%E6%9E%9A%E4%B8%BE%E5%8F%82%E6%95%B0"><span class="nav-text">Spring使用@RequestBody 接收枚举参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Spring%E4%BD%BF%E7%94%A8-ResponseBody-%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-text">Spring使用@ResponseBody 返回值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%80%9D%E8%B7%AF"><span class="nav-text">4 思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">二 代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%80%9A%E7%94%A8code%E6%9E%9A%E4%B8%BE%E6%8E%A5%E5%8F%A3"><span class="nav-text">1 通用code枚举接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%BD%AC%E6%8D%A2%E5%99%A8%E5%B7%A5%E5%8E%82%E7%B1%BB"><span class="nav-text">2 转换器工厂类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Spring-MVC-%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="nav-text">3 Spring MVC 配置类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86"><span class="nav-text">1 相关知识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">2 代码实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-%E6%B5%8B%E8%AF%95%E5%8F%8A%E5%88%86%E6%9E%90"><span class="nav-text">三 测试及分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9E%9A%E4%B8%BE%E7%B1%BB"><span class="nav-text">1 枚举类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8C%85%E5%90%AB%E6%9E%9A%E4%B8%BE%E7%B1%BB%E7%9A%84POJO"><span class="nav-text">2 包含枚举类的POJO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%B5%8B%E8%AF%95%E7%B1%BB"><span class="nav-text">3 测试类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="nav-text">4 测试结果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E6%B5%8B%E5%88%86%E6%9E%90"><span class="nav-text">预测分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-bean%E6%8E%A5%E6%94%B6%EF%BC%88application-x-www-form-urlencoded%EF%BC%89"><span class="nav-text">1 bean接收（application&#x2F;x-www-form-urlencoded）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-RequestBody-%E6%8E%A5%E6%94%B6%EF%BC%88application-json%EF%BC%89"><span class="nav-text">2 @RequestBody 接收（application&#x2F;json）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-PathVariable"><span class="nav-text">3 @PathVariable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-RequestParam%EF%BC%88multipart-form-data%EF%BC%89"><span class="nav-text">4 @RequestParam（multipart&#x2F;form-data）</span></a></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="林泽浩"
-      src="/images/header.jpg">
-  <p class="site-author-name" itemprop="name">林泽浩</p>
-  <div class="site-description" itemprop="description">林泽浩的个人小站</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">32</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">10</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">41</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://blog.csdn.net/alinyua" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;alinyua" rel="noopener" target="_blank"><i class="fab fa-csdn fa-fw"></i>CSDN</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://github.com/linshenkx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;linshenkx" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-  </div>
-
-
-  <div class="links-of-blogroll motion-element">
-    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
-      作品链接
-    </div>
-    <ul class="links-of-blogroll-list">
-        <li class="links-of-blogroll-item">
-          <a href="/productions/" title="&#x2F;productions&#x2F;">作品介绍页</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="https://dbm.linshenkx.cn/" title="https:&#x2F;&#x2F;dbm.linshenkx.cn" rel="noopener" target="_blank">web数据库管理终端(登录：test/test)</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="https://linshenkx.cn/" title="https:&#x2F;&#x2F;linshenkx.cn" rel="noopener" target="_blank">个人网站</a>
-        </li>
-    </ul>
-  </div>
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">林泽浩</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">73k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">1:06</span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
 
-<script src="/js/utils.js"></script>
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
 
-<script src="/js/motion.js"></script>
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
 
 
-<script src="/js/next-boot.js"></script>
 
 
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
 
 
   
 
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"./live2d_models/崩坏学院2/Kiro/model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"react":{"opacity":1},"log":false});</script></body>
 </html>

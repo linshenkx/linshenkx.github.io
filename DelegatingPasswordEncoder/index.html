@@ -1,26 +1,22 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/bear_polar_32px.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/bear_polar_16px.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="本文参考自Spring Security 5.0.4.RELEASE  的官方文档,结合源码介绍了DelegatingPasswordEncoder,对其工作过程进行分析并解决其中遇到的问题.包括There is no PasswordEncoder mapped for the id &quot;null&quot;的非法参数异常的正确处理方法">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/header.jpg">
+  <link rel="icon" href="/img/header.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="林泽浩">
+  <meta name="keywords" content="大数据">
+  
+    <meta name="description" content="本文参考自Spring Security 5.0.4.RELEASE  的官方文档,结合源码介绍了DelegatingPasswordEncoder,对其工作过程进行分析并解决其中遇到的问题.包括There is no PasswordEncoder mapped for the id &quot;null&quot;的非法参数异常的正确处理方法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringSecurity5.0的DelegatingPasswordEncoder详解">
 <meta property="og:url" content="https://linshenkx.github.io/DelegatingPasswordEncoder/index.html">
@@ -31,260 +27,315 @@
 <meta property="article:modified_time" content="2021-09-01T08:02:17.788Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="Spring">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>SpringSecurity5.0的DelegatingPasswordEncoder详解 - 且炼时光</title>
 
-<link rel="canonical" href="https://linshenkx.github.io/DelegatingPasswordEncoder/">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>SpringSecurity5.0的DelegatingPasswordEncoder详解 | 且炼时光</title>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
 
 
 
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
 
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
+<body>
+  
 
-  <div class="site-meta">
+  <header>
+    
 
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">且炼时光</h1>
-      <span class="logo-line-after"><i></i></span>
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>且炼时光</strong>
     </a>
-      <p class="site-subtitle" itemprop="description">韶华未褪，且炼时光</p>
-  </div>
 
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/productions/">
+                <i class="iconfont icon-archive-fill"></i>
+                作品展示
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/linshenkx">
+                <i class="iconfont icon-github-fill"></i>
+                github
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://blog.csdn.net/alinyua">
+                <i class="iconfont icon-copyright"></i>
+                csdn
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
     </div>
   </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-mysite">
-
-    <a href="http://linshenkx.cn/" rel="noopener" target="_blank"><i class="fa fa-heartbeat fa-fw"></i>切换到【个性版】个人网站</a>
-
-  </li>
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-productions">
-
-    <a href="/productions/" rel="section"><i class="fas fa-store fa-fw"></i>作品展示</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
 </nav>
 
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
   
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://linshenkx.github.io/DelegatingPasswordEncoder/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="林泽浩">
-      <meta itemprop="description" content="林泽浩的个人小站">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="且炼时光">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          SpringSecurity5.0的DelegatingPasswordEncoder详解
-        </h1>
-
-        <div class="post-meta">
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
           
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-05-07 14:30:32" itemprop="dateCreated datePublished" datetime="2018-05-07T14:30:32+08:00">2018-05-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-01 16:02:17" itemprop="dateModified" datetime="2021-09-01T16:02:17+08:00">2021-09-01</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">后端开发</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.3k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
+            <span id="subtitle" data-typed-text="SpringSecurity5.0的DelegatingPasswordEncoder详解"></span>
+          
         </div>
-      </header>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2018-05-07 14:30" pubdate>
+          2018年5月7日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          96 分钟
+        
+      </span>
+    
 
     
     
-    
-    <div class="post-body" itemprop="articleBody">
+  </div>
+
+
+        
+      </div>
 
       
-        <p>本文参考自Spring Security 5.0.4.RELEASE  的官方文档,结合源码介绍了DelegatingPasswordEncoder,对其工作过程进行分析并解决其中遇到的问题.包括<code>There is no PasswordEncoder mapped for the id &quot;null&quot;</code>的非法参数异常的正确处理方法</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SpringSecurity5.0的DelegatingPasswordEncoder详解</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文参考自Spring Security 5.0.4.RELEASE  的官方文档,结合源码介绍了DelegatingPasswordEncoder,对其工作过程进行分析并解决其中遇到的问题.包括<code>There is no PasswordEncoder mapped for the id &quot;null&quot;</code>的非法参数异常的正确处理方法</p>
 <span id="more"></span>
 <p>##PasswordEncoder<br>首先要理解<strong>DelegatingPasswordEncoder</strong>的作用和存在意义,明白官方为什么要使用它来取代原先的<strong>NoOpPasswordEncoder</strong></p>
 <p><strong>DelegatingPasswordEncoder</strong>和<strong>NoOpPasswordEncoder</strong>都是<code>PasswordEncoder</code>接口的实现类,根据官方的定义,Spring Security的<strong>PasswordEncoder</strong>接口用于执行密码的单向转换，以便安全地存储密码。</p>
 <p>关于密码存储的演变历史这里我不多做介绍,简单来说就是现在数据库存储的密码基本都是经过编码的,而<strong>决定如何编码</strong>以及<strong>判断未编码的字符序列和编码后的字符串是否匹配</strong>就是PassswordEncoder的责任.</p>
 <p>这里我们可以看一下PasswordEncoder接口的源码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">PasswordEncoder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Encode the raw password. Generally, a good encoding algorithm applies a SHA-1 or</span></span><br><span class="line"><span class="comment">	 * greater hash combined with an 8-byte or greater randomly generated salt.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function">String <span class="title">encode</span><span class="params">(CharSequence rawPassword)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Verify the encoded password obtained from storage matches the submitted raw</span></span><br><span class="line"><span class="comment">	 * password after it too is encoded. Returns true if the passwords match, false if</span></span><br><span class="line"><span class="comment">	 * they do not. The stored password itself is never decoded.</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> rawPassword the raw password to encode and match</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> encodedPassword the encoded password from storage to compare with</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> true if the raw password, after encoding, matches the encoded password from</span></span><br><span class="line"><span class="comment">	 * storage</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(CharSequence rawPassword, String encodedPassword)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">PasswordEncoder</span> </span>&#123;<br><br>	<span class="hljs-comment">/**</span><br><span class="hljs-comment">	 * Encode the raw password. Generally, a good encoding algorithm applies a SHA-1 or</span><br><span class="hljs-comment">	 * greater hash combined with an 8-byte or greater randomly generated salt.</span><br><span class="hljs-comment">	 */</span><br>	<span class="hljs-function">String <span class="hljs-title">encode</span><span class="hljs-params">(CharSequence rawPassword)</span></span>;<br><br>	<span class="hljs-comment">/**</span><br><span class="hljs-comment">	 * Verify the encoded password obtained from storage matches the submitted raw</span><br><span class="hljs-comment">	 * password after it too is encoded. Returns true if the passwords match, false if</span><br><span class="hljs-comment">	 * they do not. The stored password itself is never decoded.</span><br><span class="hljs-comment">	 *</span><br><span class="hljs-comment">	 * <span class="hljs-doctag">@param</span> rawPassword the raw password to encode and match</span><br><span class="hljs-comment">	 * <span class="hljs-doctag">@param</span> encodedPassword the encoded password from storage to compare with</span><br><span class="hljs-comment">	 * <span class="hljs-doctag">@return</span> true if the raw password, after encoding, matches the encoded password from</span><br><span class="hljs-comment">	 * storage</span><br><span class="hljs-comment">	 */</span><br>	<span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">matches</span><span class="hljs-params">(CharSequence rawPassword, String encodedPassword)</span></span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
 <p>根据源码,我们可以直观地看到,PassswordEncoder接口只有两个方法,一个是<code>String encode(CharSequence rawPassword);</code>,用于将字符序列(即原密码)进行编码,另一个方法是<code>boolean matches(CharSequence rawPassword, String encodedPassword);</code>,用于比较字符序列和编码后的密码是否匹配.</p>
 <p>理解了PasswordEncoder的作用后我们来Spring Security 5.0之前默认的PasswordEncoder实现类<code>NoOpPasswordEncoder</code>,这个类已经被标记为过时了,因为不安全,下面就让我们来看看它是如何地不安全的</p>
 <h3 id="1-NoOpPasswordEncoder"><a href="#1-NoOpPasswordEncoder" class="headerlink" title="1 NoOpPasswordEncoder"></a>1 NoOpPasswordEncoder</h3><p>事实上,NoOpPasswordEncoder就是没有编码的编码器,源码如下:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Deprecated</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">NoOpPasswordEncoder</span> <span class="keyword">implements</span> <span class="title">PasswordEncoder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">encode</span><span class="params">(CharSequence rawPassword)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> rawPassword.toString();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(CharSequence rawPassword, String encodedPassword)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> rawPassword.toString().equals(encodedPassword);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Get the singleton &#123;<span class="doctag">@link</span> NoOpPasswordEncoder&#125;.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> PasswordEncoder <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> INSTANCE;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> PasswordEncoder INSTANCE = <span class="keyword">new</span> NoOpPasswordEncoder();</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">NoOpPasswordEncoder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Deprecated</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NoOpPasswordEncoder</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">PasswordEncoder</span> </span>&#123;<br><br>	<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">encode</span><span class="hljs-params">(CharSequence rawPassword)</span> </span>&#123;<br>		<span class="hljs-keyword">return</span> rawPassword.toString();<br>	&#125;<br><br>	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">matches</span><span class="hljs-params">(CharSequence rawPassword, String encodedPassword)</span> </span>&#123;<br>		<span class="hljs-keyword">return</span> rawPassword.toString().equals(encodedPassword);<br>	&#125;<br><br>	<span class="hljs-comment">/**</span><br><span class="hljs-comment">	 * Get the singleton &#123;<span class="hljs-doctag">@link</span> NoOpPasswordEncoder&#125;.</span><br><span class="hljs-comment">	 */</span><br>	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> PasswordEncoder <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;<br>		<span class="hljs-keyword">return</span> INSTANCE;<br>	&#125;<br><br>	<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> PasswordEncoder INSTANCE = <span class="hljs-keyword">new</span> NoOpPasswordEncoder();<br><br>	<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">NoOpPasswordEncoder</span><span class="hljs-params">()</span> </span>&#123;<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
 <p>可以看到,<strong>NoOpPasswordEncoder</strong>的<strong>encode</strong>方法就只是简单地把字符序列转成字符串,也就是说,你输入的密码”123456”存储在数据库里仍然是”123456”,这样如果数据库被攻破的话,密码就直接泄露了,十分不安全.而且,<strong>NoOpPasswordEncoder</strong>也就失去了所谓密码编码器的意义了.</p>
 <p>不过,正因其十分简单,所以在Spring Security 5.0 之前<strong>NoOpPasswordEncoder</strong>是作为默认的密码编码器而存在到,它可以是你没有主动加密时的一个默认选择.</p>
 <p>另外,<strong>NoOpPasswordEncoder</strong>的实现是一个标准的饿汉单例模式,关于单例模式可以看这一篇文章,<a target="_blank" rel="noopener" href="https://blog.csdn.net/alinyua/article/details/79776613">单例模式及其4种推荐写法和3类保护手段</a></p>
@@ -302,16 +353,16 @@
 </ul>
 <p>是不是很神奇?事实上<strong>DelegatingPasswordEncoder</strong>并不是传统意义上的编码器,它并不使用某一特定算法进行编码,顾名思义,它是一个<strong>委派密码编码器</strong>,它将具体编码的实现根据要求委派给不同的算法,以此来实现不同编码算法之间的兼容和变化协调.</p>
 <h4 id="1-构造方法"><a href="#1-构造方法" class="headerlink" title="1 构造方法"></a>1 构造方法</h4><p>下面我们来看看<strong>DelegatingPasswordEncoder</strong>的构造方法</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public DelegatingPasswordEncoder(String idForEncode,</span><br><span class="line">	Map&lt;String, PasswordEncoder&gt; idToPasswordEncoder) &#123;</span><br><span class="line">	if(idForEncode == null) &#123;</span><br><span class="line">		throw new IllegalArgumentException(&quot;idForEncode cannot be null&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	if(!idToPasswordEncoder.containsKey(idForEncode)) &#123;</span><br><span class="line">		throw new IllegalArgumentException(&quot;idForEncode &quot; + idForEncode + &quot;is not found in idToPasswordEncoder &quot; + idToPasswordEncoder);</span><br><span class="line">	&#125;</span><br><span class="line">	for(String id : idToPasswordEncoder.keySet()) &#123;</span><br><span class="line">		if(id == null) &#123;</span><br><span class="line">			continue;</span><br><span class="line">		&#125;</span><br><span class="line">		if(id.contains(PREFIX)) &#123;</span><br><span class="line">			throw new IllegalArgumentException(&quot;id &quot; + id + &quot; cannot contain &quot; + PREFIX);</span><br><span class="line">		&#125;</span><br><span class="line">		if(id.contains(SUFFIX)) &#123;</span><br><span class="line">			throw new IllegalArgumentException(&quot;id &quot; + id + &quot; cannot contain &quot; + SUFFIX);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	this.idForEncode = idForEncode;</span><br><span class="line">	this.passwordEncoderForEncode = idToPasswordEncoder.get(idForEncode);</span><br><span class="line">	this.idToPasswordEncoder = new HashMap&lt;&gt;(idToPasswordEncoder);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-keyword">public</span> DelegatingPasswordEncoder(<span class="hljs-keyword">String</span> idForEncode,<br>	Map&lt;<span class="hljs-keyword">String</span>, PasswordEncoder&gt; idToPasswordEncoder) &#123;<br>	<span class="hljs-keyword">if</span>(idForEncode == <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-type">IllegalArgumentException</span>(<span class="hljs-string">&quot;idForEncode cannot be null&quot;</span>);<br>	&#125;<br>	<span class="hljs-keyword">if</span>(!idToPasswordEncoder.containsKey(idForEncode)) &#123;<br>		<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-type">IllegalArgumentException</span>(<span class="hljs-string">&quot;idForEncode &quot;</span> + idForEncode + <span class="hljs-string">&quot;is not found in idToPasswordEncoder &quot;</span> + idToPasswordEncoder);<br>	&#125;<br>	<span class="hljs-keyword">for</span>(<span class="hljs-keyword">String</span> id : <span class="hljs-type">idToPasswordEncoder</span>.keySet()) &#123;<br>		<span class="hljs-keyword">if</span>(id == <span class="hljs-literal">null</span>) &#123;<br>			<span class="hljs-keyword">continue</span>;<br>		&#125;<br>		<span class="hljs-keyword">if</span>(id.contains(PREFIX)) &#123;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-type">IllegalArgumentException</span>(<span class="hljs-string">&quot;id &quot;</span> + id + <span class="hljs-string">&quot; cannot contain &quot;</span> + PREFIX);<br>		&#125;<br>		<span class="hljs-keyword">if</span>(id.contains(SUFFIX)) &#123;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-type">IllegalArgumentException</span>(<span class="hljs-string">&quot;id &quot;</span> + id + <span class="hljs-string">&quot; cannot contain &quot;</span> + SUFFIX);<br>		&#125;<br>	&#125;<br>	<span class="hljs-built_in">this</span>.idForEncode = idForEncode;<br>	<span class="hljs-built_in">this</span>.passwordEncoderForEncode = idToPasswordEncoder.<span class="hljs-keyword">get</span>(idForEncode);<br>	<span class="hljs-built_in">this</span>.idToPasswordEncoder = <span class="hljs-keyword">new</span> <span class="hljs-type">HashMap</span>&lt;&gt;(idToPasswordEncoder);<br>&#125;<br></code></pre></td></tr></table></figure>
 <p><strong>idForEncode</strong>决定密码编码器的类型,<strong>idToPasswordEncoder</strong>决定判断匹配时兼容的类型<br>而且<strong>idToPasswordEncoder</strong>必须包含<strong>idForEncode</strong>(不然加密后就无法匹配了)</p>
 <p>围绕这个构造方法通常有两种创建思路,如下:</p>
 <h5 id="工厂构造"><a href="#工厂构造" class="headerlink" title="工厂构造"></a>工厂构造</h5><p>首先是工厂构造</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PasswordEncoder passwordEncoder =</span><br><span class="line">    PasswordEncoderFactories.createDelegatingPasswordEncoder();</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java">PasswordEncoder passwordEncoder =<br>    PasswordEncoderFactories.createDelegatingPasswordEncoder();<br></code></pre></td></tr></table></figure>
 <p>其具体实现如下:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> PasswordEncoder <span class="title">createDelegatingPasswordEncoder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	String encodingId = <span class="string">&quot;bcrypt&quot;</span>;</span><br><span class="line">	Map&lt;String, PasswordEncoder&gt; encoders = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	encoders.put(encodingId, <span class="keyword">new</span> BCryptPasswordEncoder());</span><br><span class="line">	encoders.put(<span class="string">&quot;ldap&quot;</span>, <span class="keyword">new</span> LdapShaPasswordEncoder());</span><br><span class="line">	encoders.put(<span class="string">&quot;MD4&quot;</span>, <span class="keyword">new</span> Md4PasswordEncoder());</span><br><span class="line">	encoders.put(<span class="string">&quot;MD5&quot;</span>, <span class="keyword">new</span> MessageDigestPasswordEncoder(<span class="string">&quot;MD5&quot;</span>));</span><br><span class="line">	encoders.put(<span class="string">&quot;noop&quot;</span>, NoOpPasswordEncoder.getInstance());</span><br><span class="line">	encoders.put(<span class="string">&quot;pbkdf2&quot;</span>, <span class="keyword">new</span> Pbkdf2PasswordEncoder());</span><br><span class="line">	encoders.put(<span class="string">&quot;scrypt&quot;</span>, <span class="keyword">new</span> SCryptPasswordEncoder());</span><br><span class="line">	encoders.put(<span class="string">&quot;SHA-1&quot;</span>, <span class="keyword">new</span> MessageDigestPasswordEncoder(<span class="string">&quot;SHA-1&quot;</span>));</span><br><span class="line">	encoders.put(<span class="string">&quot;SHA-256&quot;</span>, <span class="keyword">new</span> MessageDigestPasswordEncoder(<span class="string">&quot;SHA-256&quot;</span>));</span><br><span class="line">	encoders.put(<span class="string">&quot;sha256&quot;</span>, <span class="keyword">new</span> StandardPasswordEncoder());</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> DelegatingPasswordEncoder(encodingId, encoders);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> PasswordEncoder <span class="hljs-title">createDelegatingPasswordEncoder</span><span class="hljs-params">()</span> </span>&#123;<br>	String encodingId = <span class="hljs-string">&quot;bcrypt&quot;</span>;<br>	Map&lt;String, PasswordEncoder&gt; encoders = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();<br>	encoders.put(encodingId, <span class="hljs-keyword">new</span> BCryptPasswordEncoder());<br>	encoders.put(<span class="hljs-string">&quot;ldap&quot;</span>, <span class="hljs-keyword">new</span> LdapShaPasswordEncoder());<br>	encoders.put(<span class="hljs-string">&quot;MD4&quot;</span>, <span class="hljs-keyword">new</span> Md4PasswordEncoder());<br>	encoders.put(<span class="hljs-string">&quot;MD5&quot;</span>, <span class="hljs-keyword">new</span> MessageDigestPasswordEncoder(<span class="hljs-string">&quot;MD5&quot;</span>));<br>	encoders.put(<span class="hljs-string">&quot;noop&quot;</span>, NoOpPasswordEncoder.getInstance());<br>	encoders.put(<span class="hljs-string">&quot;pbkdf2&quot;</span>, <span class="hljs-keyword">new</span> Pbkdf2PasswordEncoder());<br>	encoders.put(<span class="hljs-string">&quot;scrypt&quot;</span>, <span class="hljs-keyword">new</span> SCryptPasswordEncoder());<br>	encoders.put(<span class="hljs-string">&quot;SHA-1&quot;</span>, <span class="hljs-keyword">new</span> MessageDigestPasswordEncoder(<span class="hljs-string">&quot;SHA-1&quot;</span>));<br>	encoders.put(<span class="hljs-string">&quot;SHA-256&quot;</span>, <span class="hljs-keyword">new</span> MessageDigestPasswordEncoder(<span class="hljs-string">&quot;SHA-256&quot;</span>));<br>	encoders.put(<span class="hljs-string">&quot;sha256&quot;</span>, <span class="hljs-keyword">new</span> StandardPasswordEncoder());<br><br>	<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DelegatingPasswordEncoder(encodingId, encoders);<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>这个可以简单地理解为,遇到新密码,<strong>DelegatingPasswordEncoder</strong>会委托给<strong>BCryptPasswordEncoder</strong>(encodingId为<em>bcryp</em><em>)进行加密,同时,对历史上使用*<em>ldap</em></em>,<strong>MD4</strong>,<strong>MD5</strong>等等加密算法的密码认证保持兼容(如果数据库里的密码使用的是<strong>MD5</strong>算法,那使用matches方法认证仍可以通过,但新密码会使<strong>bcrypt</strong>进行储存),十分神奇,原理后面会讲</p>
 <h5 id="定制构造"><a href="#定制构造" class="headerlink" title="定制构造"></a>定制构造</h5><p>接下来是定制构造,其实和工厂方法是一样的,一般情况下推荐直接使用工厂方法,这里给一个小例子</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">String idForEncode = <span class="string">&quot;bcrypt&quot;</span>;</span><br><span class="line">Map encoders = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">encoders.put(idForEncode, <span class="keyword">new</span> BCryptPasswordEncoder());</span><br><span class="line">encoders.put(<span class="string">&quot;noop&quot;</span>, NoOpPasswordEncoder.getInstance());</span><br><span class="line">encoders.put(<span class="string">&quot;pbkdf2&quot;</span>, <span class="keyword">new</span> Pbkdf2PasswordEncoder());</span><br><span class="line">encoders.put(<span class="string">&quot;scrypt&quot;</span>, <span class="keyword">new</span> SCryptPasswordEncoder());</span><br><span class="line">encoders.put(<span class="string">&quot;sha256&quot;</span>, <span class="keyword">new</span> StandardPasswordEncoder());</span><br><span class="line"></span><br><span class="line">PasswordEncoder passwordEncoder =</span><br><span class="line">    <span class="keyword">new</span> DelegatingPasswordEncoder(idForEncode, encoders);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java">String idForEncode = <span class="hljs-string">&quot;bcrypt&quot;</span>;<br>Map encoders = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();<br>encoders.put(idForEncode, <span class="hljs-keyword">new</span> BCryptPasswordEncoder());<br>encoders.put(<span class="hljs-string">&quot;noop&quot;</span>, NoOpPasswordEncoder.getInstance());<br>encoders.put(<span class="hljs-string">&quot;pbkdf2&quot;</span>, <span class="hljs-keyword">new</span> Pbkdf2PasswordEncoder());<br>encoders.put(<span class="hljs-string">&quot;scrypt&quot;</span>, <span class="hljs-keyword">new</span> SCryptPasswordEncoder());<br>encoders.put(<span class="hljs-string">&quot;sha256&quot;</span>, <span class="hljs-keyword">new</span> StandardPasswordEncoder());<br><br>PasswordEncoder passwordEncoder =<br>    <span class="hljs-keyword">new</span> DelegatingPasswordEncoder(idForEncode, encoders);<br></code></pre></td></tr></table></figure>
 
 <h4 id="2-密码存储格式"><a href="#2-密码存储格式" class="headerlink" title="2 密码存储格式"></a>2 密码存储格式</h4><p>密码的标准存储格式是:</p>
 <blockquote>
@@ -322,291 +373,390 @@
 <p>注意:<br><strong>rawPassword</strong>,<strong>encodedPassword</strong>,<strong>密码存储格式</strong>(<strong>prefixEncodedPassword</strong>),这三者是不同的概念!<br><code>rawPassword</code>相当于字符序列”<code>123456</code>“<br><code>encodedPassword</code>是使用id为”mycrypt”对应的密码编码器”123456”编码后的字符串,假设为”<code>qwertyuiop</code>“<br><code>存储的密码 prefixEncodedPassword</code>是在数据库中,我们所能见到的形式,如”<code>&#123;mycrypt&#125;qwertyuiop</code>“<br>这个概念在后面讲matches方法的源码时会用到,请留意</p>
 </blockquote>
 <p>例如<strong>rawPassword</strong>为<strong>password</strong>在使用不同编码算法的情况下在数据库的存储如下:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;bcrypt&#125;$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG </span><br><span class="line">&#123;noop&#125;password </span><br><span class="line">&#123;pbkdf2&#125;5d923b44a6d129f3ddf3e3c8d29412723dcbde72445e8ef6bf3b508fbf17fa4ed4d6b99ca763d8dc </span><br><span class="line">&#123;scrypt&#125;$e0801$8bWJaSu2IKSn9Z9kM+TPXfOc/9bdYSrN1oD9qfVThWEwdRTnO7re7Ei+fUZRJ68k9lTyuTeUp4of4g24hHnazw==$OAOec05+bXxvuu/1qZ6NUR+xQYvYv7BeL1QxwRpY5Pc=  </span><br><span class="line">&#123;sha256&#125;97cde38028ad898ebc02e690819fa220e88c62e0699403e94fff291cfffaf8410849f27605abcbc0 </span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk">&#123;bcrypt&#125;<span class="hljs-variable">$2a</span><span class="hljs-variable">$10</span><span class="hljs-variable">$dXJ3SW6G7P50lGmMkkmwe</span>.<span class="hljs-number">20</span>cQQubK3.HZWzG3YB1tlRy.fqvM/BG <br>&#123;noop&#125;password <br>&#123;pbkdf2&#125;<span class="hljs-number">5</span>d923b44a6d129f3ddf3e3c8d29412723dcbde72445e8ef6bf3b508fbf17fa4ed4d6b99ca763d8dc <br>&#123;scrypt&#125;<span class="hljs-variable">$e0801</span><span class="hljs-variable">$8bWJaSu2IKSn9Z9kM</span>+TPXfOc<span class="hljs-regexp">/9bdYSrN1oD9qfVThWEwdRTnO7re7Ei+fUZRJ68k9lTyuTeUp4of4g24hHnazw==$OAOec05+bXxvuu/</span><span class="hljs-number">1</span>qZ6NUR+xQYvYv7BeL1QxwRpY5Pc=  <br>&#123;sha256&#125;<span class="hljs-number">97</span>cde38028ad898ebc02e690819fa220e88c62e0699403e94fff291cfffaf8410849f27605abcbc0 <br></code></pre></td></tr></table></figure>
 <blockquote>
 <p>这里需要指明,密码的可靠性并不依赖于加密算法的保密,即密码的可靠在于就算你知道我使用的是什么算法你也无法还原出原密码(当然,对于本身就可逆的编码算法来说就不是这样了,但这样的算法我们通常不会认为是可靠的),而且,即使没有标明使用的是什么算法,攻击者也很容易根据一些规律从编码后的密码字符串中推测出编码算法,如bcrypt算法通常是以<code>$2a$</code>开头的</p>
 </blockquote>
 <h4 id="3-密码编码与匹配"><a href="#3-密码编码与匹配" class="headerlink" title="3 密码编码与匹配"></a>3 密码编码与匹配</h4><p>从上文可知,<strong>idForEncode</strong>这个构造参数决定使用哪个PasswordEncoder进行密码的编码,编码的方法如下:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PREFIX = <span class="string">&quot;&#123;&quot;</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SUFFIX = <span class="string">&quot;&#125;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">encode</span><span class="params">(CharSequence rawPassword)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> PREFIX + <span class="keyword">this</span>.idForEncode + SUFFIX + <span class="keyword">this</span>.passwordEncoderForEncode.encode(rawPassword);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX = <span class="hljs-string">&quot;&#123;&quot;</span>;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String SUFFIX = <span class="hljs-string">&quot;&#125;&quot;</span>;<br><br><span class="hljs-meta">@Override</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">encode</span><span class="hljs-params">(CharSequence rawPassword)</span> </span>&#123;<br>	<span class="hljs-keyword">return</span> PREFIX + <span class="hljs-keyword">this</span>.idForEncode + SUFFIX + <span class="hljs-keyword">this</span>.passwordEncoderForEncode.encode(rawPassword);<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>所以用上文构造的<strong>DelegatingPasswordEncoder</strong>默认使用<strong>BCryptPasswordEncoder</strong>,结果格式如</p>
 <blockquote>
 <p>{bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG</p>
 </blockquote>
 <p>密码编码方法比较简单,重点在于匹配.匹配方法源码如下:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(CharSequence rawPassword, String prefixEncodedPassword)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(rawPassword == <span class="keyword">null</span> &amp;&amp; prefixEncodedPassword == <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//取出编码算法的id</span></span><br><span class="line">	String id = extractId(prefixEncodedPassword);</span><br><span class="line">	<span class="comment">//根据编码算法的id从支持的密码编码器Map(构造时传入)中取出对应编码器</span></span><br><span class="line">	PasswordEncoder delegate = <span class="keyword">this</span>.idToPasswordEncoder.get(id);</span><br><span class="line">	<span class="keyword">if</span>(delegate == <span class="keyword">null</span>) &#123;</span><br><span class="line">	<span class="comment">//如果找不到对应的密码编码器则使用默认密码编码器进行匹配判断,此时比较的密码字符串是 prefixEncodedPassword</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.defaultPasswordEncoderForMatches</span><br><span class="line">			.matches(rawPassword, prefixEncodedPassword);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//从 prefixEncodedPassword 中提取获得 encodedPassword </span></span><br><span class="line">	String encodedPassword = extractEncodedPassword(prefixEncodedPassword);</span><br><span class="line">	<span class="comment">//使用对应编码器进行匹配判断,此时比较的密码字符串是 encodedPassword ,不携带编码算法id头</span></span><br><span class="line">	<span class="keyword">return</span> delegate.matches(rawPassword, encodedPassword);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">matches</span><span class="hljs-params">(CharSequence rawPassword, String prefixEncodedPassword)</span> </span>&#123;<br>	<span class="hljs-keyword">if</span>(rawPassword == <span class="hljs-keyword">null</span> &amp;&amp; prefixEncodedPassword == <span class="hljs-keyword">null</span>) &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;<br>	&#125;<br>	<span class="hljs-comment">//取出编码算法的id</span><br>	String id = extractId(prefixEncodedPassword);<br>	<span class="hljs-comment">//根据编码算法的id从支持的密码编码器Map(构造时传入)中取出对应编码器</span><br>	PasswordEncoder delegate = <span class="hljs-keyword">this</span>.idToPasswordEncoder.get(id);<br>	<span class="hljs-keyword">if</span>(delegate == <span class="hljs-keyword">null</span>) &#123;<br>	<span class="hljs-comment">//如果找不到对应的密码编码器则使用默认密码编码器进行匹配判断,此时比较的密码字符串是 prefixEncodedPassword</span><br>		<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.defaultPasswordEncoderForMatches<br>			.matches(rawPassword, prefixEncodedPassword);<br>	&#125;<br>	<span class="hljs-comment">//从 prefixEncodedPassword 中提取获得 encodedPassword </span><br>	String encodedPassword = extractEncodedPassword(prefixEncodedPassword);<br>	<span class="hljs-comment">//使用对应编码器进行匹配判断,此时比较的密码字符串是 encodedPassword ,不携带编码算法id头</span><br>	<span class="hljs-keyword">return</span> delegate.matches(rawPassword, encodedPassword);<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>这个匹配方法其实也挺好理解的,唯一需要特别注意的就是找不到对应密码编码器时使用的默认密码编码器,</p>
 <p>我们来看看<strong>defaultPasswordEncoderForMatches</strong>是一个什么东西</p>
 <h4 id="4-defaultPasswordEncoderForMatches及-id为null异常"><a href="#4-defaultPasswordEncoderForMatches及-id为null异常" class="headerlink" title="4 defaultPasswordEncoderForMatches及 id为null异常"></a>4 defaultPasswordEncoderForMatches及 id为null异常</h4><p>在<strong>DelegatingPasswordEncoder</strong>的源码里对应内容如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PREFIX = <span class="string">&quot;&#123;&quot;</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SUFFIX = <span class="string">&quot;&#125;&quot;</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> String idForEncode;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PasswordEncoder passwordEncoderForEncode;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, PasswordEncoder&gt; idToPasswordEncoder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> PasswordEncoder defaultPasswordEncoderForMatches = <span class="keyword">new</span> UnmappedIdPasswordEncoder();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDefaultPasswordEncoderForMatches</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">	PasswordEncoder defaultPasswordEncoderForMatches)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(defaultPasswordEncoderForMatches == <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;defaultPasswordEncoderForMatches cannot be null&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">this</span>.defaultPasswordEncoderForMatches = defaultPasswordEncoderForMatches;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">UnmappedIdPasswordEncoder</span> <span class="keyword">implements</span> <span class="title">PasswordEncoder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">encode</span><span class="params">(CharSequence rawPassword)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">&quot;encode is not supported&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(CharSequence rawPassword,</span></span></span><br><span class="line"><span class="params"><span class="function">		String prefixEncodedPassword)</span> </span>&#123;</span><br><span class="line">		String id = extractId(prefixEncodedPassword);</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;There is no PasswordEncoder mapped for the id \&quot;&quot;</span> + id + <span class="string">&quot;\&quot;&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX = <span class="hljs-string">&quot;&#123;&quot;</span>;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String SUFFIX = <span class="hljs-string">&quot;&#125;&quot;</span>;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String idForEncode;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> PasswordEncoder passwordEncoderForEncode;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;String, PasswordEncoder&gt; idToPasswordEncoder;<br><br><span class="hljs-keyword">private</span> PasswordEncoder defaultPasswordEncoderForMatches = <span class="hljs-keyword">new</span> UnmappedIdPasswordEncoder();<br><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setDefaultPasswordEncoderForMatches</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">	PasswordEncoder defaultPasswordEncoderForMatches)</span> </span>&#123;<br>	<span class="hljs-keyword">if</span>(defaultPasswordEncoderForMatches == <span class="hljs-keyword">null</span>) &#123;<br>		<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;defaultPasswordEncoderForMatches cannot be null&quot;</span>);<br>	&#125;<br>	<span class="hljs-keyword">this</span>.defaultPasswordEncoderForMatches = defaultPasswordEncoderForMatches;<br>&#125;<br><br><span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UnmappedIdPasswordEncoder</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">PasswordEncoder</span> </span>&#123;<br><br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">encode</span><span class="hljs-params">(CharSequence rawPassword)</span> </span>&#123;<br>		<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnsupportedOperationException(<span class="hljs-string">&quot;encode is not supported&quot;</span>);<br>	&#125;<br><br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">matches</span><span class="hljs-params">(CharSequence rawPassword,</span></span><br><span class="hljs-params"><span class="hljs-function">		String prefixEncodedPassword)</span> </span>&#123;<br>		String id = extractId(prefixEncodedPassword);<br>		<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;There is no PasswordEncoder mapped for the id \&quot;&quot;</span> + id + <span class="hljs-string">&quot;\&quot;&quot;</span>);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>可以看到,<strong>DelegatingPasswordEncoder</strong>里面,<br><strong>PREFIX <strong>和</strong>SUFFIX <strong>是常量,<br><strong>idForEncode</strong>,<strong>passwordEncoderForEncode</strong>和</strong>idToPasswordEncoder</strong>是在构造方法中传入决定并不可修改的,<br>只有<strong>defaultPasswordEncoderForMatches <strong>是有一个</strong>setDefaultPasswordEncoderForMatches</strong>方法进行设置的可变对象.</p>
 <p>而且,它有一个私有的默认实现<code>UnmappedIdPasswordEncoder </code>,这个所谓的默认实现的唯一作用就是<strong>抛出异常提醒你要自己选择一个默认密码编码器来取代它</strong>,通常我们只会可能用到它的matches方法,这个时候就会报抛出如下异常</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">java.lang.IllegalArgumentException: There is no PasswordEncoder mapped <span class="keyword">for</span> the id <span class="string">&quot;null&quot;</span></span><br><span class="line">	at org.springframework.security.crypto.password.DelegatingPasswordEncoder$UnmappedIdPasswordEncoder.matches(DelegatingPasswordEncoder.java:<span class="number">233</span>)</span><br><span class="line">	at org.springframework.security.crypto.password.DelegatingPasswordEncoder.matches(DelegatingPasswordEncoder.java:<span class="number">196</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">java.lang.IllegalArgumentException: There is no PasswordEncoder mapped <span class="hljs-keyword">for</span> the id <span class="hljs-string">&quot;null&quot;</span><br>	at org.springframework.security.crypto.password.DelegatingPasswordEncoder$UnmappedIdPasswordEncoder.matches(DelegatingPasswordEncoder.java:<span class="hljs-number">233</span>)<br>	at org.springframework.security.crypto.password.DelegatingPasswordEncoder.matches(DelegatingPasswordEncoder.java:<span class="hljs-number">196</span>)<br></code></pre></td></tr></table></figure>
 <h4 id="5-解决方法"><a href="#5-解决方法" class="headerlink" title="5 解决方法"></a>5 解决方法</h4><p>遇到这个异常,最简单的做法就是明确提供一个<strong>PasswordEncoder</strong>对密码进行编码,如果是从Spring Security 5.0 之前迁移而来的,由于之前默认使用的是<strong>NoOpPasswordEncoder</strong>并且数据库的密码保存格式不带有加密算法id头,会报id为null异常,所以应该明确提供一个<strong>NoOpPasswordEncoder</strong>密码编码器.</p>
 <p>这里有两种思路,其一就是使用<strong>NoOpPasswordEncoder</strong>取代<strong>DelegatingPasswordEncoder</strong>,以恢复到之前版本的状态,这也是笔者在其他博客上看得比较多的一种解决方法.另外就是使用<strong>DelegatingPasswordEncoder</strong>的<code>setDefaultPasswordEncoderForMatches</code>方法指定默认的密码编码器为<strong>NoOpPasswordEncoder</strong>,这两种方法孰优孰劣自然不言而喻,官方文档是这么说的</p>
 <blockquote>
 <p>Reverting to NoOpPasswordEncoder is not considered to be secure. You should instead migrate to using DelegatingPasswordEncoder to support secure password encoding.<br>恢复到NoOpPasswordEncoder不被认为是安全的。您应该转而使用DelegatingPasswordEncoder支持安全密码编码</p>
 </blockquote>
 <p>当然,你也可以将数据库保存的密码都加上一个<code>&#123;noop&#125;</code>前缀,这样<strong>DelegatingPasswordEncoder</strong>就知道要使用<strong>NoOpPasswordEncoder</strong>了,这确实是一种方法,但没必要,这里我们来看一下前面的两种解决方法的实现</p>
-<h5 id="1-使用NoOpPasswordEncoder取代DelegatingPasswordEncoder"><a href="#1-使用NoOpPasswordEncoder取代DelegatingPasswordEncoder" class="headerlink" title="1 使用NoOpPasswordEncoder取代DelegatingPasswordEncoder"></a>1 使用NoOpPasswordEncoder取代DelegatingPasswordEncoder</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"> <span class="keyword">public</span>  <span class="keyword">static</span> NoOpPasswordEncoder passwordEncoder（）&#123;</span><br><span class="line">     <span class="keyword">return</span> NoOpPasswordEncoder.getInstance（）;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h5 id="2-使用DelegatingPasswordEncoder指定defaultPasswordEncoderForMatches"><a href="#2-使用DelegatingPasswordEncoder指定defaultPasswordEncoderForMatches" class="headerlink" title="2 使用DelegatingPasswordEncoder指定defaultPasswordEncoderForMatches"></a>2 使用DelegatingPasswordEncoder指定defaultPasswordEncoderForMatches</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">    @Bean</span><br><span class="line">    public  static PasswordEncoder passwordEncoder( )&#123;</span><br><span class="line">        DelegatingPasswordEncoder delegatingPasswordEncoder =</span><br><span class="line">                (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();</span><br><span class="line">//设置defaultPasswordEncoderForMatches为NoOpPasswordEncoder</span><br><span class="line">        delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(NoOpPasswordEncoder.getInstance());</span><br><span class="line">        return  delegatingPasswordEncoder;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-    </div>
+<h5 id="1-使用NoOpPasswordEncoder取代DelegatingPasswordEncoder"><a href="#1-使用NoOpPasswordEncoder取代DelegatingPasswordEncoder" class="headerlink" title="1 使用NoOpPasswordEncoder取代DelegatingPasswordEncoder"></a>1 使用NoOpPasswordEncoder取代DelegatingPasswordEncoder</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br> <span class="hljs-keyword">public</span>  <span class="hljs-keyword">static</span> NoOpPasswordEncoder passwordEncoder（）&#123;<br>     <span class="hljs-keyword">return</span> NoOpPasswordEncoder.getInstance（）;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h5 id="2-使用DelegatingPasswordEncoder指定defaultPasswordEncoderForMatches"><a href="#2-使用DelegatingPasswordEncoder指定defaultPasswordEncoderForMatches" class="headerlink" title="2 使用DelegatingPasswordEncoder指定defaultPasswordEncoderForMatches"></a>2 使用DelegatingPasswordEncoder指定defaultPasswordEncoderForMatches</h5><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">    @Bean<br>    public  static PasswordEncoder password<span class="hljs-constructor">Encoder( )</span>&#123;<br>        DelegatingPasswordEncoder delegatingPasswordEncoder =<br>                (DelegatingPasswordEncoder) <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">PasswordEncoderFactories</span>.</span></span>create<span class="hljs-constructor">DelegatingPasswordEncoder()</span>;<br><span class="hljs-comment">//设置defaultPasswordEncoderForMatches为NoOpPasswordEncoder</span><br>        delegatingPasswordEncoder.set<span class="hljs-constructor">DefaultPasswordEncoderForMatches(NoOpPasswordEncoder.<span class="hljs-params">getInstance</span>()</span>);<br>        return  delegatingPasswordEncoder;<br>    &#125;<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
 
+<span class="category-chains">
+  
+  
     
-    
-    
+      <span class="category-chain">
         
+  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" class="category-chain-item">后端开发</a>
+  
+  
 
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>林泽浩
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="https://linshenkx.github.io/DelegatingPasswordEncoder/" title="SpringSecurity5.0的DelegatingPasswordEncoder详解">https://linshenkx.github.io/DelegatingPasswordEncoder/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Spring/">#Spring</a>
+      
+    </div>
+  
 </div>
 
 
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Spring/" rel="tag"># Spring</a>
-          </div>
+              
+  
 
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item"></div>
-      <div class="post-nav-item">
-    <a href="/mysql-cron-docker/" rel="next" title="Dockerfile实现MySQL定时备份">
-      Dockerfile实现MySQL定时备份 <i class="fa fa-chevron-right"></i>
-    </a></div>
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SpringSecurity5.0的DelegatingPasswordEncoder详解</div>
+      <div>https://linshenkx.github.io/DelegatingPasswordEncoder/</div>
     </div>
-      </footer>
-    
-  </article>
-  
-  
-  
- 
-   <div>
-     <div>
-    
-        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
-    
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>林泽浩</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2018年5月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/mysql-cron-docker/" title="Dockerfile实现MySQL定时备份">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Dockerfile实现MySQL定时备份</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
 </div>
 
-   </div>
- 
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
 
 
 
-          </div>
-          
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
       }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
     }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
     });
-  }
+  });
 </script>
 
-        </div>
-          
-  
 
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 
-  <aside class="sidebar">
-    <div class="sidebar-inner">
+  <script>Fluid.plugins.codeWidget();</script>
 
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-NoOpPasswordEncoder"><span class="nav-text">1 NoOpPasswordEncoder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-DelegatingPasswordEncoder"><span class="nav-text">2 DelegatingPasswordEncoder</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-text">1 构造方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82%E6%9E%84%E9%80%A0"><span class="nav-text">工厂构造</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6%E6%9E%84%E9%80%A0"><span class="nav-text">定制构造</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%AF%86%E7%A0%81%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F"><span class="nav-text">2 密码存储格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%AF%86%E7%A0%81%E7%BC%96%E7%A0%81%E4%B8%8E%E5%8C%B9%E9%85%8D"><span class="nav-text">3 密码编码与匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-defaultPasswordEncoderForMatches%E5%8F%8A-id%E4%B8%BAnull%E5%BC%82%E5%B8%B8"><span class="nav-text">4 defaultPasswordEncoderForMatches及 id为null异常</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-text">5 解决方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E4%BD%BF%E7%94%A8NoOpPasswordEncoder%E5%8F%96%E4%BB%A3DelegatingPasswordEncoder"><span class="nav-text">1 使用NoOpPasswordEncoder取代DelegatingPasswordEncoder</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8DelegatingPasswordEncoder%E6%8C%87%E5%AE%9AdefaultPasswordEncoderForMatches"><span class="nav-text">2 使用DelegatingPasswordEncoder指定defaultPasswordEncoderForMatches</span></a></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="林泽浩"
-      src="/images/header.jpg">
-  <p class="site-author-name" itemprop="name">林泽浩</p>
-  <div class="site-description" itemprop="description">林泽浩的个人小站</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">32</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">10</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">41</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://blog.csdn.net/alinyua" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;alinyua" rel="noopener" target="_blank"><i class="fab fa-csdn fa-fw"></i>CSDN</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://github.com/linshenkx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;linshenkx" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-  </div>
-
-
-  <div class="links-of-blogroll motion-element">
-    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
-      作品链接
-    </div>
-    <ul class="links-of-blogroll-list">
-        <li class="links-of-blogroll-item">
-          <a href="/productions/" title="&#x2F;productions&#x2F;">作品介绍页</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="https://dbm.linshenkx.cn/" title="https:&#x2F;&#x2F;dbm.linshenkx.cn" rel="noopener" target="_blank">web数据库管理终端(登录：test/test)</a>
-        </li>
-        <li class="links-of-blogroll-item">
-          <a href="https://linshenkx.cn/" title="https:&#x2F;&#x2F;linshenkx.cn" rel="noopener" target="_blank">个人网站</a>
-        </li>
-    </ul>
-  </div>
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">林泽浩</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">73k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">1:06</span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
 
-<script src="/js/utils.js"></script>
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
 
-<script src="/js/motion.js"></script>
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
 
 
-<script src="/js/next-boot.js"></script>
 
 
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
 
 
   
 
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"./live2d_models/崩坏学院2/Kiro/model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"react":{"opacity":1},"log":false});</script></body>
 </html>
