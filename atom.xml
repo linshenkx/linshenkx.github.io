@@ -38,6 +38,25 @@
   </entry>
   
   <entry>
+    <title>grafana第三方集成以及使用jwt(jwks)实现免登录访问</title>
+    <link href="https://linshenkx.github.io/grafana-integration-jwt-jwks/"/>
+    <id>https://linshenkx.github.io/grafana-integration-jwt-jwks/</id>
+    <published>2022-11-05T15:47:22.000Z</published>
+    <updated>2022-11-07T03:06:11.727Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;对于第三方集成grafana，需要可以通过链接直接访问管理界面，跳过登录页面。&lt;br&gt;传统方法是使用代理认证，而最新的jwt方法可以更好地实现这个需求。&lt;br&gt;不过网络上相关教程文档较少，缺乏详细说明，故此记录。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    
+    <category term="grafana" scheme="https://linshenkx.github.io/tags/grafana/"/>
+    
+  </entry>
+  
+  <entry>
     <title>docker部署nfs服务器v3v4</title>
     <link href="https://linshenkx.github.io/docker-nfs-server-v3-v4/"/>
     <id>https://linshenkx.github.io/docker-nfs-server-v3-v4/</id>
@@ -416,25 +435,6 @@
     
     
     <summary type="html">&lt;p&gt;最近遇到一个需求：要使用azkaban对接客户的CDH集群，CDH用的是oozie，azkaban只能部署在我们客户端的机器上，所以需要在客户机上手动搭建CDH的hadoop环境。操作很简单，过程比较麻烦，这里记录一下。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
-    
-    <category term="CDH" scheme="https://linshenkx.github.io/tags/CDH/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CDH部署笔记</title>
-    <link href="https://linshenkx.github.io/cdh_server_env_deploy/"/>
-    <id>https://linshenkx.github.io/cdh_server_env_deploy/</id>
-    <published>2020-10-27T16:29:54.000Z</published>
-    <updated>2021-09-01T08:02:17.793Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;本文为个人安装CDH时记录，不具普适性，仅供参考。建议对比官方文档阅读。&lt;/p&gt;</summary>
     
     
     
