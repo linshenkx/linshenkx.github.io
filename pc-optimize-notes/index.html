@@ -24,7 +24,7 @@
 <meta property="og:description" content="记录个人在日常开发、使用中对电脑的一些零散配置，备忘。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2018-12-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-14T09:18:55.575Z">
+<meta property="article:modified_time" content="2022-11-08T06:40:20.190Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta name="twitter:card" content="summary_large_image">
@@ -271,7 +271,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          352 字
+          838 字
         
       </span>
     
@@ -282,7 +282,7 @@
         
         
         
-          3 分钟
+          7 分钟
         
       </span>
     
@@ -327,11 +327,19 @@
                 
                 <p>记录个人在日常开发、使用中对电脑的一些零散配置，备忘。</p>
 <span id="more"></span>
-<h3 id="1-使用onedrive备份指定文件夹"><a href="#1-使用onedrive备份指定文件夹" class="headerlink" title="1 使用onedrive备份指定文件夹"></a>1 使用onedrive备份指定文件夹</h3><p>重装系统的时候总有一些文件忘记备份，等想起来的时候只能后悔莫及。<br>如原神的游戏截图，这些都是留在本地的，一般很难记得备份，想起来就让人心痛</p>
+<h3 id="windows-cmd-cd的使用"><a href="#windows-cmd-cd的使用" class="headerlink" title="windows cmd cd的使用"></a>windows cmd cd的使用</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> /d 为后面地址的盘符</span><br>cd /d D:\Dev\xc_dq_sjzy\es7\bin<br><br></code></pre></td></tr></table></figure>
+<h3 id="使用onedrive备份指定文件夹"><a href="#使用onedrive备份指定文件夹" class="headerlink" title="使用onedrive备份指定文件夹"></a>使用onedrive备份指定文件夹</h3><p>重装系统的时候总有一些文件忘记备份，等想起来的时候只能后悔莫及。<br>如原神的游戏截图，这些都是留在本地的，一般很难记得备份，想起来就让人心痛</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">mklink /d &quot;X:\backup\Genshin&quot; &quot;D:\Program Files\Genshin Impact\Genshin Impact Game\ScreenShot&quot;<br><br></code></pre></td></tr></table></figure>
 <p>注意 mklink需要在cmd下执行, PowerShell是没有的</p>
 <p>另外，如果是用google dirve或者坚果云的话则傻瓜式操作即可，比较推荐。</p>
-<h3 id="2-使用TreeSize-Free分析磁盘空间占用"><a href="#2-使用TreeSize-Free分析磁盘空间占用" class="headerlink" title="2 使用TreeSize Free分析磁盘空间占用"></a>2 使用TreeSize Free分析磁盘空间占用</h3><p>在微软应用商店就可以下载，以树状图结构分析磁盘空间占用，比较好用的小工具</p>
+<h3 id="使用TreeSize-Free分析磁盘空间占用"><a href="#使用TreeSize-Free分析磁盘空间占用" class="headerlink" title="使用TreeSize Free分析磁盘空间占用"></a>使用TreeSize Free分析磁盘空间占用</h3><p>在微软应用商店就可以下载，以树状图结构分析磁盘空间占用，比较好用的小工具</p>
+<h3 id="处理Hyper-V导致的端口占用问题"><a href="#处理Hyper-V导致的端口占用问题" class="headerlink" title="处理Hyper-V导致的端口占用问题"></a>处理Hyper-V导致的端口占用问题</h3><p>使用<code>netstat -ano | findstr</code> 端口号命令时，<br>发现 6942~6991 和 9090 并未被某个进程使用。<br>这说明这些端口可能是被系统保留了，比如 Hyper-V。</p>
+<p>在powershell下操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 查看tcp ipv4动态端口范围</span><br>netsh int ipv4 show dynamicport tcp<br><span class="hljs-meta">#</span><span class="bash"> 查看tcp ipv4端口排除范围（被系统或者我们自己保留的端口）</span><br>netsh int ipv4 show excludedport tcp<br><br></code></pre></td></tr></table></figure>
+<p>解决办法：<br>以管理员身份打开 powershell</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 置 tcp ipv4 的动态端口范围为 49152 开始的 16384 个端口，也就是 49152~65535</span><br>netsh int ipv4 set dynamicport tcp start=49152 num=16384<br><br></code></pre></td></tr></table></figure>
+<p>重启电脑,然后再去<code>show dynamicport tcp</code>确认</p>
+<p>参考资料：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zsmumu/p/13389816.html">https://www.cnblogs.com/zsmumu/p/13389816.html</a></p>
 
                 
               </div>
