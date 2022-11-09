@@ -24,7 +24,7 @@
 <meta property="og:description" content="一些自用的kubectl命令">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-12-28T15:00:00.000Z">
-<meta property="article:modified_time" content="2022-07-04T07:16:21.760Z">
+<meta property="article:modified_time" content="2022-11-09T08:01:07.977Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="kubernetes">
 <meta property="article:tag" content="笔记">
@@ -272,7 +272,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          966 字
+          1.8k 字
         
       </span>
     
@@ -283,7 +283,7 @@
         
         
         
-          9 分钟
+          16 分钟
         
       </span>
     
@@ -338,6 +338,13 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">NAME_SPACE=anyonedev<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># 删除所有ImagePullBackOff或CrashLoopBackOff的pod</span></span><br>kubectl get pods -n=$&#123;NAME_SPACE&#125; | grep -E &#x27;ImagePullBackOff|CrashLoopBackOff&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl delete pod  -n=$&#123;NAME_SPACE&#125;<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># 重启所有evicted或Terminating的pod</span></span><br>kubectl get pods -n=$&#123;NAME_SPACE&#125; | grep -E &#x27;Evicted|Terminating&#x27;  | awk &#x27;&#123;print $1&#125;&#x27; | xargs kubectl get pod  -n=$&#123;NAME_SPACE&#125; -o yaml | kubectl replace --force -f  - <br><br></code></pre></td></tr></table></figure>
 
 <h3 id="pod-forward"><a href="#pod-forward" class="headerlink" title="pod-forward"></a>pod-forward</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><br>kubectl port-forward --address 0.0.0.0 pod/pod名称 暴露端口:内部端口<br>kubectl port-forward --address 0.0.0.0 service/service名称 暴露端口:内部端口<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="生成kubernetes集群最高权限admin用户的token"><a href="#生成kubernetes集群最高权限admin用户的token" class="headerlink" title="生成kubernetes集群最高权限admin用户的token"></a>生成kubernetes集群最高权限admin用户的token</h3><p>参考：<a target="_blank" rel="noopener" href="https://jimmysong.io/kubernetes-handbook/guide/auth-with-kubeconfig-or-token.html">https://jimmysong.io/kubernetes-handbook/guide/auth-with-kubeconfig-or-token.html</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">vim lin-admin-role.yaml<br></code></pre></td></tr></table></figure>
+<p>粘贴如下内容</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">kind:</span> <span class="hljs-string">ClusterRoleBinding</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">rbac.authorization.k8s.io/v1beta1</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">lin-admin</span><br>  <span class="hljs-attr">annotations:</span><br>    <span class="hljs-attr">rbac.authorization.kubernetes.io/autoupdate:</span> <span class="hljs-string">&quot;true&quot;</span><br><span class="hljs-attr">roleRef:</span><br>  <span class="hljs-attr">kind:</span> <span class="hljs-string">ClusterRole</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">cluster-admin</span><br>  <span class="hljs-attr">apiGroup:</span> <span class="hljs-string">rbac.authorization.k8s.io</span><br><span class="hljs-attr">subjects:</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">kind:</span> <span class="hljs-string">ServiceAccount</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">lin-admin</span><br>  <span class="hljs-attr">namespace:</span> <span class="hljs-string">kube-system</span><br><span class="hljs-meta">---</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">ServiceAccount</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">lin-admin</span><br>  <span class="hljs-attr">namespace:</span> <span class="hljs-string">kube-system</span><br>  <span class="hljs-attr">labels:</span><br>    <span class="hljs-attr">kubernetes.io/cluster-service:</span> <span class="hljs-string">&quot;true&quot;</span><br>    <span class="hljs-attr">addonmanager.kubernetes.io/mode:</span> <span class="hljs-string">Reconcile</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建</span><br>kubectl create -f lin-admin-role.yaml<br><span class="hljs-comment"># 获取admin-token的secret名字</span><br>kubectl -n kube-system get secret|grep lin-admin-token<br><span class="hljs-comment"># 获取token的值</span><br>kubectl -n kube-system describe secret lin-admin-token-rhz5b<br></code></pre></td></tr></table></figure>
+
                 
               </div>
             
