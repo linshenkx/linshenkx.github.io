@@ -42,7 +42,7 @@
     <link href="https://linshenkx.github.io/gitlab-ci-k8s-runner-cache/"/>
     <id>https://linshenkx.github.io/gitlab-ci-k8s-runner-cache/</id>
     <published>2023-01-31T15:00:00.000Z</published>
-    <updated>2023-02-01T04:47:06.761Z</updated>
+    <updated>2023-02-01T09:57:19.528Z</updated>
     
     
     <summary type="html">&lt;p&gt;因gitlab-ci的k8s-runner会将job里的每个stage都交由单独的pod来执行，导致默认的本地缓存无法使用。&lt;br&gt;本文记录了基于k8s pv的gitlab-ci的缓存配置方案，无需使用S3分布式存储。&lt;br&gt;并记录了gitlab-ci-k8s-runner相关的配置、部署步骤等。&lt;/p&gt;</summary>
