@@ -479,7 +479,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/my-blog-system-design/" target="_self">
         <div>
-          本文主要介绍自己的博客系统是如何设计的，并使用Halo博客同步器 将hexo（git pages: https://linshenkx.github.io ）文章自动同步到halo( http://linshenkx.cn )。实现一次编写、两套博客系统并存、多个网址访问的效果。
+          本文主要介绍自己的博客系统是如何设计的，并使用Halo博客同步器 将hexo（git pages: https://linshenkx.github.io ）文章自动同步到halo( http://linshenkx.cn )。实现一次编写、两套博客系统并存、多个网址访问的效果。2022.11 更新：因其审核问题删除gitee个人主页（无标准无原因，你永远不知道为什么无法发布）
         </div>
       </a>
 
@@ -727,6 +727,69 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/gitlab-ci-k8s-runner-cache/" target="_self">
+          gitlab-ci-k8s-runner部署及缓存配置说明
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/gitlab-ci-k8s-runner-cache/" target="_self">
+        <div>
+          因gitlab-ci的k8s-runner会将job里的每个stage都交由单独的pod来执行，导致默认的本地缓存无法使用。本文记录了基于k8s pv的gitlab-ci的缓存配置方案，无需使用S3分布式存储。并记录了gitlab-ci-k8s-runner相关的配置、部署步骤等。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-01-31 23:00" pubdate>
+              2023-01-31
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kubernetes/" class="category-chain-item">Kubernetes</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/gitlab/">#gitlab</a>
+            
+              <a href="/tags/ci/">#ci</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/grafana-integration-jwt-jwks/" target="_self">
           grafana第三方集成以及使用jwt(jwks)实现免登录访问
         </a>
@@ -838,73 +901,6 @@
               <a href="/tags/docker/">#docker</a>
             
               <a href="/tags/nfs-server/">#nfs-server</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/tailscale-derper-docker/" target="_self">
-          我的服务器系列：tailscale使用自定义derper服务器（docker部署）
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/tailscale-derper-docker/" target="_self">
-        <div>
-          使用docker部署tailscale私有中继服务器，并使用nginx四层代理与原有服务共用443端口，最后配置使用并检测。derper-docker部署及使用较麻烦，本文分享踩坑记录及经验，建议阅读。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-04-16 22:54" pubdate>
-              2022-04-16
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/" class="category-chain-item">我的服务器系列</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/docker/">#docker</a>
-            
-              <a href="/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/">#我的服务器系列</a>
-            
-              <a href="/tags/tailscale/">#tailscale</a>
-            
-              <a href="/tags/derper/">#derper</a>
             
           </div>
         

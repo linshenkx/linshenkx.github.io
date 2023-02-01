@@ -38,6 +38,27 @@
   </entry>
   
   <entry>
+    <title>gitlab-ci-k8s-runner部署及缓存配置说明</title>
+    <link href="https://linshenkx.github.io/gitlab-ci-k8s-runner-cache/"/>
+    <id>https://linshenkx.github.io/gitlab-ci-k8s-runner-cache/</id>
+    <published>2023-01-31T15:00:00.000Z</published>
+    <updated>2023-02-01T04:47:06.761Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;因gitlab-ci的k8s-runner会将job里的每个stage都交由单独的pod来执行，导致默认的本地缓存无法使用。&lt;br&gt;本文记录了基于k8s pv的gitlab-ci的缓存配置方案，无需使用S3分布式存储。&lt;br&gt;并记录了gitlab-ci-k8s-runner相关的配置、部署步骤等。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Kubernetes" scheme="https://linshenkx.github.io/categories/Kubernetes/"/>
+    
+    
+    <category term="gitlab" scheme="https://linshenkx.github.io/tags/gitlab/"/>
+    
+    <category term="ci" scheme="https://linshenkx.github.io/tags/ci/"/>
+    
+  </entry>
+  
+  <entry>
     <title>grafana第三方集成以及使用jwt(jwks)实现免登录访问</title>
     <link href="https://linshenkx.github.io/grafana-integration-jwt-jwks/"/>
     <id>https://linshenkx.github.io/grafana-integration-jwt-jwks/</id>
@@ -285,10 +306,10 @@
     <link href="https://linshenkx.github.io/my-blog-system-design/"/>
     <id>https://linshenkx.github.io/my-blog-system-design/</id>
     <published>2021-09-13T15:40:20.000Z</published>
-    <updated>2021-11-20T08:00:56.464Z</updated>
+    <updated>2022-11-28T02:25:00.115Z</updated>
     
     
-    <summary type="html">&lt;p&gt;本文主要介绍自己的博客系统是如何设计的，并使用&lt;a href=&quot;https://github.com/linshenkx/haloSyncServer&quot;&gt;Halo博客同步器&lt;/a&gt; 将hexo（git pages: &lt;a href=&quot;https://linshenkx.github.io/&quot;&gt;https://linshenkx.github.io&lt;/a&gt; ）文章自动同步到halo( &lt;a href=&quot;http://linshenkx.cn/&quot;&gt;http://linshenkx.cn&lt;/a&gt; )。&lt;br&gt;实现一次编写、两套博客系统并存、多个网址访问的效果。&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;本文主要介绍自己的博客系统是如何设计的，并使用&lt;a href=&quot;https://github.com/linshenkx/haloSyncServer&quot;&gt;Halo博客同步器&lt;/a&gt; 将hexo（git pages: &lt;a href=&quot;https://linshenkx.github.io/&quot;&gt;https://linshenkx.github.io&lt;/a&gt; ）文章自动同步到halo( &lt;a href=&quot;http://linshenkx.cn/&quot;&gt;http://linshenkx.cn&lt;/a&gt; )。&lt;br&gt;实现一次编写、两套博客系统并存、多个网址访问的效果。&lt;br&gt;2022.11 更新：因其审核问题删除gitee个人主页（无标准无原因，你永远不知道为什么无法发布）&lt;/p&gt;</summary>
     
     
     
@@ -423,25 +444,6 @@
     
     
     <category term="hive" scheme="https://linshenkx.github.io/tags/hive/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CDH客户端环境搭建</title>
-    <link href="https://linshenkx.github.io/cdh_client_env_deploy/"/>
-    <id>https://linshenkx.github.io/cdh_client_env_deploy/</id>
-    <published>2020-11-10T13:51:20.000Z</published>
-    <updated>2021-09-01T08:02:17.793Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;最近遇到一个需求：要使用azkaban对接客户的CDH集群，CDH用的是oozie，azkaban只能部署在我们客户端的机器上，所以需要在客户机上手动搭建CDH的hadoop环境。操作很简单，过程比较麻烦，这里记录一下。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
-    
-    <category term="CDH" scheme="https://linshenkx.github.io/tags/CDH/"/>
     
   </entry>
   
