@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/202302201035656.png">
 <meta property="article:published_time" content="2021-04-13T14:54:20.000Z">
-<meta property="article:modified_time" content="2023-02-20T02:47:26.088Z">
+<meta property="article:modified_time" content="2023-02-20T03:32:23.207Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta property="article:tag" content="WSL">
@@ -331,13 +331,13 @@
                 <p>2023.2更新：因更新较多，将大部分内容迁移至 WSL开发系列。<br>随着版本的迭代完善，加上本人丰富的踩坑经验，本人已放弃使用wslg版idea。<br>更推荐直接使用windows-idea的wsl功能。</p>
 <p>本文给出相关使用建议。</p>
 <span id="more"></span>
-<h3 id="导航"><a href="#导航" class="headerlink" title="导航"></a>导航</h3><ul>
+<h2 id="导航"><a href="#导航" class="headerlink" title="导航"></a>导航</h2><ul>
 <li><a href="https://linshenkx.github.io/wsl-dev-base/">基础篇</a></li>
 <li><a href="https://linshenkx.github.io/wsl-dev-static-ip/">网络篇</a></li>
 <li><a href="https://linshenkx.github.io/wsl-dev-wslg/">gui篇</a></li>
 <li><a href="https://linshenkx.github.io/wsl2_idea2021/">idea篇</a></li>
 </ul>
-<h3 id="一-idea-wsl开发总结"><a href="#一-idea-wsl开发总结" class="headerlink" title="一 idea-wsl开发总结"></a>一 idea-wsl开发总结</h3><p>首先需要明确，绝大部分开发工作都是可以在windows环境下完成的。<br>不推荐任何为了linux而linux的行为。</p>
+<h2 id="一-idea-wsl开发总结"><a href="#一-idea-wsl开发总结" class="headerlink" title="一 idea-wsl开发总结"></a>一 idea-wsl开发总结</h2><p>首先需要明确，绝大部分开发工作都是可以在windows环境下完成的。<br>不推荐任何为了linux而linux的行为。</p>
 <p>对我来说，WSL的开发应用场景主要在于：</p>
 <ul>
 <li>大数据功能开发<br>之前简单的hdfs操作都需要在windows中配置hadoop相关的环境变量，而且存在各种版本或兼容性问题，很麻烦，以后这些直接丢wsl里面</li>
@@ -353,7 +353,7 @@
 <li>wslg的idea<br>优点是原生linux应用、速度更快<br>缺点是wslg应用和windows切换并不顺畅，如输入法、快捷方式等<br>另外存在应用冻结（卡死）的bug，需强制关闭wsl重启，甚至会丢修改，这是不能忍受的</li>
 </ol>
 <p>wslg的缺点是无法忍受的，所以最终我还是决定使用idea自带的wsl支持<br>下面会分享我个人的一些使用体验和处理方法</p>
-<h3 id="二-idea-wsl开发经验"><a href="#二-idea-wsl开发经验" class="headerlink" title="二 idea-wsl开发经验"></a>二 idea-wsl开发经验</h3><ol>
+<h2 id="二-idea-wsl开发经验"><a href="#二-idea-wsl开发经验" class="headerlink" title="二 idea-wsl开发经验"></a>二 idea-wsl开发经验</h2><ol>
 <li>尽量使用基于wsl的环境<br>如：项目放在wsl文件系统下，运行目标选择wsl，项目jdk选择wsl的，gradle jvm也选择wsl的</li>
 <li>处理环境变量加载问题<br>运行目标选择wsl的工程，无法在运行时获取到wsl系统变量（/etc/profile），<br>这里建议在运行配置添加环境变量<br>如下，注意：</li>
 </ol>

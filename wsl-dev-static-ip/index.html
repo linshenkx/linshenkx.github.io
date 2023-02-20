@@ -24,7 +24,7 @@
 <meta property="og:description" content="wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：1.wsl自动获取宿主机ip的脚本。2.wsl设置固定（静态）ip的配置方法。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-02-11T14:54:20.000Z">
-<meta property="article:modified_time" content="2023-02-20T02:47:26.106Z">
+<meta property="article:modified_time" content="2023-02-20T03:32:23.215Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta property="article:tag" content="WSL">
@@ -341,14 +341,14 @@
 <li>wsl访问windows：使用自动配置的my.win即可（见下）</li>
 </ul>
 <p>如果系统是专业版（可开启Hyper-V），可参考 <a target="_blank" rel="noopener" href="https://github.com/luxzg/WSL2-fixes">https://github.com/luxzg/WSL2-fixes</a> 配置wsl桥接网络。<br>本文相关配置在使用wsl桥接网络的情况下可能无效或没必要，不过桥接网络本身还没有被wsl正式支持的。<br>且我用的是家庭版，虽然也可以开启，但可能有风险，故暂不使用。</p>
-<h4 id="1-wsl自动获取宿主机ip"><a href="#1-wsl自动获取宿主机ip" class="headerlink" title="1 wsl自动获取宿主机ip"></a>1 wsl自动获取宿主机ip</h4><blockquote>
+<h3 id="1-wsl自动获取宿主机ip"><a href="#1-wsl自动获取宿主机ip" class="headerlink" title="1 wsl自动获取宿主机ip"></a>1 wsl自动获取宿主机ip</h3><blockquote>
 <p>注意：如果采用了下面设置静态ip的方法，会一并设置windows静态ip，就不需要使用这里的脚本了！</p>
 </blockquote>
 <p>见：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/wsl/networking#accessing-windows-networking-apps-from-linux-host-ip">https://learn.microsoft.com/zh-cn/windows/wsl/networking#accessing-windows-networking-apps-from-linux-host-ip</a></p>
 <p>这里的脚本主要是负责自动获取win-ip、添加host映射：<br>1.wsl的hosts文件默认情况下是从windows继承过来的，每次都会重新生成（可通过wsl.conf控制），所以需先删除原来的my.win配置<br>2.sed结果需要使用/tmp/hosts作为中转，不能直接输出到/etc/hosts，否则/etc/hosts会被清空</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt; &#x27;EOF&#x27; &gt;&gt; /etc/profile<br>host_ip=$(cat /etc/resolv.conf |grep &quot;nameserver&quot; |cut -f 2 -d &quot; &quot;)<br>sed -e &quot;/my.win/d&quot;  /etc/hosts  &gt; /tmp/hosts<br>cat /tmp/hosts &gt; /etc/hosts<br>echo &quot;$host_ip my.win&quot; &gt;&gt;/etc/hosts<br>EOF<br><br></code></pre></td></tr></table></figure>
 <p>另外在windows的hosts文件中配置 <code>127.0.0.1 my.win</code>,<br>这样，在windows上启动的服务，不管在wsl还是windows上，都可以通过my.win访问到了</p>
-<h4 id="2-局域网访问wsl2的操作示例"><a href="#2-局域网访问wsl2的操作示例" class="headerlink" title="2 局域网访问wsl2的操作示例"></a>2 局域网访问wsl2的操作示例</h4><p>见：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/wsl/networking#accessing-a-wsl-2-distribution-from-your-local-area-network-lan">https://learn.microsoft.com/zh-cn/windows/wsl/networking#accessing-a-wsl-2-distribution-from-your-local-area-network-lan</a></p>
+<h3 id="2-局域网访问wsl2的操作示例"><a href="#2-局域网访问wsl2的操作示例" class="headerlink" title="2 局域网访问wsl2的操作示例"></a>2 局域网访问wsl2的操作示例</h3><p>见：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/wsl/networking#accessing-a-wsl-2-distribution-from-your-local-area-network-lan">https://learn.microsoft.com/zh-cn/windows/wsl/networking#accessing-a-wsl-2-distribution-from-your-local-area-network-lan</a></p>
 <p>需要使用netsh interface portproxy功能，按照help提示操作就行</p>
 <p>以下为示例,局域网其他机器只需要连接宿主机的19909端口即可访问wsl2内19909端口的内容:</p>
 <p>在powershell管理员模式下执行命令，</p>
