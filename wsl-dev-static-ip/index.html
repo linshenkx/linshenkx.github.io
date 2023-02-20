@@ -16,22 +16,23 @@
   <meta name="author" content="林泽浩">
   <meta name="keywords" content="大数据">
   
-    <meta name="description" content="自用笔记：ubuntu（18.04）制作离线源">
+    <meta name="description" content="wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：1.wsl自动获取宿主机ip的脚本。2.wsl设置固定（静态）ip的配置方法。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ubuntu制作离线源">
-<meta property="og:url" content="https://linshenkx.github.io/ubuntu-offline-sources/index.html">
+<meta property="og:title" content="WSL开发系列-网络篇（wsl固定ip）">
+<meta property="og:url" content="https://linshenkx.github.io/wsl-dev-static-ip/index.html">
 <meta property="og:site_name" content="且炼时光">
-<meta property="og:description" content="自用笔记：ubuntu（18.04）制作离线源">
+<meta property="og:description" content="wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：1.wsl自动获取宿主机ip的脚本。2.wsl设置固定（静态）ip的配置方法。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-08-14T14:11:26.000Z">
-<meta property="article:modified_time" content="2022-11-04T08:35:59.114Z">
+<meta property="article:published_time" content="2023-02-11T14:54:20.000Z">
+<meta property="article:modified_time" content="2023-02-15T08:16:32.229Z">
 <meta property="article:author" content="林泽浩">
-<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="生产力">
+<meta property="article:tag" content="WSL">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>ubuntu制作离线源 - 且炼时光</title>
+  <title>WSL开发系列-网络篇（wsl固定ip） - 且炼时光</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -248,7 +249,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="ubuntu制作离线源"></span>
+            <span id="subtitle" data-typed-text="WSL开发系列-网络篇（wsl固定ip）"></span>
           
         </div>
 
@@ -259,8 +260,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2021-08-14 22:11" pubdate>
-          2021年8月14日 晚上
+        <time datetime="2023-02-11 22:54" pubdate>
+          2023年2月11日 晚上
         </time>
       </span>
     
@@ -271,7 +272,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k 字
+          3k 字
         
       </span>
     
@@ -282,7 +283,7 @@
         
         
         
-          14 分钟
+          26 分钟
         
       </span>
     
@@ -320,54 +321,44 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">ubuntu制作离线源</h1>
+            <h1 style="display: none">WSL开发系列-网络篇（wsl固定ip）</h1>
             
             
               <div class="markdown-body">
                 
-                <p>自用笔记：ubuntu（18.04）制作离线源</p>
+                <p>wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：<br>1.wsl自动获取宿主机ip的脚本。<br>2.wsl设置固定（静态）ip的配置方法。</p>
 <span id="more"></span>
+<h2 id="一-基于官方说明"><a href="#一-基于官方说明" class="headerlink" title="一 基于官方说明"></a>一 基于官方说明</h2><p>建议先阅读官方文档：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/wsl/networking">https://learn.microsoft.com/zh-cn/windows/wsl/networking</a></p>
+<p>通过官方配置和以下教程，可以达到如下效果，无需记住任何ip</p>
+<ul>
+<li>windows访问wsl：使用localhost即可（但是不能使用127.0.0.1）</li>
+<li>wsl访问windows：使用自动配置的my.win即可（见下）</li>
+</ul>
+<p>如果系统是专业版（可开启Hyper-V），可参考 <a target="_blank" rel="noopener" href="https://github.com/luxzg/WSL2-fixes">https://github.com/luxzg/WSL2-fixes</a> 配置wsl桥接网络。<br>本文相关配置在使用wsl桥接网络的情况下可能无效或没必要，不过桥接网络本身还没有被wsl正式支持的。<br>且我用的是家庭版，虽然也可以开启，但可能有风险，故暂不使用。</p>
+<h4 id="1-wsl自动获取宿主机ip"><a href="#1-wsl自动获取宿主机ip" class="headerlink" title="1 wsl自动获取宿主机ip"></a>1 wsl自动获取宿主机ip</h4><blockquote>
+<p>注意：如果采用了下面设置静态ip的方法，会一并设置windows静态ip，就不需要使用这里的脚本了！</p>
+</blockquote>
+<p>见：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/wsl/networking#accessing-windows-networking-apps-from-linux-host-ip">https://learn.microsoft.com/zh-cn/windows/wsl/networking#accessing-windows-networking-apps-from-linux-host-ip</a></p>
+<p>这里的脚本主要是负责自动获取win-ip、添加host映射：<br>1.wsl的hosts文件默认情况下是从windows继承过来的，每次都会重新生成（可通过wsl.conf控制），所以需先删除原来的my.win配置<br>2.sed结果需要使用/tmp/hosts作为中转，不能直接输出到/etc/hosts，否则/etc/hosts会被清空</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt; &#x27;EOF&#x27; &gt;&gt; /etc/profile<br>host_ip=$(cat /etc/resolv.conf |grep &quot;nameserver&quot; |cut -f 2 -d &quot; &quot;)<br>sed -e &quot;/my.win/d&quot;  /etc/hosts  &gt; /tmp/hosts<br>cat /tmp/hosts &gt; /etc/hosts<br>echo &quot;$host_ip my.win&quot; &gt;&gt;/etc/hosts<br>EOF<br><br></code></pre></td></tr></table></figure>
+<p>另外在windows的hosts文件中配置 <code>127.0.0.1 my.win</code>,<br>这样，在windows上启动的服务，不管在wsl还是windows上，都可以通过my.win访问到了</p>
+<h4 id="2-局域网访问wsl2的操作示例"><a href="#2-局域网访问wsl2的操作示例" class="headerlink" title="2 局域网访问wsl2的操作示例"></a>2 局域网访问wsl2的操作示例</h4><p>见：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/wsl/networking#accessing-a-wsl-2-distribution-from-your-local-area-network-lan">https://learn.microsoft.com/zh-cn/windows/wsl/networking#accessing-a-wsl-2-distribution-from-your-local-area-network-lan</a></p>
+<p>需要使用netsh interface portproxy功能，按照help提示操作就行</p>
+<p>以下为示例,局域网其他机器只需要连接宿主机的19909端口即可访问wsl2内19909端口的内容:</p>
+<p>在powershell管理员模式下执行命令，</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 重置端口代理</span><br>netsh interface portproxy reset<br><span class="hljs-meta">#</span><span class="bash"> 最好一并设置v4tov6，例如springboot网络默认是v6的</span><br>netsh interface portproxy add v4tov6 listenport=19909 listenaddress=0.0.0.0 connectport=19909 connectaddress=localhost<br>netsh interface portproxy add v4tov4 listenport=19909 listenaddress=0.0.0.0 connectport=19909 connectaddress=localhost<br><span class="hljs-meta">#</span><span class="bash"> 查看端口配置</span><br>netsh interface portproxy show all<br><br></code></pre></td></tr></table></figure>
 
-<h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0 前言"></a>0 前言</h2><p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/yruilin/article/details/85124870">https://blog.csdn.net/yruilin/article/details/85124870</a></p>
-<h2 id="1-在外网机器"><a href="#1-在外网机器" class="headerlink" title="1 在外网机器"></a>1 在外网机器</h2><h3 id="1-安装gpg软件和相关软件"><a href="#1-安装gpg软件和相关软件" class="headerlink" title="1 安装gpg软件和相关软件"></a>1 安装gpg软件和相关软件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt-get install gnupg<br>apt-get install rng-tools<br><br></code></pre></td></tr></table></figure>
-<p>密钥创建过程中，需要使用到足够的随机数(random)，可先行安装rng-tools, 该工具可以常驻后台的方式, 生成随机数，避免gpg密钥创建过程中的长时间等待问题 </p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">rngd -r /dev/urandom<br></code></pre></td></tr></table></figure>
-<p>生成公钥和私钥：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">gpg --gen-key<br></code></pre></td></tr></table></figure>
-<p>执行gpg会进入一些对话，其中要新建一个用户名username和相应的密码。<br>如 linshen <a href="mailto:&#x6c;&#105;&#x6e;&#x73;&#104;&#101;&#110;&#x40;&#113;&#113;&#46;&#x63;&#111;&#x6d;">&#x6c;&#105;&#x6e;&#x73;&#104;&#101;&#110;&#x40;&#113;&#113;&#46;&#x63;&#111;&#x6d;</a> 12345678</p>
-<p>结束之后，输入命令，可以查看key：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">gpg --list-key<br></code></pre></td></tr></table></figure>
-<p>导出gpg公钥和私钥：私钥，供Server端，对release文件签名使用，好像不做也能签名</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">gpg -a --export-secret-keys linshen &gt; Ubuntu_Local_Archive_Automatic_Signing_Key_2017.sec<br></code></pre></td></tr></table></figure>
-<p>公钥，需在Ubuntu client 导入，供apt-get使用</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">gpg -a --export linshen&gt; linshen.pub<br></code></pre></td></tr></table></figure>
-<h3 id="2-准备安装包源"><a href="#2-准备安装包源" class="headerlink" title="2 准备安装包源"></a>2 准备安装包源</h3><p>清空缓存目录，这一步也可以不做</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">rm -rf /var/cache/apt/archives/*<br></code></pre></td></tr></table></figure>
-<p>-d只是下载安装包，并不安装。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt-get -d install -y &lt;包名&gt;<br></code></pre></td></tr></table></figure>
-<p>如 mysql-server ntp  nfs-kernel-server portmap nfs-common</p>
-<p>在本地建一个目录，将下载下来的安装包拷贝到此目录：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkdir /var/debs<br>cp -r /var/cache/apt/archives/*.deb /var/debs/<br></code></pre></td></tr></table></figure>
-<p>在debs这个目录创建Packages.gz，注意生成的路径带debs，否则内网安装时会说找不到文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell"><br>cd /var<br>apt-ftparchive packages debs &gt; debs/Packages<br>cd debs<br>gzip -c Packages &gt; Packages.gz<br><br></code></pre></td></tr></table></figure>
+<h2 id="二-wsl配置固定ip"><a href="#二-wsl配置固定ip" class="headerlink" title="二 wsl配置固定ip"></a>二 wsl配置固定ip</h2><p>除了docker访问wsl，其他大部分场景下不需要这个功能</p>
+<p>windows的docker不支持使用host网络，也就是不能通过localhost访问wsl<br>ip是可以的，但wsl的ip每次启动都会变，所以比较麻烦，这里通过使用固定ip解决</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/Likfees/p/16750300.html">https://www.cnblogs.com/Likfees/p/16750300.html</a></p>
+<p>注意此处调用了wudo（见<a href="https://linshenkx.github.io/wsl-dev-base/">WSL开发系列-基础篇</a>）以使用管理员权限调用netsh工具</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt; &#x27;EOF&#x27; &gt; setup-static-ip.sh <br><span class="hljs-meta">#</span><span class="bash">!/bin/bash</span><br><br>WSL_IP=192.168.95.100<br>WIN_IP=192.168.95.101<br>WSL_BROADCAST=192.168.95.255<br>WIN_IP_SET_RESULT=$(/mnt/c/WINDOWS/system32/netsh.exe interface ip show addresses &quot;vEthernet (WSL)&quot; | grep -sc &quot;$WIN_IP&quot; )<br>if [ $WIN_IP_SET_RESULT == 0 ]; then<br>  wudo /mnt/c/WINDOWS/system32/netsh.exe interface ip add address &quot;vEthernet (WSL)&quot; address=$WIN_IP/24<br>  echo &quot;set WIN_IP $WIN_IP success &quot;<br>fi<br><br>WSL_IP_SET_RESULT=$(ip addr show eth0 | grep -sc &quot;$WSL_IP/24&quot; )<br>if [ $WSL_IP_SET_RESULT == 0 ]; then<br>  ip addr add $WSL_IP/24 broadcast $WSL_BROADCAST dev eth0 label eth0:staticip<br>  echo &quot;set WSL_IP $WSL_IP success &quot;<br>fi<br>echo &quot;check and set WSL_IP($WSL_IP) WIN_IP($WIN_IP) success &quot;<br>EOF<br><br></code></pre></td></tr></table></figure>
 
-<p>在debs这个目录下创建release file</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt-ftparchive release ./ &gt; Release<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 设置权限</span><br>chmod a+x setup-static-ip.sh<br><span class="hljs-meta">#</span><span class="bash"> 测试执行</span><br>source setup-static-ip.sh<br><span class="hljs-meta">#</span><span class="bash"> 验证结果:wsl</span><br>ip addr show eth0<br><span class="hljs-meta">#</span><span class="bash"> 验证结果：win</span><br>/mnt/c/WINDOWS/system32/netsh.exe interface ip show addresses &quot;vEthernet (WSL)&quot;<br><span class="hljs-meta">#</span><span class="bash"> 拷贝到系统路径下</span><br>mv setup-static-ip.sh /usr/bin/<br><span class="hljs-meta">#</span><span class="bash"> 再次测试</span><br>setup-static-ip.sh<br>echo &quot;setup-static-ip.sh&quot; &gt;&gt; /etc/profile<br></code></pre></td></tr></table></figure>
+<p>现在直接在windows配置hosts就行了（wsl默认情况下会复制windows的hosts）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">192.168.95.101 my.win<br>192.168.95.100 my.wsl<br><br></code></pre></td></tr></table></figure>
 
-<p>ubuntu apt-get 对软件包索引，首先要求InRelease文件，其次才去找Release、Release.gpg文件； 这情况下， 其实只需要创建InRelease文件(包含Release文件和明文签名)即可:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">gpg --clearsign -o InRelease Release <br>gpg -abs -o Release.gpg Release <br></code></pre></td></tr></table></figure>
 
-<h2 id="2-拷贝文件"><a href="#2-拷贝文件" class="headerlink" title="2 拷贝文件"></a>2 拷贝文件</h2><p>将外网机器的debs目录和公钥文件 linshen.pub拷贝到内网机器上</p>
-<h2 id="3-内网机器"><a href="#3-内网机器" class="headerlink" title="3 内网机器"></a>3 内网机器</h2><p>导入公钥</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt-key add linshen.pub<br></code></pre></td></tr></table></figure>
-<p>将debs目录拷贝到/home/lin下面</p>
-<p>备份apt源文件/etc/apt/source.list,并修改源</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">cp /etc/apt/sources.list /etc/apt/sources.list.bak<br>echo &quot;deb [trusted=yes] file:/home/lin debs/ &quot; &gt;/etc/apt/sources.list<br></code></pre></td></tr></table></figure>
-<p>更新索引</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt-get update<br></code></pre></td></tr></table></figure>
-
-<p>至此，可以在内网机器上执行apt-get install 命令了<br>如</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt-get install mysql-server<br>apt-get install  nfs-kernel-server portmap<br>apt-get install  nfs-common<br><br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -385,7 +376,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E8%BF%90%E7%BB%B4%E9%83%A8%E7%BD%B2/" class="category-chain-item">运维部署</a>
+  <a href="/categories/WSL%E5%BC%80%E5%8F%91%E7%B3%BB%E5%88%97/" class="category-chain-item">WSL开发系列</a>
   
   
 
@@ -397,6 +388,15 @@
     </div>
   
   
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/">#生产力</a>
+      
+        <a href="/tags/WSL/">#WSL</a>
+      
+    </div>
+  
 </div>
 
 
@@ -405,8 +405,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>ubuntu制作离线源</div>
-      <div>https://linshenkx.github.io/ubuntu-offline-sources/</div>
+      <div>WSL开发系列-网络篇（wsl固定ip）</div>
+      <div>https://linshenkx.github.io/wsl-dev-static-ip/</div>
     </div>
     <div class="license-meta">
       
@@ -418,7 +418,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2021年8月14日</div>
+          <div>2023年2月11日</div>
         </div>
       
       
@@ -450,9 +450,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/my-blog-system-design/" title="个人博客系统设计(支持hexo和halo同步)">
+                      <a href="/wsl-dev-wslg/" title="WSL开发系列-gui篇(wslg)">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">个人博客系统设计(支持hexo和halo同步)</span>
+                        <span class="hidden-mobile">WSL开发系列-gui篇(wslg)</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -460,8 +460,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/ranger-compile/" title="Ranger2.1编译笔记">
-                        <span class="hidden-mobile">Ranger2.1编译笔记</span>
+                      <a href="/wsl-dev-base/" title="WSL开发系列-基础篇">
+                        <span class="hidden-mobile">WSL开发系列-基础篇</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
