@@ -69,7 +69,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":55,"cursorChar":"","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":55,"cursorChar":"","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"ad1622eab3f6ab4b451267f7bd395819","google":"G-N483383J22","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -81,7 +81,32 @@
   
 
   
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?ad1622eab3f6ab4b451267f7bd395819";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
 
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', 'G-N483383J22', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
   
 
   
@@ -334,7 +359,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">rngd -r /dev/urandom<br></code></pre></td></tr></table></figure>
 <p>生成公钥和私钥：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">gpg --gen-key<br></code></pre></td></tr></table></figure>
-<p>执行gpg会进入一些对话，其中要新建一个用户名username和相应的密码。<br>如 linshen <a href="mailto:&#108;&#x69;&#110;&#x73;&#104;&#x65;&#110;&#x40;&#113;&#x71;&#x2e;&#99;&#111;&#x6d;">&#108;&#x69;&#110;&#x73;&#104;&#x65;&#110;&#x40;&#113;&#x71;&#x2e;&#99;&#111;&#x6d;</a> 12345678</p>
+<p>执行gpg会进入一些对话，其中要新建一个用户名username和相应的密码。<br>如 linshen <a href="mailto:&#108;&#105;&#110;&#x73;&#104;&#x65;&#x6e;&#64;&#113;&#x71;&#46;&#x63;&#x6f;&#x6d;">&#108;&#105;&#110;&#x73;&#104;&#x65;&#x6e;&#64;&#113;&#x71;&#46;&#x63;&#x6f;&#x6d;</a> 12345678</p>
 <p>结束之后，输入命令，可以查看key：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">gpg --list-key<br></code></pre></td></tr></table></figure>
 <p>导出gpg公钥和私钥：私钥，供Server端，对release文件签名使用，好像不做也能签名</p>
