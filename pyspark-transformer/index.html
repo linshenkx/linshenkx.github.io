@@ -340,6 +340,11 @@
 
 </div>
 
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/@waline/client@v2/dist/waline.css"
+  />
+
   </header>
 
   <main>
@@ -407,6 +412,18 @@
     </div>
   
 </div>
+
+  <div id="article-info">
+        页面热度:<span class="waline-pageview-count" />
+  </div>
+<script type="module">
+  import { pageviewCount } from 'https://unpkg.com/@waline/client/dist/pageview.mjs';
+
+  pageviewCount({
+    serverURL: 'https://waline.linshenkx.cn',
+    path: window.location.pathname,
+  });
+</script>
 
 
               
@@ -481,34 +498,19 @@
             </div>
 
             
-  <article id="comments" lazyload>
-    
   <div id="waline"></div>
-  <script type="text/javascript">
-    Fluid.utils.loadComments('#waline', function() {
-      Fluid.utils.createCssLink('https://lib.baomitu.com/waline/2.14.7/waline.min.css')
-      Fluid.utils.createScript('https://lib.baomitu.com/waline/2.14.7/waline.min.js', function() {
-        var options = Object.assign(
-          {"serverURL":"https://waline.linshenkx.cn","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
-          {
-            el: '#waline',
-            path: window.location.pathname
-          }
-        )
-        Waline.init(options);
-        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
-          var imgSelector = '#waline .vcontent img:not(.vemoji)';
-          Fluid.plugins.imageCaption(imgSelector);
-          Fluid.plugins.fancyBox(imgSelector);
-        })
-      });
+
+  <script type="module">
+    import { init } from 'https://unpkg.com/@waline/client@v2/dist/waline.mjs';
+
+    init({
+      el: '#waline',
+      serverURL: 'https://waline.linshenkx.cn',
+//      pageview: true, // 浏览量统计
+      reaction: true, // 开启反应
+      dark: 'html[data-user-color-scheme="dark"]'
     });
   </script>
-  <noscript>Please enable JavaScript to view the comments</noscript>
-
-
-  </article>
-
 
           </article>
         </div>
@@ -602,31 +604,6 @@
       韶华未褪，且炼时光
     </div>
   
-  
-    <div class="statistics">
-  
-  
-
-  
-    
-      <span id="leancloud-site-pv-container" style="display: none">
-        总访问量 
-        <span id="leancloud-site-pv"></span>
-         次
-      </span>
-    
-    
-      <span id="leancloud-site-uv-container" style="display: none">
-        总访客数 
-        <span id="leancloud-site-uv"></span>
-         人
-      </span>
-    
-    
-
-  
-</div>
-
   
   
   
