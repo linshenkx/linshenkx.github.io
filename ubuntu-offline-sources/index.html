@@ -371,7 +371,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">rngd -r /dev/urandom<br></code></pre></td></tr></table></figure>
 <p>生成公钥和私钥：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">gpg --gen-key<br></code></pre></td></tr></table></figure>
-<p>执行gpg会进入一些对话，其中要新建一个用户名username和相应的密码。<br>如 linshen <a href="mailto:&#x6c;&#x69;&#x6e;&#x73;&#x68;&#x65;&#110;&#64;&#113;&#113;&#x2e;&#99;&#x6f;&#109;">&#x6c;&#x69;&#x6e;&#x73;&#x68;&#x65;&#110;&#64;&#113;&#113;&#x2e;&#99;&#x6f;&#109;</a> 12345678</p>
+<p>执行gpg会进入一些对话，其中要新建一个用户名username和相应的密码。<br>如 linshen <a href="mailto:&#x6c;&#105;&#110;&#115;&#104;&#101;&#110;&#64;&#113;&#113;&#x2e;&#x63;&#x6f;&#x6d;">&#x6c;&#105;&#110;&#115;&#104;&#101;&#110;&#64;&#113;&#113;&#x2e;&#x63;&#x6f;&#x6d;</a> 12345678</p>
 <p>结束之后，输入命令，可以查看key：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">gpg --list-key<br></code></pre></td></tr></table></figure>
 <p>导出gpg公钥和私钥：私钥，供Server端，对release文件签名使用，好像不做也能签名</p>
@@ -511,20 +511,21 @@
             
   <article id="comments" lazyload>
     
-  <div id="valine"></div>
+  <div id="waline"></div>
   <script type="text/javascript">
-    Fluid.utils.loadComments('#valine', function() {
-      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://lib.baomitu.com/waline/2.6.3/waline.min.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/waline/2.6.3/waline.min.js', function() {
         var options = Object.assign(
-          {"appId":"9zURROtqHXQH27vMDxluwien-MdYXbMMI","appKey":"Z84p10rksspoUYThJoObesn5","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"visitor":true},
+          {"serverURL":"https://waline.linshenkx.cn","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
           {
-            el: "#valine",
+            el: '#waline',
             path: window.location.pathname
           }
         )
-        new Valine(options);
-        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
-          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
           Fluid.plugins.imageCaption(imgSelector);
           Fluid.plugins.fancyBox(imgSelector);
         })
