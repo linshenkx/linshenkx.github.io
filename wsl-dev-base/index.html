@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1660199927570.png">
 <meta property="article:published_time" content="2023-02-11T14:54:20.000Z">
-<meta property="article:modified_time" content="2023-02-25T07:45:39.763Z">
+<meta property="article:modified_time" content="2023-04-06T03:06:29.326Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta property="article:tag" content="WSL">
@@ -303,7 +303,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5k 字
+          5.1k 字
         
       </span>
     
@@ -314,7 +314,7 @@
         
         
         
-          42 分钟
+          43 分钟
         
       </span>
     
@@ -440,7 +440,10 @@
 <p>windows家庭版执行命令：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">wsl --shutdown<br>diskpart<br><span class="hljs-meta">#</span><span class="bash"> open window Diskpart</span><br>select vdisk file=&quot;C:\…\…\ext4.vhdx&quot;<br>attach vdisk readonly<br>compact vdisk<br>detach vdisk<br>exit<br></code></pre></td></tr></table></figure>
 
-<h3 id="6-在wsl中以管理员身份调用powershell"><a href="#6-在wsl中以管理员身份调用powershell" class="headerlink" title="6 在wsl中以管理员身份调用powershell"></a>6 在wsl中以管理员身份调用powershell</h3><p>wsl本身就有对windows软件的交互能力，但默认情况下没有管理员权限</p>
+<h3 id="6-在wsl中以管理员身份调用powershell"><a href="#6-在wsl中以管理员身份调用powershell" class="headerlink" title="6 在wsl中以管理员身份调用powershell"></a>6 在wsl中以管理员身份调用powershell</h3><blockquote>
+<p>2023.4更新：在更新wsl之后，调用wudo失败（socket.timeout: timed out），<br>5个open的issues有3个是与此相关的，可见不是小概率事件。且无较好解决方法，故本步骤不推荐使用。</p>
+</blockquote>
+<p>wsl本身就有对windows软件的交互能力，但默认情况下没有管理员权限</p>
 <p>参考：<a target="_blank" rel="noopener" href="https://github.com/Chronial/wsl-sudo">https://github.com/Chronial/wsl-sudo</a><br>前提：已安装python3，且版本&gt;= 3.5</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 下载py脚本</span><br>wget https://raw.githubusercontent.com/Chronial/wsl-sudo/master/wsl-sudo.py<br><span class="hljs-meta">#</span><span class="bash"> 替换成完整路径（如果你的wsl没有关闭使用windows的环境变量，则可忽略这一步）</span><br>sed -i &quot;s#\&quot;powershell.exe\&quot;#\&quot;/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe\&quot;#g&quot; wsl-sudo.py<br><span class="hljs-meta">#</span><span class="bash"> 修改名称并授权</span><br>mv wsl-sudo.py wudo<br>chmod a+x wudo<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 测试：报错<span class="hljs-string">&quot;拒绝访问&quot;</span></span><br>/mnt/c/WINDOWS/system32/net.exe sessions<br><span class="hljs-meta">#</span><span class="bash"> 测试：无报错</span><br>./wudo /mnt/c/WINDOWS/system32/net.exe sessions<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 拷贝到系统路径下</span><br>mv wudo /usr/bin/<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 再次测试</span><br>wudo /mnt/c/WINDOWS/system32/net.exe sessions<br><br></code></pre></td></tr></table></figure>
 <p>以后在wsl里面需要以admin身份调用powershell指令只需要加上前缀 <strong>wudo</strong> 即可</p>
@@ -551,9 +554,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/wsl-dev-static-ip/" title="WSL开发系列-网络篇（wsl固定ip）">
+                      <a href="/wsl-dev-wslg/" title="WSL开发系列-gui篇(wslg)">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">WSL开发系列-网络篇（wsl固定ip）</span>
+                        <span class="hidden-mobile">WSL开发系列-gui篇(wslg)</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -561,8 +564,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/gitlab-ci-k8s-runner-cache/" title="gitlab-ci-k8s-runner部署及缓存配置说明">
-                        <span class="hidden-mobile">gitlab-ci-k8s-runner部署及缓存配置说明</span>
+                      <a href="/wsl-dev-static-ip/" title="WSL开发系列-网络篇（wsl固定ip）">
+                        <span class="hidden-mobile">WSL开发系列-网络篇（wsl固定ip）</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

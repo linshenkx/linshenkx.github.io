@@ -16,15 +16,15 @@
   <meta name="author" content="林泽浩">
   <meta name="keywords" content="大数据">
   
-    <meta name="description" content="wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：1.wsl自动获取宿主机ip的脚本。2.wsl设置固定（静态）ip的配置方法。">
+    <meta name="description" content="wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：1.wsl自动获取宿主机ip的脚本。2.wsl设置固定（静态）ip的配置方法。 2023.4更新：因wudo异常，wsl网段的windows静态ip的设置使用bat脚本+任务计划程序实现">
 <meta property="og:type" content="article">
 <meta property="og:title" content="WSL开发系列-网络篇（wsl固定ip）">
 <meta property="og:url" content="https://linshenkx.github.io/wsl-dev-static-ip/index.html">
 <meta property="og:site_name" content="且炼时光">
-<meta property="og:description" content="wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：1.wsl自动获取宿主机ip的脚本。2.wsl设置固定（静态）ip的配置方法。">
+<meta property="og:description" content="wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：1.wsl自动获取宿主机ip的脚本。2.wsl设置固定（静态）ip的配置方法。 2023.4更新：因wudo异常，wsl网段的windows静态ip的设置使用bat脚本+任务计划程序实现">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-02-11T14:54:20.000Z">
-<meta property="article:modified_time" content="2023-02-20T03:32:23.215Z">
+<meta property="article:modified_time" content="2023-04-06T03:55:35.803Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta property="article:tag" content="WSL">
@@ -301,7 +301,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3k 字
+          3.9k 字
         
       </span>
     
@@ -312,7 +312,7 @@
         
         
         
-          26 分钟
+          33 分钟
         
       </span>
     
@@ -369,6 +369,7 @@
               <div class="markdown-body">
                 
                 <p>wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：<br>1.wsl自动获取宿主机ip的脚本。<br>2.wsl设置固定（静态）ip的配置方法。</p>
+<p>2023.4更新：因wudo异常，wsl网段的windows静态ip的设置使用bat脚本+任务计划程序实现</p>
 <span id="more"></span>
 <h2 id="导航"><a href="#导航" class="headerlink" title="导航"></a>导航</h2><ul>
 <li><a href="https://linshenkx.github.io/wsl-dev-base/">基础篇</a></li>
@@ -399,14 +400,28 @@
 <h2 id="二-wsl配置固定ip"><a href="#二-wsl配置固定ip" class="headerlink" title="二 wsl配置固定ip"></a>二 wsl配置固定ip</h2><p>除了docker访问wsl，其他大部分场景下不需要这个功能</p>
 <p>windows的docker不支持使用host网络，也就是不能通过localhost访问wsl<br>ip是可以的，但wsl的ip每次启动都会变，所以比较麻烦，这里通过使用固定ip解决</p>
 <p>参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/Likfees/p/16750300.html">https://www.cnblogs.com/Likfees/p/16750300.html</a></p>
-<p>注意此处调用了wudo（见<a href="https://linshenkx.github.io/wsl-dev-base/">WSL开发系列-基础篇</a>）以使用管理员权限调用netsh工具</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt; &#x27;EOF&#x27; &gt; setup-static-ip.sh <br><span class="hljs-meta">#</span><span class="bash">!/bin/bash</span><br><br>WSL_IP=192.168.95.100<br>WIN_IP=192.168.95.101<br>WSL_BROADCAST=192.168.95.255<br>WIN_IP_SET_RESULT=$(/mnt/c/WINDOWS/system32/netsh.exe interface ip show addresses &quot;vEthernet (WSL)&quot; | grep -sc &quot;$WIN_IP&quot; )<br>if [ $WIN_IP_SET_RESULT == 0 ]; then<br>  wudo /mnt/c/WINDOWS/system32/netsh.exe interface ip add address &quot;vEthernet (WSL)&quot; address=$WIN_IP/24<br>  echo &quot;set WIN_IP $WIN_IP success &quot;<br>fi<br><br>WSL_IP_SET_RESULT=$(ip addr show eth0 | grep -sc &quot;$WSL_IP/24&quot; )<br>if [ $WSL_IP_SET_RESULT == 0 ]; then<br>  ip addr add $WSL_IP/24 broadcast $WSL_BROADCAST dev eth0 label eth0:staticip<br>  echo &quot;set WSL_IP $WSL_IP success &quot;<br>fi<br>echo &quot;check and set WSL_IP($WSL_IP) WIN_IP($WIN_IP) success &quot;<br>EOF<br><br></code></pre></td></tr></table></figure>
+<p>2023.4更新：wudo有bug，不推荐使用，WIN_IP的设置还是放到windows下去执行</p>
+<h3 id="1-使用Shell启动脚本设置wsl静态ip"><a href="#1-使用Shell启动脚本设置wsl静态ip" class="headerlink" title="1 使用Shell启动脚本设置wsl静态ip"></a>1 使用Shell启动脚本设置wsl静态ip</h3><p><del>注意此处调用了wudo（见<a href="https://linshenkx.github.io/wsl-dev-base/">WSL开发系列-基础篇</a>）以使用管理员权限调用netsh工具</del></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt; &#x27;EOF&#x27; &gt; setup-static-ip.sh <br><span class="hljs-meta">#</span><span class="bash">!/bin/bash</span><br><br>WSL_IP=192.168.95.100<br>WIN_IP=192.168.95.101<br>WSL_BROADCAST=192.168.95.255<br><br>WSL_IP_SET_RESULT=$(ip addr show eth0 | grep -sc &quot;$WSL_IP/24&quot; )<br>if [ $WSL_IP_SET_RESULT == 0 ]; then<br>  ip addr add $WSL_IP/24 broadcast $WSL_BROADCAST dev eth0 label eth0:staticip<br>  echo &quot;set WSL_IP $WSL_IP success &quot;<br>fi<br>echo &quot;check and set WSL_IP($WSL_IP) WIN_IP($WIN_IP) success &quot;<br>EOF<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 2023.4更新：以下内容已移除，WIN_IP的设置放到windows下去执行</span><br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash">WIN_IP_SET_RESULT=$(/mnt/c/WINDOWS/system32/netsh.exe interface ip show addresses <span class="hljs-string">&quot;vEthernet (WSL)&quot;</span> | grep -sc <span class="hljs-string">&quot;<span class="hljs-variable">$WIN_IP</span>&quot;</span> )</span><br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-keyword">if</span> [ <span class="hljs-variable">$WIN_IP_SET_RESULT</span> == 0 ]; <span class="hljs-keyword">then</span></span><br><span class="hljs-meta">#</span><span class="bash">  wudo /mnt/c/WINDOWS/system32/netsh.exe interface ip add address <span class="hljs-string">&quot;vEthernet (WSL)&quot;</span> address=<span class="hljs-variable">$WIN_IP</span>/24</span><br><span class="hljs-meta">#</span><span class="bash">  <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;set WIN_IP <span class="hljs-variable">$WIN_IP</span> success &quot;</span></span><br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-keyword">fi</span></span><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 设置权限</span><br>chmod a+x setup-static-ip.sh<br><span class="hljs-meta">#</span><span class="bash"> 测试执行</span><br>source setup-static-ip.sh<br><span class="hljs-meta">#</span><span class="bash"> 验证结果:wsl</span><br>ip addr show eth0<br><span class="hljs-meta">#</span><span class="bash"> 验证结果：win</span><br>/mnt/c/WINDOWS/system32/netsh.exe interface ip show addresses &quot;vEthernet (WSL)&quot;<br><span class="hljs-meta">#</span><span class="bash"> 拷贝到系统路径下</span><br>mv setup-static-ip.sh /usr/bin/<br><span class="hljs-meta">#</span><span class="bash"> 再次测试</span><br>setup-static-ip.sh<br>echo &quot;setup-static-ip.sh&quot; &gt;&gt; /etc/profile<br></code></pre></td></tr></table></figure>
-<p>现在直接在windows配置hosts就行了（wsl默认情况下会复制windows的hosts）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 设置权限</span><br>chmod a+x setup-static-ip.sh<br><span class="hljs-meta">#</span><span class="bash"> 测试执行</span><br>source setup-static-ip.sh<br><span class="hljs-meta">#</span><span class="bash"> 验证结果:wsl</span><br>ip addr show eth0<br><span class="hljs-meta">#</span><span class="bash"> 拷贝到系统路径下</span><br>mv setup-static-ip.sh /usr/bin/<br><span class="hljs-meta">#</span><span class="bash"> 再次测试</span><br>setup-static-ip.sh<br>echo &quot;setup-static-ip.sh&quot; &gt;&gt; /etc/profile<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-使用Bat启动脚本设置win静态ip"><a href="#2-使用Bat启动脚本设置win静态ip" class="headerlink" title="2 使用Bat启动脚本设置win静态ip"></a>2 使用Bat启动脚本设置win静态ip</h3><h4 id="1-新建winip-bat"><a href="#1-新建winip-bat" class="headerlink" title="1 新建winip.bat"></a>1 新建winip.bat</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs powershell">@<span class="hljs-built_in">echo</span> off<br>setlocal enabledelayedexpansion<br>::检查宿主机有没有我需要的IP<br><span class="hljs-built_in">set</span> WIN_IP=<span class="hljs-number">192.168</span>.<span class="hljs-number">95.101</span><br>netsh interface ip show addresses <span class="hljs-string">&quot;vEthernet (WSL)&quot;</span> | findstr %WIN_IP% <br><span class="hljs-keyword">if</span> !errorlevel! equ <span class="hljs-number">0</span> (<br>    <span class="hljs-built_in">echo</span> windows ip has <span class="hljs-built_in">set</span><br>) <span class="hljs-keyword">else</span> (<br>    ::IP不存在则绑定IP<br>    netsh interface ip add address <span class="hljs-string">&quot;vEthernet (WSL)&quot;</span> address=%WIN_IP%/<span class="hljs-number">24</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-built_in">set</span> windows ip success: %WIN_IP%<br>)<br>pause<br><br></code></pre></td></tr></table></figure>
+<h4 id="2-配置开机执行"><a href="#2-配置开机执行" class="headerlink" title="2 配置开机执行"></a>2 配置开机执行</h4><p>打开“任务计划程序”，创建任务，重要的配置项如下：</p>
+<ul>
+<li>常规-更改用户或组-高级-立即查找-选择“SYSTEM”用户-确定：使用SYSTEM而非当前用户运行就不会有个cmd黑框一闪而过</li>
+<li>常规-勾选使用最高权限运行</li>
+<li>触发器-新建-启动时</li>
+<li>触发器-新建-登陆时-配置：勾选延迟任务时间并设置为1分钟，勾选重复任务间隔并设置为5分钟，持续时间为15分钟：多次触发执行避免因意外执行失败</li>
+<li>操作-启动程序-“程序或脚本”设置为winip.bat路径</li>
+</ul>
+<p>创建完可选择任务右键点击运行，状态会变成“正在运行”，刷新一下即恢复“准备就绪”说明执行完成</p>
+<h4 id="3-验证结果"><a href="#3-验证结果" class="headerlink" title="3. 验证结果"></a>3. 验证结果</h4><figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cmd">netsh.exe interface ip show addresses &quot;vEthernet (WSL)&quot;<br><br></code></pre></td></tr></table></figure>
+<h3 id="3-配置hosts文件"><a href="#3-配置hosts文件" class="headerlink" title="3 配置hosts文件"></a>3 配置hosts文件</h3><p>现在直接在windows配置hosts就行了（wsl默认情况下会复制windows的hosts）</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">192.168.95.101 my.win<br>192.168.95.100 my.wsl<br><br></code></pre></td></tr></table></figure>
 
-
+<h3 id="4-验证"><a href="#4-验证" class="headerlink" title="4 验证"></a>4 验证</h3><p>分别在windows/wsl下ping my.win和my.wsl即可，然后重启，再测试一次，看能否自动设置<br>my.wsl需启动wsl实例后才会自动配置，才能ping通</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">ping my.win<br>ping my.wsl<br><br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -510,9 +525,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/wsl-dev-wslg/" title="WSL开发系列-gui篇(wslg)">
+                      <a href="/wsl-dev-base/" title="WSL开发系列-基础篇">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">WSL开发系列-gui篇(wslg)</span>
+                        <span class="hidden-mobile">WSL开发系列-基础篇</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -520,8 +535,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/wsl-dev-base/" title="WSL开发系列-基础篇">
-                        <span class="hidden-mobile">WSL开发系列-基础篇</span>
+                      <a href="/gitlab-ci-k8s-runner-cache/" title="gitlab-ci-k8s-runner部署及缓存配置说明">
+                        <span class="hidden-mobile">gitlab-ci-k8s-runner部署及缓存配置说明</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
