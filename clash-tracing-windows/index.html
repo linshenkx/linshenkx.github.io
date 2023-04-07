@@ -16,29 +16,30 @@
   <meta name="author" content="林泽浩">
   <meta name="keywords" content="大数据">
   
-    <meta name="description" content="直到2022年，wslg的体验仍较差，难以用于日常开发，大部分情况下不建议使用">
+    <meta name="description" content="本文记录clash-tracing的部署使用（踩坑经验），以及windows下clash的trace数据采集方法。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="WSL开发系列-gui篇(wslg)">
-<meta property="og:url" content="https://linshenkx.github.io/wsl-dev-wslg/index.html">
+<meta property="og:title" content="我的服务器系列：使用clash-tracing统计windows下clash使用情况">
+<meta property="og:url" content="https://linshenkx.github.io/clash-tracing-windows/index.html">
 <meta property="og:site_name" content="且炼时光">
-<meta property="og:description" content="直到2022年，wslg的体验仍较差，难以用于日常开发，大部分情况下不建议使用">
+<meta property="og:description" content="本文记录clash-tracing的部署使用（踩坑经验），以及windows下clash的trace数据采集方法。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1636899123(1).png">
-<meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1660206303479.png">
-<meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/20220811162605.png">
-<meta property="article:published_time" content="2023-02-11T14:54:20.000Z">
-<meta property="article:modified_time" content="2023-02-20T03:32:23.198Z">
+<meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/202304071500435.png">
+<meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/202304071503040.png">
+<meta property="article:published_time" content="2023-04-05T14:54:20.000Z">
+<meta property="article:modified_time" content="2023-04-07T07:04:08.380Z">
 <meta property="article:author" content="林泽浩">
-<meta property="article:tag" content="生产力">
-<meta property="article:tag" content="WSL">
+<meta property="article:tag" content="我的服务器系列">
+<meta property="article:tag" content="clash">
+<meta property="article:tag" content="clash-tracing">
+<meta property="article:tag" content="tracing">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1636899123(1).png">
+<meta name="twitter:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/202304071500435.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>WSL开发系列-gui篇(wslg) - 且炼时光</title>
+  <title>我的服务器系列：使用clash-tracing统计windows下clash使用情况 - 且炼时光</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -282,7 +283,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="WSL开发系列-gui篇(wslg)"></span>
+            <span id="subtitle" data-typed-text="我的服务器系列：使用clash-tracing统计windows下clash使用情况"></span>
           
         </div>
 
@@ -293,8 +294,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-02-11 22:54" pubdate>
-          2023年2月11日 晚上
+        <time datetime="2023-04-05 22:54" pubdate>
+          2023年4月5日 晚上
         </time>
       </span>
     
@@ -305,7 +306,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.9k 字
+          3.5k 字
         
       </span>
     
@@ -316,7 +317,7 @@
         
         
         
-          25 分钟
+          30 分钟
         
       </span>
     
@@ -367,60 +368,49 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">WSL开发系列-gui篇(wslg)</h1>
+            <h1 style="display: none">我的服务器系列：使用clash-tracing统计windows下clash使用情况</h1>
             
             
               <div class="markdown-body">
                 
-                <p>直到2022年，wslg的体验仍较差，难以用于日常开发，大部分情况下不建议使用</p>
+                <p>本文记录clash-tracing的部署使用（踩坑经验），以及windows下clash的trace数据采集方法。</p>
 <span id="more"></span>
-<h2 id="导航"><a href="#导航" class="headerlink" title="导航"></a>导航</h2><ul>
-<li><a href="https://linshenkx.github.io/wsl-dev-base/">基础篇</a></li>
-<li><a href="https://linshenkx.github.io/wsl-dev-static-ip/">网络篇</a></li>
-<li><a href="https://linshenkx.github.io/wsl-dev-wslg/">gui篇</a></li>
-<li><a href="https://linshenkx.github.io/wsl2_idea2021/">idea篇</a></li>
-</ul>
-<h2 id="0-1-为什么我不推荐使用wslg"><a href="#0-1-为什么我不推荐使用wslg" class="headerlink" title="0-1 为什么我不推荐使用wslg"></a>0-1 为什么我不推荐使用wslg</h2><ol>
-<li>当前wslg不成熟，bug较多，如idea频繁卡死（冻结）导致文件修改丢失、全屏偏移等</li>
-<li>正经人谁用linux是为了gui？</li>
-</ol>
-<h2 id="0-2-wslg有哪些应用场景"><a href="#0-2-wslg有哪些应用场景" class="headerlink" title="0-2 wslg有哪些应用场景"></a>0-2 wslg有哪些应用场景</h2><p>以我浅薄的开发经历来说，只有一次，<br>就是使用wsl的chrome浏览器访问被kerberos保护的hadoop web界面。</p>
-<p>虽然理论上windows的浏览器也可以做到，但是麻烦得多。<br>而在linux系统中，kerberos认证就是kinit一个指令的事情。</p>
-<h2 id="1-中文环境及输入法"><a href="#1-中文环境及输入法" class="headerlink" title="1 中文环境及输入法"></a>1 中文环境及输入法</h2><p>这个教程比较多，而且写得都不一样，但大同小异，需要注意的是<br>输入法没有切换处理很可能是快捷键被windows系统的覆盖了，<br>需要手动调出来输入法的配置界面，修改快捷键<br>比方说fcix的是fcitx-config-gtk3命令<br>然后我的配置是这样的，就是shift键，保持和windows使用习惯统一<br><img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1636899123(1).png" srcset="/img/loading.gif" lazyload></p>
-<p>这里的教程可以参考：<a target="_blank" rel="noopener" href="https://monkeywie.cn/2021/09/26/wsl2-gui-idea-config/">https://monkeywie.cn/2021/09/26/wsl2-gui-idea-config/</a><br>搜狗输入法参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/142206571">https://zhuanlan.zhihu.com/p/142206571</a><br>搜狗输入法配置命令：sogouIme-configtool<br>我的配置和里面的不一样， 也没有遇到idea切不出输入法的问题<br>如果有的话参考文章里的方法或者看：<a target="_blank" rel="noopener" href="https://github.com/microsoft/wslg/issues/278">https://github.com/microsoft/wslg/issues/278</a></p>
-<h2 id="2-手动添加软件的快捷方式到开始菜单"><a href="#2-手动添加软件的快捷方式到开始菜单" class="headerlink" title="2 手动添加软件的快捷方式到开始菜单"></a>2 手动添加软件的快捷方式到开始菜单</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd ~/.local/share/applications<br>sudo cp *.desktop /usr/share/applications<br><br></code></pre></td></tr></table></figure>
-<p>参考链接：<a target="_blank" rel="noopener" href="https://juejin.cn/post/6966630345915498526">https://juejin.cn/post/6966630345915498526</a></p>
-<h2 id="3-wslg处理快捷方式无法以root用户运行应用"><a href="#3-wslg处理快捷方式无法以root用户运行应用" class="headerlink" title="3 wslg处理快捷方式无法以root用户运行应用"></a>3 wslg处理快捷方式无法以root用户运行应用</h2><p>很多linux的软件默认不支持root用户启动，如chrome，会报错：</p>
-<blockquote>
-<p>Running as root without –no-sandbox is not supported. See <a target="_blank" rel="noopener" href="https://crbug.com/638180">https://crbug.com/638180</a></p>
-</blockquote>
-<p>这是报错原理：<br>wslg的应用通过windows快捷方式启动时，用的是wsl默认用户，<br>而我设置的默认用户是root，会导致闪退。<br>因为wslg我使用频率很低，故没必要特地去把默认用户改为普通用户。</p>
-<p>这里介绍下几种处理方法</p>
-<h3 id="（0）-修改默认用户"><a href="#（0）-修改默认用户" class="headerlink" title="（0） 修改默认用户"></a>（0） 修改默认用户</h3><p>使用范围：平常习惯使用sudo命令操作的<br>有效期：永久</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">Ubuntu-20.04 config --default-user 系统安装时创建的用户<br><br></code></pre></td></tr></table></figure>
-
-<h3 id="（1）-修改linux桌面图标配置-原理：修改启动命令"><a href="#（1）-修改linux桌面图标配置-原理：修改启动命令" class="headerlink" title="（1） 修改linux桌面图标配置(原理：修改启动命令)"></a>（1） 修改linux桌面图标配置(原理：修改启动命令)</h3><p>适用范围：可以在启动命令中添加特定选项规避问题的，如chrome可使用–no-sandbox<br>有效期：直到软件更新（图标刷新）</p>
-<p>以下为例子</p>
-<p>去 /usr/share/applications 目录对chrome的快捷方式进行编辑，修改其启动命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">vim /usr/share/applications/google-chrome.desktop<br><br></code></pre></td></tr></table></figure>
-<p>在其Exec列添加 <em>–no-sandbox</em> ，如下</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">Exec=/usr/bin/google-chrome-stable --no-sandbox  %U<br></code></pre></td></tr></table></figure>
-<h3 id="（2）-修改windows-wslg桌面图标配置-原理：修改调用用户"><a href="#（2）-修改windows-wslg桌面图标配置-原理：修改调用用户" class="headerlink" title="（2） 修改windows-wslg桌面图标配置(原理：修改调用用户)"></a>（2） 修改windows-wslg桌面图标配置(原理：修改调用用户)</h3><p>适用范围：所有<br>有效期：重启失效</p>
-<p>有些软件（<strong>如firefox</strong>）就是不支持root用户运行，<br>这个时候需要修改其windows图标对应启动命令，指定用户启动</p>
-<p>如下，linux的图标所在文件夹类似：C:\Users\用户名\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Ubuntu-20.04<br>将快捷方式-属性-目标由“C:\Windows\System32\wslg.exe ~ -d Ubuntu-20.04 firefox”改为<br>“C:\Windows\System32\wslg.exe ~ -d Ubuntu-20.04 su 用户名 -c firefox”</p>
-<p><img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1660206303479.png" srcset="/img/loading.gif" lazyload alt="linux图标"><br><img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/20220811162605.png" srcset="/img/loading.gif" lazyload alt="firefox属性"></p>
-<h4 id="（3）直接shell启动"><a href="#（3）直接shell启动" class="headerlink" title="（3）直接shell启动"></a>（3）直接shell启动</h4><p>适用范围：所有<br>有效期：shell会话</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">su 普通用户<br>google-chrome/firefox<br><br></code></pre></td></tr></table></figure>
-
-<h2 id="4-在wslg使用chrome访问kerberos页面"><a href="#4-在wslg使用chrome访问kerberos页面" class="headerlink" title="4 在wslg使用chrome访问kerberos页面"></a>4 在wslg使用chrome访问kerberos页面</h2><p>wslg-chrome安装见：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps#run-linux-gui-apps">https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps#run-linux-gui-apps</a></p>
+<h2 id="一-前言说明"><a href="#一-前言说明" class="headerlink" title="一 前言说明"></a>一 前言说明</h2><p>clash-tracing（<a target="_blank" rel="noopener" href="https://github.com/Dreamacro/clash-tracing">https://github.com/Dreamacro/clash-tracing</a> ）是clash作者推出的clash数据采集展示工具。<br>核心是一个docker-compose配置，包含组件有：<br>loki、grafana、vector、traffic_scraper（websocat）、tracing_scraper（websocat）<br>其工作流程如下：</p>
 <ol>
-<li>配置kerberos<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkdir -p /etc/opt/chrome/policies/managed/<br>cat &lt;&lt; &#x27;EOF&#x27; &gt; /etc/opt/chrome/policies/managed/kerberos.json<br>&#123; &quot;AuthServerAllowlist&quot;: &quot;*&quot;,<br>  &quot;AuthNegotiateDelegateAllowlist&quot;: &quot;*&quot; &#125;<br>EOF<br><br></code></pre></td></tr></table></figure></li>
-<li>启动<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">kinit -kt /home/admin02.service.keytab admin02/adp@HADOOP.COM<br>google-chrome --no-sandbox<br><br></code></pre></td></tr></table></figure></li>
+<li>两个websocat将clash数据转发到vector</li>
+<li>vector将数据进行路由、转换等操作，然后写入loki</li>
+<li>loki存储数据并提供搜索功能</li>
+<li>grafana提供面板访问，数据源来自loki</li>
 </ol>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="直接使用windows访问kerberos页面"><a href="#直接使用windows访问kerberos页面" class="headerlink" title="直接使用windows访问kerberos页面"></a>直接使用windows访问kerberos页面</h3><p>参考 <a target="_blank" rel="noopener" href="https://blog.csdn.net/sinat_20554629/article/details/105283518">https://blog.csdn.net/sinat_20554629/article/details/105283518</a> ，<br>在Windows上，必须使用Firefox + MIT Kerberos Windows客户端进行认证<br>不支持edge、chrome、ie等</p>
-<p>firefox访问kerberos参考：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/IUNIQUE/article/details/108615090">https://blog.csdn.net/IUNIQUE/article/details/108615090</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/kischn/p/7443343.html">https://www.cnblogs.com/kischn/p/7443343.html</a></p>
-<p>具体操作流程参考如下：<br>1.下载并安装mit kerberos客户端<br>下载地址：<a target="_blank" rel="noopener" href="https://web.mit.edu/kerberos/dist/">https://web.mit.edu/kerberos/dist/</a><br>2.修改PATH<br>安装完了kerberos就自动的在 PATH 里面加上了自己的目录,但是在最后。<br>jdk也自带了kerberos工具，所以需要跳转PATH里kerberos的优先级在前面<br>3.将krb5.conf文件内容复制到krb5.ini<br>完整默认路径：C:\ProgramData\MIT\Kerberos5\krb5.ini<br>4.kinit登录<br>5.修改firefox配置<br>    1. 输入 about:config<br>    2. 修改配置项 network.negotiate-auth.trusted-uris 的值为： master01,worker01<br>    3. 修改配置项 network.auth.use-sspi 的值为： false<br>    4. 重启firefox<br>6.使用firefox打开kerberos页面</p>
-<p>注意：机器重启会导致kinit信息失效</p>
+<p>由上面的工作流程可以看出，如果要对接多个clash，只需要提供多个websocat即可。</p>
+<p>目前本人有3个地方安装了clash：pc、手机、服务器。 其中服务器是多个服务器共同使用一个clash实例。</p>
+<p>因为服务器是长时间运行的，可直接用部署的websocat进行数据采集。<br>而pc则不是一直使用的，不想为此多部署两个websocat容器，所以使用任务计划在系统启动时自动启动websocat程序即可。</p>
+<h2 id="二-部署clash-tracing"><a href="#二-部署clash-tracing" class="headerlink" title="二 部署clash-tracing"></a>二 部署clash-tracing</h2><p>主要看官方的：<a target="_blank" rel="noopener" href="https://github.com/Dreamacro/clash-tracing">https://github.com/Dreamacro/clash-tracing</a><br>以下是个人的修改配置，可参考：</p>
+<ol>
+<li><p>把grafana/grafana-oss:latest换成grafana/grafana-oss:latest-ubuntu<br>grafana/grafana-oss:latest使用镜像不支持no_proxy环境变量,会导致大量不需要代理的连接进入clash影响统计。<br>比方说tailscale的连接，因为我的grafana是通过tailscale访问的。<br>见：<a href="https://linshenkx.github.io/clash_docker/#6-no-proxy%E7%9B%B8%E5%85%B3%E8%AF%B4%E6%98%8E">https://linshenkx.github.io/clash_docker/#6-no-proxy%E7%9B%B8%E5%85%B3%E8%AF%B4%E6%98%8E</a></p>
+</li>
+<li><p>在docker-compose.yml里面把loki的端口也放出来。<br>再把clash-tracing/grafana/provisioning/datasources/clash.yaml以及clash-tracing/vector/vector.toml中的 loki:3100 换成 域名:3100，因网络代理，loki可能无法解析</p>
+</li>
+<li><p>在docker-compose.yml里面把<code>user: root</code>换成 <code>user: &quot;0:0&quot;</code></p>
+</li>
+<li><p>loki的版本使用2.4.1避免“too many outstanding requests”报错，见：<a target="_blank" rel="noopener" href="https://github.com/grafana/loki/issues/4613">https://github.com/grafana/loki/issues/4613</a></p>
+</li>
+<li><p>两个websocat合并成一个</p>
+</li>
+</ol>
+<p>然后去执行 <code>docker-compose up -d</code> 就行了</p>
+<p>注意默认数据是存储在clash-tracing的各个组件目录下，工具loki的默认配置数据只存储168h，但还是要注意空间占用</p>
+<p>docker-compose.yml参考如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;3&#x27;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">loki:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">grafana/loki:2.4.1</span><br>    <span class="hljs-attr">container_name:</span> <span class="hljs-string">loki</span><br>    <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span><br>    <span class="hljs-attr">user:</span> <span class="hljs-string">&quot;0:0&quot;</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./loki/data:/loki</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./loki/config.yaml:/etc/loki/local-config.yaml</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;3100:3100&quot;</span><br>  <span class="hljs-attr">grafana:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">grafana/grafana-oss:latest-ubuntu</span><br>    <span class="hljs-attr">container_name:</span> <span class="hljs-string">grafana</span><br>    <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span><br>    <span class="hljs-attr">user:</span> <span class="hljs-string">&quot;0:0&quot;</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./grafana/data:/var/lib/grafana</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./grafana/panels:/etc/dashboards</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;3000:3000&quot;</span><br>  <span class="hljs-attr">vector:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">timberio/vector:0.X-alpine</span><br>    <span class="hljs-attr">container_name:</span> <span class="hljs-string">vector</span><br>    <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./vector/vector.toml:/etc/vector/vector.toml</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;39000:9000&quot;</span><br>    <span class="hljs-attr">depends_on:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">loki</span><br>  <span class="hljs-attr">scraper:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">vi0oss/websocat:0.10.0</span><br>    <span class="hljs-attr">container_name:</span> <span class="hljs-string">scraper</span><br>    <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span><br>    <span class="hljs-attr">entrypoint:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">/bin/sh</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">-c</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">|</span><br><span class="hljs-string">        /usr/local/bin/websocat -v --autoreconnect-delay-millis 15000 autoreconnect:ws://$CLASH_HOST/traffic?token=$CLASH_TOKEN autoreconnect:tcp:vector:9000 &amp;</span><br><span class="hljs-string">        /usr/local/bin/websocat -v --autoreconnect-delay-millis 15000 autoreconnect:ws://$CLASH_HOST/profile/tracing?token=$CLASH_TOKEN autoreconnect:tcp:vector:9000</span><br><span class="hljs-string"></span>    <span class="hljs-attr">depends_on:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">vector</span><br><br><br></code></pre></td></tr></table></figure>
+
+<h2 id="三-windows使用websocat采集clash数据"><a href="#三-windows使用websocat采集clash数据" class="headerlink" title="三 windows使用websocat采集clash数据"></a>三 windows使用websocat采集clash数据</h2><h3 id="1-编写脚本"><a href="#1-编写脚本" class="headerlink" title="1 编写脚本"></a>1 编写脚本</h3><p>在 <a target="_blank" rel="noopener" href="https://github.com/vi/websocat">https://github.com/vi/websocat</a> 下载对应的webscocat执行程序。<br>编写 run.vbs 脚本如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell">Dim  clashServer,clashToken,vectorServer,command<br>clashServer=&quot;localhost:29090&quot;<br>clashToken=&quot;myToken&quot;<br>vectorServer=&quot;my.vector:39000&quot;<br>command= &quot;D:\Program1\websocat\websocat  -v --autoreconnect-delay-millis 15000 autoreconnect:ws://&quot; &amp; clashServer &amp; &quot;/profile/tracing?token=&quot; &amp; clashToken &amp; &quot; autoreconnect:tcp:&quot; &amp; vectorServer<br>command2= &quot;D:\Program1\websocat\websocat  -v --autoreconnect-delay-millis 15000 autoreconnect:ws://&quot; &amp; clashServer &amp; &quot;/traffic?token=&quot; &amp; clashToken &amp; &quot; autoreconnect:tcp:&quot; &amp; vectorServer<br><br>&#x27; 输出指令进行调试<br>&#x27; WScript.Echo command<br>&#x27; 把0改成1，使得窗口不自动隐藏进行调试 <br>WScript.CreateObject(&quot;WScript.Shell&quot;).run command , 0<br>WScript.CreateObject(&quot;WScript.Shell&quot;).run command2 , 0<br><br></code></pre></td></tr></table></figure>
+<h3 id="2-配置开机执行"><a href="#2-配置开机执行" class="headerlink" title="2 配置开机执行"></a>2 配置开机执行</h3><p>打开“任务计划程序”，创建任务，重要的配置项如下：</p>
+<ul>
+<li>触发器-新建-登陆时</li>
+<li>操作-启动程序-“程序或脚本”设置为run.vbs路径</li>
+</ul>
+<h2 id="三-效果验证"><a href="#三-效果验证" class="headerlink" title="三 效果验证"></a>三 效果验证</h2><p><img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/202304071500435.png" srcset="/img/loading.gif" lazyload alt="clash统计界面"><br><img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/202304071503040.png" srcset="/img/loading.gif" lazyload alt="clash日志"></p>
 
                 
               </div>
@@ -439,7 +429,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/WSL%E5%BC%80%E5%8F%91%E7%B3%BB%E5%88%97/" class="category-chain-item">WSL开发系列</a>
+  <a href="/categories/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/" class="category-chain-item">我的服务器系列</a>
   
   
 
@@ -454,9 +444,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/">#生产力</a>
+        <a href="/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/">#我的服务器系列</a>
       
-        <a href="/tags/WSL/">#WSL</a>
+        <a href="/tags/clash/">#clash</a>
+      
+        <a href="/tags/clash-tracing/">#clash-tracing</a>
+      
+        <a href="/tags/tracing/">#tracing</a>
       
     </div>
   
@@ -480,8 +474,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>WSL开发系列-gui篇(wslg)</div>
-      <div>https://linshenkx.github.io/wsl-dev-wslg/</div>
+      <div>我的服务器系列：使用clash-tracing统计windows下clash使用情况</div>
+      <div>https://linshenkx.github.io/clash-tracing-windows/</div>
     </div>
     <div class="license-meta">
       
@@ -493,7 +487,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年2月11日</div>
+          <div>2023年4月5日</div>
         </div>
       
       
@@ -525,9 +519,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/clash-tracing-windows/" title="我的服务器系列：使用clash-tracing统计windows下clash使用情况">
+                      <a href="/my-server-overall-design/" title="我的服务器系列：总体设计">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">我的服务器系列：使用clash-tracing统计windows下clash使用情况</span>
+                        <span class="hidden-mobile">我的服务器系列：总体设计</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -535,8 +529,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/wsl-dev-base/" title="WSL开发系列-基础篇">
-                        <span class="hidden-mobile">WSL开发系列-基础篇</span>
+                      <a href="/wsl-dev-wslg/" title="WSL开发系列-gui篇(wslg)">
+                        <span class="hidden-mobile">WSL开发系列-gui篇(wslg)</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
