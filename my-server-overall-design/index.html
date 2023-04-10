@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/20220327172113.png">
 <meta property="article:published_time" content="2099-03-26T15:30:20.000Z">
-<meta property="article:modified_time" content="2022-05-13T09:19:29.104Z">
+<meta property="article:modified_time" content="2023-04-07T09:39:56.949Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta property="article:tag" content="我的服务器系列">
@@ -303,7 +303,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.8k 字
+          2k 字
         
       </span>
     
@@ -314,7 +314,7 @@
         
         
         
-          15 分钟
+          17 分钟
         
       </span>
     
@@ -406,8 +406,7 @@
 <h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><p>由swag负责证书申请、使用以及续签等，并内置nginx实现代理、跳转等。</p>
 <p>Nginx服务器接收到请求后，统一将http 301跳到https访问。<br>而在https内，则根据二级域名的具体名称转发到对应的服务。</p>
 <p>整个过程对于服务应用来说是透明的，应用只需确保监听端口即可，无需考虑域名和ssl配置。</p>
-<h2 id="二-角色分配"><a href="#二-角色分配" class="headerlink" title="二 角色分配"></a>二 角色分配</h2><p>离线服务器主要用于搭建大数据平台，做实验用，暂不列入</p>
-<table>
+<h2 id="二-角色分配"><a href="#二-角色分配" class="headerlink" title="二 角色分配"></a>二 角色分配</h2><table>
 <thead>
 <tr>
 <th>机器</th>
@@ -424,6 +423,11 @@
 <td></td>
 <td>clash(clash-web)</td>
 <td>网络畅通是一切行动的前提：<a target="_blank" rel="noopener" href="https://www.linshenkx.cn/archives/clashdocker">我的服务器系列：clash-docker使用并实现订阅链接自动更新</a></td>
+</tr>
+<tr>
+<td></td>
+<td>clash-tracing</td>
+<td>clash汇总监控：<a target="_blank" rel="noopener" href="https://www.linshenkx.cn/archives/clash-tracing-windows">我的服务器系列：使用clash-tracing统计windows下clash使用情况</a></td>
 </tr>
 <tr>
 <td></td>
@@ -448,7 +452,47 @@
 <tr>
 <td></td>
 <td>jellyfin</td>
-<td>家庭影音</td>
+<td>家庭影音：照片墙+播放器</td>
+</tr>
+<tr>
+<td></td>
+<td>auto-bangumi</td>
+<td>家庭影音：自动追番</td>
+</tr>
+<tr>
+<td></td>
+<td>chinesesubfinder</td>
+<td>字幕自动查找下载</td>
+</tr>
+<tr>
+<td></td>
+<td>flaresolverr</td>
+<td>绕开网站Cloudflare保护</td>
+</tr>
+<tr>
+<td></td>
+<td>iyuu</td>
+<td>自动辅种工具</td>
+</tr>
+<tr>
+<td></td>
+<td>qbit</td>
+<td>下载工具</td>
+</tr>
+<tr>
+<td></td>
+<td>nas-tools</td>
+<td>nas工具</td>
+</tr>
+<tr>
+<td></td>
+<td>syncthing</td>
+<td>文件同步工具</td>
+</tr>
+<tr>
+<td></td>
+<td>watchtower</td>
+<td>docker镜像自动更新</td>
 </tr>
 <tr>
 <td>tx</td>
