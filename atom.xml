@@ -38,6 +38,25 @@
   </entry>
   
   <entry>
+    <title>kafka-jaas环境下常用命令示例（含压测）</title>
+    <link href="https://linshenkx.github.io/kafka-jaas-benchmark-command-examples/"/>
+    <id>https://linshenkx.github.io/kafka-jaas-benchmark-command-examples/</id>
+    <published>2023-05-01T01:54:58.000Z</published>
+    <updated>2023-05-08T09:32:08.413Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文记录本人使用kafka过程中常用的运维指令。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="大数据" scheme="https://linshenkx.github.io/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    
+    <category term="kafka" scheme="https://linshenkx.github.io/tags/kafka/"/>
+    
+  </entry>
+  
+  <entry>
     <title>我的服务器系列：使用clash-tracing统计windows下clash使用情况</title>
     <link href="https://linshenkx.github.io/clash-tracing-windows/"/>
     <id>https://linshenkx.github.io/clash-tracing-windows/</id>
@@ -59,27 +78,6 @@
     <category term="tracing" scheme="https://linshenkx.github.io/tags/tracing/"/>
     
     <category term="clash" scheme="https://linshenkx.github.io/tags/clash/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>WSL开发系列-gui篇(wslg)</title>
-    <link href="https://linshenkx.github.io/wsl-dev-wslg/"/>
-    <id>https://linshenkx.github.io/wsl-dev-wslg/</id>
-    <published>2023-02-11T14:54:20.000Z</published>
-    <updated>2023-02-20T03:32:23.198Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;直到2022年，wslg的体验仍较差，难以用于日常开发，大部分情况下不建议使用&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="WSL开发系列" scheme="https://linshenkx.github.io/categories/WSL%E5%BC%80%E5%8F%91%E7%B3%BB%E5%88%97/"/>
-    
-    
-    <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
-    
-    <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
     
   </entry>
   
@@ -114,6 +112,27 @@
     
     <summary type="html">&lt;p&gt;wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：&lt;br&gt;1.wsl自动获取宿主机ip的脚本。&lt;br&gt;2.wsl设置固定（静态）ip的配置方法。&lt;/p&gt;
 &lt;p&gt;2023.4更新：因wudo异常，wsl网段的windows静态ip的设置使用bat脚本+任务计划程序实现&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="WSL开发系列" scheme="https://linshenkx.github.io/categories/WSL%E5%BC%80%E5%8F%91%E7%B3%BB%E5%88%97/"/>
+    
+    
+    <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
+    
+    <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>WSL开发系列-gui篇(wslg)</title>
+    <link href="https://linshenkx.github.io/wsl-dev-wslg/"/>
+    <id>https://linshenkx.github.io/wsl-dev-wslg/</id>
+    <published>2023-02-11T14:54:20.000Z</published>
+    <updated>2023-02-20T03:32:23.198Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;直到2022年，wslg的体验仍较差，难以用于日常开发，大部分情况下不建议使用&lt;/p&gt;</summary>
     
     
     
@@ -431,23 +450,6 @@
     <category term="hexo" scheme="https://linshenkx.github.io/tags/hexo/"/>
     
     <category term="halo" scheme="https://linshenkx.github.io/tags/halo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ubuntu制作离线源</title>
-    <link href="https://linshenkx.github.io/ubuntu-offline-sources/"/>
-    <id>https://linshenkx.github.io/ubuntu-offline-sources/</id>
-    <published>2021-08-14T14:11:26.000Z</published>
-    <updated>2022-11-04T08:35:59.114Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;自用笔记：ubuntu（18.04）制作离线源&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="运维部署" scheme="https://linshenkx.github.io/categories/%E8%BF%90%E7%BB%B4%E9%83%A8%E7%BD%B2/"/>
-    
     
   </entry>
   
