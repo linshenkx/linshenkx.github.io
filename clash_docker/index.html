@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1659668681939.png">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/202305161144815.png">
 <meta property="article:published_time" content="2022-03-26T14:54:20.000Z">
-<meta property="article:modified_time" content="2023-05-16T03:55:21.426Z">
+<meta property="article:modified_time" content="2023-05-16T04:00:44.649Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta property="article:tag" content="clash">
@@ -321,7 +321,7 @@
         
         
         
-          106 分钟
+          107 分钟
         
       </span>
     
@@ -386,14 +386,14 @@
 <h3 id="3-配置Proxy-Provider"><a href="#3-配置Proxy-Provider" class="headerlink" title="3. 配置Proxy Provider"></a>3. 配置Proxy Provider</h3><p>   在clash配置文件中配置Proxy Provider，实现代理服务器列表的自动更新<br>   clash配置文件，可以从订阅链接下载得到，再修改即可。或者我后面贴出来自用的。</p>
 <h3 id="4-启动clash"><a href="#4-启动clash" class="headerlink" title="4. 启动clash"></a>4. 启动clash</h3><p>启动dreamacro/clash或dreamacro/clash-premium容器，加载配置文件，进行clash服务</p>
 <h3 id="5-启动clash-web"><a href="#5-启动clash-web" class="headerlink" title="5. 启动clash-web"></a>5. 启动clash-web</h3><p>   启动haishanh/yacd容器，对clash进行web管理<br>   可以直接用作者部署的：<a target="_blank" rel="noopener" href="http://yacd.haishan.me/">http://yacd.haishan.me</a></p>
-<h2 id="二-clash配置文件"><a href="#二-clash配置文件" class="headerlink" title="二 clash配置文件"></a>二 clash配置文件</h2><p>主要修改地方是在proxy-providers和proxy-groups。</p>
+<h2 id="二-clash配置文件"><a href="#二-clash配置文件" class="headerlink" title="二 clash配置文件"></a>二 clash配置文件</h2><p>参考配置：<a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/linshenkx/myFiles/master/blogFiles/clash/config.yaml">https://raw.githubusercontent.com/linshenkx/myFiles/master/blogFiles/clash/config.yaml</a><br>注意，如果raw.githubusercontent.com无法访问可以尝试使用第三方加速：raw.gitmirror.com</p>
+<h3 id="添加-proxy-providers-并修改-proxy-groups"><a href="#添加-proxy-providers-并修改-proxy-groups" class="headerlink" title="添加 proxy-providers 并修改 proxy-groups"></a>添加 proxy-providers 并修改 proxy-groups</h3><p>主要修改地方是在proxy-providers和proxy-groups。</p>
 <p>rules是根据proxy-groups配置的，数量比较多，具体参考从订阅地址得到的clash配置文件。或者自己从网上获取，这些是比较通用的。</p>
 <p>可以看到proxy-groups中的配置都引用了<code>use: [&#39;LIAN&#39;]</code>来导入节点配置。<br>且使用了 url-test 来自动选出最快的代理。</p>
 <p>默认clash配置文件：<br><img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652843670(1).png" srcset="/img/loading.gif" lazyload alt="默认clash配置文件"></p>
 <p>修改之后的clash配置文件：<br><img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652845276(1).png" srcset="/img/loading.gif" lazyload alt="修改之后的clash配置文件"></p>
 <p>使用效果，以<strong>电报消息</strong>为例，默认使用代理是<strong>节点选择</strong>，<br>而<strong>节点选择</strong>使用的代理是<strong>自动选择</strong>，所以<strong>电报消息</strong>默认使用的代理是节点池最快的节点。<br><img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652845859(1).png" srcset="/img/loading.gif" lazyload alt="使用效果"></p>
 <p>一般只需要修改proxy-providers的LIAN的url和path，<br>如果更换机场，也只需要重新生成clash订阅链接，然后修改这两个位置即可</p>
-<p>参考配置：<a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/linshenkx/myFiles/master/blogFiles/clash/config.yaml">https://raw.githubusercontent.com/linshenkx/myFiles/master/blogFiles/clash/config.yaml</a><br>注意，如果raw.githubusercontent.com无法访问可以尝试使用第三方加速：raw.gitmirror.com</p>
 <h3 id="使用-rule-providers"><a href="#使用-rule-providers" class="headerlink" title="使用 rule-providers"></a>使用 rule-providers</h3><p>规则总是会更新的，如果使用的是clash-premium（专业版）的话，可以考虑用rule-providers</p>
 <p>相关说明见：<a target="_blank" rel="noopener" href="https://github.com/Dreamacro/clash/wiki/premium-core-features#rule-providers">https://github.com/Dreamacro/clash/wiki/premium-core-features#rule-providers</a></p>
 <p>这里使用的是 <a target="_blank" rel="noopener" href="https://github.com/Loyalsoldier/clash-rules">https://github.com/Loyalsoldier/clash-rules</a> 提供的规则。<br>完整配置见文末示例：</p>
