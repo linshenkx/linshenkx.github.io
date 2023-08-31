@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1660199927570.png">
 <meta property="article:published_time" content="2023-02-11T14:54:20.000Z">
-<meta property="article:modified_time" content="2023-04-06T03:06:29.326Z">
+<meta property="article:modified_time" content="2023-08-30T07:16:16.729Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="生产力">
 <meta property="article:tag" content="WSL">
@@ -303,7 +303,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.1k 字
+          6.6k 字
         
       </span>
     
@@ -314,7 +314,7 @@
         
         
         
-          43 分钟
+          55 分钟
         
       </span>
     
@@ -448,8 +448,20 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 下载py脚本</span><br>wget https://raw.githubusercontent.com/Chronial/wsl-sudo/master/wsl-sudo.py<br><span class="hljs-meta">#</span><span class="bash"> 替换成完整路径（如果你的wsl没有关闭使用windows的环境变量，则可忽略这一步）</span><br>sed -i &quot;s#\&quot;powershell.exe\&quot;#\&quot;/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe\&quot;#g&quot; wsl-sudo.py<br><span class="hljs-meta">#</span><span class="bash"> 修改名称并授权</span><br>mv wsl-sudo.py wudo<br>chmod a+x wudo<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 测试：报错<span class="hljs-string">&quot;拒绝访问&quot;</span></span><br>/mnt/c/WINDOWS/system32/net.exe sessions<br><span class="hljs-meta">#</span><span class="bash"> 测试：无报错</span><br>./wudo /mnt/c/WINDOWS/system32/net.exe sessions<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 拷贝到系统路径下</span><br>mv wudo /usr/bin/<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 再次测试</span><br>wudo /mnt/c/WINDOWS/system32/net.exe sessions<br><br></code></pre></td></tr></table></figure>
 <p>以后在wsl里面需要以admin身份调用powershell指令只需要加上前缀 <strong>wudo</strong> 即可</p>
 <h3 id="7-wsl存储位置迁移"><a href="#7-wsl存储位置迁移" class="headerlink" title="7 wsl存储位置迁移"></a>7 wsl存储位置迁移</h3><p>wsl镜像导出导入命令参考：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/wsl/enterprise">https://learn.microsoft.com/zh-cn/windows/wsl/enterprise</a></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 关闭wsl</span><br>wsl --shutdown<br><span class="hljs-meta">#</span><span class="bash"> 确保为stop状态</span><br>wsl -l -v<br><span class="hljs-meta">#</span><span class="bash"> 文件夹需提前创建</span><br>wsl --export Ubuntu-20.04 E:\UbuntuWSL\ubuntu.tar<br><span class="hljs-meta">#</span><span class="bash"> 注销</span><br>wsl --unregister Ubuntu-20.04<br><span class="hljs-meta">#</span><span class="bash"> 确定已注销</span><br>wsl -l -v<br><span class="hljs-meta">#</span><span class="bash"> 执行导入(如果失败可再次尝试执行)</span><br>wsl --import Ubuntu-20.04 E:\UbuntuWSL\ E:\UbuntuWSL\ubuntu.tar<br>wsl -l -v<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 关闭wsl</span><br>wsl --shutdown<br><span class="hljs-meta">#</span><span class="bash"> 确保为stop状态</span><br>wsl -l -v<br><span class="hljs-meta">#</span><span class="bash"> 文件夹需提前创建</span><br>wsl --export Ubuntu-20.04 E:\UbuntuWSL\ubuntu.tar<br><span class="hljs-meta">#</span><span class="bash"> 注销</span><br>wsl --unregister Ubuntu-20.04<br><span class="hljs-meta">#</span><span class="bash"> 确定已注销</span><br>wsl -l -v<br><span class="hljs-meta">#</span><span class="bash"> 执行导入(如果失败可再次尝试执行)</span><br><span class="hljs-meta">#</span><span class="bash"> 执行完会在E:\UbuntuWSL\创建ext4.vhdx，然后ubuntu.tar就可以删掉了</span><br>wsl --import Ubuntu-20.04 E:\UbuntuWSL\ E:\UbuntuWSL\ubuntu.tar<br>wsl -l -v<br></code></pre></td></tr></table></figure>
 
+<h3 id="7-windows-docker存储位置迁移"><a href="#7-windows-docker存储位置迁移" class="headerlink" title="7 windows-docker存储位置迁移"></a>7 windows-docker存储位置迁移</h3><p>除了常规的用户linux系统（如ubuntu），新版的windows-docker也是基于wsl2的</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://docs.docker.com/desktop/wsl/">https://docs.docker.com/desktop/wsl/</a></p>
+<blockquote>
+<p>Docker Desktop installs two special-purpose internal Linux distros docker-desktop and docker-desktop-data.<br>The first (docker-desktop) is used to run the Docker engine (dockerd) while the second (docker-desktop-data) stores containers and images.<br>Neither can be used for general development.</p>
+</blockquote>
+<p>即docker使用的磁盘目录无法通过data-root来指定，而是在名为docker-desktop-data的wsl上。<br>其ext4.vhdx具体位置可通过以下命令获取：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">(Get-ChildItem -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss | Where-Object &#123; $_.GetValue(&quot;DistributionName&quot;) -eq &#x27;docker-desktop-data&#x27; &#125;).GetValue(&quot;BasePath&quot;) + &quot;\ext4.vhdx&quot;<br></code></pre></td></tr></table></figure>
+<p>所以其目录迁移和普通的wsl迁移一致</p>
+<p>执行下面命令之前，先关闭windows-docker</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 关闭wsl</span><br>wsl --shutdown<br><span class="hljs-meta">#</span><span class="bash"> 确保为stop状态</span><br>wsl -l -v<br><span class="hljs-meta">#</span><span class="bash"> 文件夹需提前创建</span><br>wsl --export docker-desktop-data E:\dockerData\docker-desktop-data.tar<br><span class="hljs-meta">#</span><span class="bash"> 注销</span><br>wsl --unregister docker-desktop-data<br><span class="hljs-meta">#</span><span class="bash"> 确定已注销</span><br>wsl -l -v<br><span class="hljs-meta">#</span><span class="bash"> 执行导入(如果失败可再次尝试执行)</span><br>wsl --import docker-desktop-data E:\dockerData\ E:\dockerData\docker-desktop-data.tar<br>wsl -l -v<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 再次查看位置，确认修改成功</span><br> (Get-ChildItem -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss | Where-Object &#123; $_.GetValue(&quot;DistributionName&quot;) -eq &#x27;docker-desktop-data&#x27; &#125;).GetValue(&quot;BasePath&quot;) + &quot;\ext4.vhdx&quot;<br><br></code></pre></td></tr></table></figure>
+<p>再次启动windows-docker</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/62441307/how-can-i-change-the-location-of-docker-images-when-using-docker-desktop-on-wsl2">https://stackoverflow.com/questions/62441307/how-can-i-change-the-location-of-docker-images-when-using-docker-desktop-on-wsl2</a></p>
 
                 
               </div>
@@ -554,9 +566,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/wsl-dev-wslg/" title="WSL开发系列-gui篇(wslg)">
+                      <a href="/clash-tracing-windows/" title="我的服务器系列：使用clash-tracing统计windows下clash使用情况">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">WSL开发系列-gui篇(wslg)</span>
+                        <span class="hidden-mobile">我的服务器系列：使用clash-tracing统计windows下clash使用情况</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -564,8 +576,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/wsl-dev-static-ip/" title="WSL开发系列-网络篇（wsl固定ip）">
-                        <span class="hidden-mobile">WSL开发系列-网络篇（wsl固定ip）</span>
+                      <a href="/wsl-dev-wslg/" title="WSL开发系列-gui篇(wslg)">
+                        <span class="hidden-mobile">WSL开发系列-gui篇(wslg)</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
