@@ -103,14 +103,15 @@
   </entry>
   
   <entry>
-    <title>WSL开发系列-gui篇(wslg)</title>
-    <link href="https://linshenkx.github.io/wsl-dev-wslg/"/>
-    <id>https://linshenkx.github.io/wsl-dev-wslg/</id>
+    <title>WSL开发系列-网络篇（wsl固定ip）</title>
+    <link href="https://linshenkx.github.io/wsl-dev-static-ip/"/>
+    <id>https://linshenkx.github.io/wsl-dev-static-ip/</id>
     <published>2023-02-11T14:54:20.000Z</published>
-    <updated>2023-02-20T03:32:23.198Z</updated>
+    <updated>2023-04-06T03:55:35.803Z</updated>
     
     
-    <summary type="html">&lt;p&gt;直到2022年，wslg的体验仍较差，难以用于日常开发，大部分情况下不建议使用&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：&lt;br&gt;1.wsl自动获取宿主机ip的脚本。&lt;br&gt;2.wsl设置固定（静态）ip的配置方法。&lt;/p&gt;
+&lt;p&gt;2023.4更新：因wudo异常，wsl网段的windows静态ip的设置使用bat脚本+任务计划程序实现&lt;/p&gt;</summary>
     
     
     
@@ -124,15 +125,14 @@
   </entry>
   
   <entry>
-    <title>WSL开发系列-网络篇（wsl固定ip）</title>
-    <link href="https://linshenkx.github.io/wsl-dev-static-ip/"/>
-    <id>https://linshenkx.github.io/wsl-dev-static-ip/</id>
+    <title>WSL开发系列-gui篇(wslg)</title>
+    <link href="https://linshenkx.github.io/wsl-dev-wslg/"/>
+    <id>https://linshenkx.github.io/wsl-dev-wslg/</id>
     <published>2023-02-11T14:54:20.000Z</published>
-    <updated>2023-04-06T03:55:35.803Z</updated>
+    <updated>2023-02-20T03:32:23.198Z</updated>
     
     
-    <summary type="html">&lt;p&gt;wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：&lt;br&gt;1.wsl自动获取宿主机ip的脚本。&lt;br&gt;2.wsl设置固定（静态）ip的配置方法。&lt;/p&gt;
-&lt;p&gt;2023.4更新：因wudo异常，wsl网段的windows静态ip的设置使用bat脚本+任务计划程序实现&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;直到2022年，wslg的体验仍较差，难以用于日常开发，大部分情况下不建议使用&lt;/p&gt;</summary>
     
     
     
