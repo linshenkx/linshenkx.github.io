@@ -82,14 +82,14 @@
   </entry>
   
   <entry>
-    <title>WSL开发系列-gui篇(wslg)</title>
-    <link href="https://linshenkx.github.io/wsl-dev-wslg/"/>
-    <id>https://linshenkx.github.io/wsl-dev-wslg/</id>
+    <title>WSL开发系列-基础篇</title>
+    <link href="https://linshenkx.github.io/wsl-dev-base/"/>
+    <id>https://linshenkx.github.io/wsl-dev-base/</id>
     <published>2023-02-11T14:54:20.000Z</published>
-    <updated>2023-02-20T03:32:23.198Z</updated>
+    <updated>2023-08-30T07:16:16.729Z</updated>
     
     
-    <summary type="html">&lt;p&gt;直到2022年，wslg的体验仍较差，难以用于日常开发，大部分情况下不建议使用&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;本人使用win11+idea+docker+wsl2作为日常开发测试环境，&lt;br&gt;随着版本的迭代完善，加上本人丰富的踩坑经验，wsl已基本能满足我对linux单机使用的需求。&lt;br&gt;故重新整理wsl开发环境相关配置、优化、使用集成，形成本系列文章。&lt;br&gt;本文为WSL开发系列的开篇，也是目录，建议阅读此篇，再根据需求跳转。&lt;/p&gt;</summary>
     
     
     
@@ -125,14 +125,14 @@
   </entry>
   
   <entry>
-    <title>WSL开发系列-基础篇</title>
-    <link href="https://linshenkx.github.io/wsl-dev-base/"/>
-    <id>https://linshenkx.github.io/wsl-dev-base/</id>
+    <title>WSL开发系列-gui篇(wslg)</title>
+    <link href="https://linshenkx.github.io/wsl-dev-wslg/"/>
+    <id>https://linshenkx.github.io/wsl-dev-wslg/</id>
     <published>2023-02-11T14:54:20.000Z</published>
-    <updated>2023-08-30T07:16:16.729Z</updated>
+    <updated>2023-02-20T03:32:23.198Z</updated>
     
     
-    <summary type="html">&lt;p&gt;本人使用win11+idea+docker+wsl2作为日常开发测试环境，&lt;br&gt;随着版本的迭代完善，加上本人丰富的踩坑经验，wsl已基本能满足我对linux单机使用的需求。&lt;br&gt;故重新整理wsl开发环境相关配置、优化、使用集成，形成本系列文章。&lt;br&gt;本文为WSL开发系列的开篇，也是目录，建议阅读此篇，再根据需求跳转。&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;直到2022年，wslg的体验仍较差，难以用于日常开发，大部分情况下不建议使用&lt;/p&gt;</summary>
     
     
     
