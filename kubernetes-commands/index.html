@@ -24,7 +24,7 @@
 <meta property="og:description" content="一些自用的kubectl命令">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-12-28T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-08-30T07:59:49.324Z">
+<meta property="article:modified_time" content="2023-08-31T02:25:31.554Z">
 <meta property="article:author" content="林泽浩">
 <meta property="article:tag" content="kubernetes">
 <meta property="article:tag" content="笔记">
@@ -301,7 +301,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.5k 字
+          4.6k 字
         
       </span>
     
@@ -312,7 +312,7 @@
         
         
         
-          38 分钟
+          39 分钟
         
       </span>
     
@@ -396,8 +396,8 @@
 
 <h3 id="获取当前kubeconfig"><a href="#获取当前kubeconfig" class="headerlink" title="获取当前kubeconfig"></a>获取当前kubeconfig</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">kubectl config view --minify --raw<br><br></code></pre></td></tr></table></figure>
 
-<h3 id="根据pv自动创建pvc"><a href="#根据pv自动创建pvc" class="headerlink" title="根据pv自动创建pvc"></a>根据pv自动创建pvc</h3><p>创建create_pvc.sh脚本，内容如下，使用类似<code>./create_pvc.sh pv001 default</code>调用即可<br>也可直接修改参数，执行以下语句</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash">!/bin/bash</span><br><br>pv_name=$1<br>namespace=$2<br><br>storage=$(kubectl get pv $&#123;pv_name&#125; -o yaml | grep storage: | awk &#x27;&#123;print $2&#125;&#x27;)<br>storageClassName=$(kubectl get pv $&#123;pv_name&#125; -o yaml | grep storageClassName: | awk &#x27;&#123;print $2&#125;&#x27;)<br><br>cat &lt;&lt;EOF | kubectl create -f -<br>apiVersion: v1<br>kind: PersistentVolumeClaim<br>metadata:<br>  namespace: $&#123;namespace&#125;<br>  name: $&#123;pv_name&#125;<br>spec:<br>  accessModes:<br>    - ReadWriteMany<br>  resources:  <br>    requests:<br>      storage: $&#123;storage&#125;<br>  storageClassName: $&#123;storageClassName&#125;<br>  volumeName: $&#123;pv_name&#125;<br>EOF<br><br></code></pre></td></tr></table></figure>
+<h3 id="根据pv自动创建pvc"><a href="#根据pv自动创建pvc" class="headerlink" title="根据pv自动创建pvc"></a>根据pv自动创建pvc</h3><p>创建create_pvc.sh脚本，使用类似<code>./create_pvc.sh pv001 default</code>调用即可<br>也可直接修改参数，执行以下语句</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt; &#x27;EEOFF&#x27; &gt;./create_pvc.sh<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash">!/bin/bash</span><br><br>pv_name=$1<br>namespace=$2<br><br>storage=$(kubectl get pv $&#123;pv_name&#125; -o yaml | grep storage: | awk &#x27;&#123;print $2&#125;&#x27;)<br>storageClassName=$(kubectl get pv $&#123;pv_name&#125; -o yaml | grep storageClassName: | awk &#x27;&#123;print $2&#125;&#x27;)<br><br>cat &lt;&lt;EOF | kubectl create -f -<br>apiVersion: v1<br>kind: PersistentVolumeClaim<br>metadata:<br>  namespace: $&#123;namespace&#125;<br>  name: $&#123;pv_name&#125;<br>spec:<br>  accessModes:<br>    - ReadWriteMany<br>  resources:  <br>    requests:<br>      storage: $&#123;storage&#125;<br>  storageClassName: $&#123;storageClassName&#125;<br>  volumeName: $&#123;pv_name&#125;<br>EOF<br><br>EEOFF<br>chmod a+x create_pvc.sh<br><br>./create_pvc.sh pv001 default<br><br></code></pre></td></tr></table></figure>
                 
               </div>
             
