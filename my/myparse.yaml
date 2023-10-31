@@ -1,0 +1,222 @@
+# https://github.com/Fndroid/clash_for_windows_pkg/issues/2193#issuecomment-1589107746
+parsers: # array
+  - reg: ^.*$
+    code: |
+      module.exports.parse = (raw, { yaml }) => {
+        const rawObj = yaml.parse(raw)
+        const groups = []
+        const rules = []
+        return yaml.stringify({ ...rawObj, 'proxy-groups': groups, rules })
+      } 
+    yaml:
+      prepend-proxy-groups: # 建立策略组
+        - name: 🔯 代理模式 
+          type: select
+          proxies:
+            - 白名单丨不命中则代理(Whitelist) # 白名单模式，意为「没有命中规则的网络流量，统统使用代理」
+            - 黑名单丨不命中则直连(GFWlist) # 黑名单模式，意为「只有命中规则的网络流量，才使用代理」
+
+        - name: PROXY
+          type: select
+          proxies:
+            - 🔰 自动选择节点所有
+            - 🔰 手动选择节点
+            - 🔰 自动选择节点香港
+            - 🔰 自动选择节点日本
+            - 🔰 自动选择节点美国
+
+        - name: 🤖 Ai
+          type: select
+          proxies:
+            - 🔰 自动选择节点美国
+            - 🔰 自动选择节点所有
+            - DIRECT
+            - REJECT
+            - PROXY
+            - 🔰 手动选择节点
+            - 🔰 自动选择节点日本    
+            - 🔰 自动选择节点香港                     
+
+        - name: 🔰 手动选择节点 
+          type: select
+
+        - name: 🔰 自动选择节点所有
+          type: url-test
+          url: http://www.google.com/generate_204
+          interval: 300
+          tolerance: 50
+
+        - name: 🔰 自动选择节点日本 
+          type: url-test
+          url: http://www.google.com/generate_204
+          interval: 300
+          tolerance: 50
+
+        - name: 🔰 自动选择节点美国 
+          type: url-test
+          url: http://www.google.com/generate_204
+          interval: 300
+          tolerance: 50
+
+        - name: 🔰 自动选择节点香港
+          type: url-test
+          url: http://www.google.com/generate_204
+          interval: 300
+          tolerance: 50
+
+        - name: 🛑 广告拦截
+          type: select
+          proxies:
+            - DIRECT
+            - REJECT
+            - PROXY
+
+        - name: 黑名单丨不命中则直连(GFWlist)
+          type: select
+          proxies:
+            - DIRECT
+            
+        - name: 白名单丨不命中则代理(Whitelist)
+          type: select
+          proxies:
+            - PROXY
+            
+  # 策略组示例
+       # - name: 分组名
+         # type: select       # 手动选点   
+               # url-test     # 自动选择延迟最低的节点
+               # fallback     # 节点故障时自动切换下一个
+               # laod-balance # 均衡使用分组内的节点
+         # url: http://www.gstatic.com/generate_204 # 测试地址 非select类型分组必要
+         # interval: 300 # 自动测试间隔时间，单位秒 非select类型分组必要
+         # tolerance: 50 # 允许的偏差，节点之间延迟差小于该值不切换 非必要
+         # proxies:  
+           # - 节点名称或其他分组套娃
+          
+      commands:
+        - proxy-groups.🔰 手动选择节点.proxies=[]proxyNames|^((?!官网|暂时|购买渠道|IPV6).)*$ # 向指定策略组添加订阅中的节点名，可使用正则过滤
+        - proxy-groups.🔰 手动选择节点.proxies.0+DIRECT # 向指定分组第一个位置添加一个 DIRECT 节点名
+        - proxy-groups.🔰 自动选择节点所有.proxies=[]proxyNames|^((?!官网|暂时|购买渠道|IPV6).)*$ # 向指定策略组添加订阅中的节点名，可使用正则过滤
+        - proxy-groups.🔰 自动选择节点所有.proxies.0+DIRECT # 向指定分组第一个位置添加一个 DIRECT 节点名
+        - proxy-groups.🔰 自动选择节点日本.proxies=[]proxyNames|日本 # 向指定策略组添加订阅中的节点名，可使用正则过滤  
+        - proxy-groups.🔰 自动选择节点日本.proxies.0+DIRECT # 向指定分组第一个位置添加一个 DIRECT 节点名                   
+        - proxy-groups.🔰 自动选择节点美国.proxies=[]proxyNames|美国 # 向指定策略组添加订阅中的节点名，可使用正则过滤 
+        - proxy-groups.🔰 自动选择节点美国.proxies.0+DIRECT # 向指定分组第一个位置添加一个 DIRECT 节点名                  
+        - proxy-groups.🔰 自动选择节点香港.proxies=[]proxyNames|^(.*)(香港)+(.*)$ # 向指定策略组添加订阅中的节点名，可使用正则过滤  
+        - proxy-groups.🔰 自动选择节点香港.proxies.0+DIRECT # 向指定分组第一个位置添加一个 DIRECT 节点名
+        # 一些可能用到的正则过滤节点示例，使分组更细致
+        # []proxyNames|a                         # 包含a
+        # []proxyNames|^(.*)(a|b)+(.*)$          # 包含a或b
+        # []proxyNames|^(?=.*a)(?=.*b).*$        # 包含a和b
+        # []proxyNames|^((?!b).)*a((?!b).)*$     # 包含a且不包含b
+        # []proxyNames|^((?!b|c).)*a((?!b|c).)*$ # 包含a且不包含b或c
+        
+  # 添加规则
+      prepend-rules: # 规则由上往下遍历，如上面规则已经命中，则不再往下处理
+        - RULE-SET,Claude,🤖 Ai
+        - RULE-SET,OpenAI,🤖 Ai
+        - RULE-SET,Advertising,REJECT
+        - RULE-SET,Lan,DIRECT
+        - RULE-SET,Direct,DIRECT
+        - RULE-SET,applications,DIRECT
+        - RULE-SET,ChinaMax,DIRECT
+        - RULE-SET,Global,PROXY
+        - RULE-SET,GlobalMedia,PROXY
+        - GEOIP,LAN,DIRECT
+        - GEOIP,CN,DIRECT
+
+        - MATCH,🔯 代理模式 # 规则之外的
+  # 添加规则集
+      mix-rule-providers: 
+          Claude:
+            type: http
+            behavior: classical
+            url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Claude/Claude.yaml"
+            path: ./blackmatrix7/Claude.yaml
+            interval: 86400
+          OpenAI:
+            type: http
+            behavior: classical
+            url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml"
+            path: ./blackmatrix7/OpenAI.yaml
+            interval: 86400
+
+          applications:
+            type: http
+            behavior: classical
+            url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/applications.txt"
+            path: ./ruleset/applications.yaml
+            interval: 86400
+          ChinaMax:
+            type: http
+            behavior: classical
+            url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMax/ChinaMax_Classical.yaml"
+            path: ./blackmatrix7/ChinaMax_Classical.yaml
+            interval: 86400
+          Lan:
+            type: http
+            behavior: classical
+            url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.yaml"
+            path: ./blackmatrix7/Lan.yaml
+            interval: 86400
+          Direct:
+            behavior: classical
+            type: http
+            url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Direct/Direct.yaml"
+            interval: 86400
+            path: ./blackmatrix7/Direct.yaml
+          Advertising:
+            behavior: classical
+            type: http
+            url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.yaml"
+            interval: 86400
+            path: ./blackmatrix7/Advertising.yaml
+          Global:
+            behavior: classical 
+            type: http
+            url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Global/Global_Classical.yaml"
+            interval: 86400
+            path: ./blackmatrix7/Global.yaml
+          GlobalMedia:
+            behavior: classical 
+            type: http
+            url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GlobalMedia/GlobalMedia_Classical.yaml"
+            interval: 86400
+            path: ./blackmatrix7/GlobalMedia.yaml
+
+
+
+
+  # https://github.com/Dreamacro/clash/issues/1385#issuecomment-1583996210
+  # 预加载rule-providers
+  - reg: ^.*$
+    code: |
+      module.exports.parse = async (raw, { axios, yaml, console, homeDir }) => {
+        const fs = require('fs');
+
+        const rawObj = yaml.parse(raw);
+        const providers = rawObj['rule-providers'];
+
+        for (let provider in providers) {
+          const obj = providers[provider];
+
+          if (obj.type === 'file') {
+              continue;
+          }
+
+          const ret = await axios({
+              method: 'get',
+              url: obj.url,
+          });
+
+          const fmt = obj.format === undefined || obj.format === 'yaml' ? 'yaml' : 'txt';
+          const filePath = homeDir + '\\providers\\rule\\' + provider + '.' + fmt;
+          fs.writeFileSync(filePath, ret.data);
+
+          obj.type = 'file';
+          obj.path = filePath;
+          delete obj.url;
+        }
+
+        return yaml.stringify(rawObj);
+      };
