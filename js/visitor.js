@@ -4,7 +4,7 @@
       .then(response => response.json())
       .then(data => {
         const ipAddress = data.ip;
-        const location = `${data.city}, ${data.country_name}`;
+        const location = ` ${data.city}, ${data.country_name}`;
 
         document.getElementById('ip-address').textContent = ipAddress;
         document.getElementById('location').textContent = location;
