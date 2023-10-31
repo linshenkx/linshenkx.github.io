@@ -1,10 +1,10 @@
   // Function to fetch visitor's IP address and location information
   function fetchVisitorInfo() {
-    fetch('http://ip-api.com/json')
+    fetch('https://ipapi.co/json')
       .then(response => response.json())
       .then(data => {
-        const ipAddress = data.query;
-        const location = `${data.city}, ${data.regionName}`;
+        const ipAddress = data.ip;
+        const location = `${data.city}, ${data.country_name}`;
 
         document.getElementById('ip-address').textContent = ipAddress;
         document.getElementById('location').textContent = location;
