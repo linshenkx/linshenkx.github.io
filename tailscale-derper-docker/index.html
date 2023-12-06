@@ -13,23 +13,23 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="林泽浩">
+  <meta name="author" content="John Doe">
   <meta name="keywords" content="大数据">
   
-    <meta name="description" content="使用docker部署tailscale私有中继服务器，并使用nginx四层代理与原有服务共用443端口，最后配置使用并检测。derper-docker部署及使用较麻烦，本文分享踩坑记录及经验，建议阅读。">
+    <meta name="description" content="使用docker部署tailscale私有中继服务器，并使用nginx四层代理与原有服务共用443端口，最后配置使用并检测。derper-docker部署及使用较麻烦，本文分享踩坑记录及经验，建议阅读。 2023.10更新：随着网站备案注销，derper已切换到ip模式，增加对应示例及说明">
 <meta property="og:type" content="article">
 <meta property="og:title" content="我的服务器系列：tailscale使用自定义derper服务器（docker部署）">
 <meta property="og:url" content="https://linshenkx.github.io/tailscale-derper-docker/index.html">
 <meta property="og:site_name" content="且炼时光">
-<meta property="og:description" content="使用docker部署tailscale私有中继服务器，并使用nginx四层代理与原有服务共用443端口，最后配置使用并检测。derper-docker部署及使用较麻烦，本文分享踩坑记录及经验，建议阅读。">
+<meta property="og:description" content="使用docker部署tailscale私有中继服务器，并使用nginx四层代理与原有服务共用443端口，最后配置使用并检测。derper-docker部署及使用较麻烦，本文分享踩坑记录及经验，建议阅读。 2023.10更新：随着网站备案注销，derper已切换到ip模式，增加对应示例及说明">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652431206.png">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652430906(1).png">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652431460(1).png">
 <meta property="og:image" content="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652431977(1).png">
 <meta property="article:published_time" content="2022-04-16T14:54:20.000Z">
-<meta property="article:modified_time" content="2022-05-13T08:59:15.358Z">
-<meta property="article:author" content="林泽浩">
+<meta property="article:modified_time" content="2023-11-30T16:38:47.775Z">
+<meta property="article:author" content="John Doe">
 <meta property="article:tag" content="tailscale">
 <meta property="article:tag" content="derper">
 <meta property="article:tag" content="docker">
@@ -178,18 +178,6 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/productions/">
-                <i class="iconfont icon-archive-fill"></i>
-                作品展示
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
               <a class="nav-link" href="/archives/">
                 <i class="iconfont icon-archive-fill"></i>
                 归档
@@ -217,42 +205,6 @@
               <a class="nav-link" href="/tags/">
                 <i class="iconfont icon-tags-fill"></i>
                 标签
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/">
-                <i class="iconfont icon-user-fill"></i>
-                关于
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/linshenkx">
-                <i class="iconfont icon-github-fill"></i>
-                github
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" target="_blank" rel="noopener" href="https://blog.csdn.net/alinyua">
-                <i class="iconfont icon-copyright"></i>
-                csdn
               </a>
             </li>
           
@@ -308,7 +260,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.7k 字
+          6.1k 字
         
       </span>
     
@@ -319,7 +271,7 @@
         
         
         
-          31 分钟
+          51 分钟
         
       </span>
     
@@ -376,20 +328,26 @@
               <div class="markdown-body">
                 
                 <p>使用docker部署tailscale私有中继服务器，并使用nginx四层代理与原有服务共用443端口，最后配置使用并检测。<br>derper-docker部署及使用较麻烦，本文分享踩坑记录及经验，建议阅读。</p>
+<p>2023.10更新：随着网站备案注销，derper已切换到ip模式，增加对应示例及说明</p>
 <span id="more"></span>
 <h2 id="一-设计及参考"><a href="#一-设计及参考" class="headerlink" title="一 设计及参考"></a>一 设计及参考</h2><h3 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h3><ol>
 <li>使用DockerHub上面唯一主流的derper镜像进行部署，保证可靠性</li>
 <li>使用nginx四层代理转发443端口请求到derper容器</li>
 <li>在tailscale上面配置使用derper服务器</li>
-<li>测试derper的连通<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3>推荐阅读：<br>官方说明（<a target="_blank" rel="noopener" href="https://tailscale.com/kb/1118/custom-derp-servers/%EF%BC%89">https://tailscale.com/kb/1118/custom-derp-servers/）</a><br>TAILSCALE 的一些使用心得（<a target="_blank" rel="noopener" href="https://leitalk.com/12245%EF%BC%89">https://leitalk.com/12245）</a><br>Tailscale 基础教程：部署私有 DERP 中继服务器（<a target="_blank" rel="noopener" href="https://icloudnative.io/posts/custom-derp-servers%EF%BC%89">https://icloudnative.io/posts/custom-derp-servers）</a></li>
+<li>测试derper的连通<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3>推荐阅读：<br>官方说明（ <a target="_blank" rel="noopener" href="https://tailscale.com/kb/1118/custom-derp-servers/">https://tailscale.com/kb/1118/custom-derp-servers/</a> ）<br>TAILSCALE 的一些使用心得（ <a target="_blank" rel="noopener" href="https://leitalk.com/12245">https://leitalk.com/12245</a> ）<br>Tailscale 基础教程：部署私有 DERP 中继服务器（ <a target="_blank" rel="noopener" href="https://icloudnative.io/posts/custom-derp-servers">https://icloudnative.io/posts/custom-derp-servers</a> ）</li>
 </ol>
-<h2 id="二-部署derper容器"><a href="#二-部署derper容器" class="headerlink" title="二 部署derper容器"></a>二 部署derper容器</h2><p>参考：<a target="_blank" rel="noopener" href="https://hub.docker.com/r/fredliang/derper">https://hub.docker.com/r/fredliang/derper</a><br>下面是我个人的配置<br>注意：</p>
+<h2 id="二-部署derper容器（已备案域名）"><a href="#二-部署derper容器（已备案域名）" class="headerlink" title="二 部署derper容器（已备案域名）"></a>二 部署derper容器（已备案域名）</h2><p>参考：<a target="_blank" rel="noopener" href="https://hub.docker.com/r/fredliang/derper">https://hub.docker.com/r/fredliang/derper</a><br>下面是我个人的配置<br>注意：</p>
 <ol>
 <li>ssl证书<br>ssl证书可外部挂载或由容器自动申请并维护证书更新（基于LetsEncrypt）<br>因为derper使用的ssl证书有格式和命名要求，挂载使用很不优雅，故放弃该方案<br>而自动申请需要使用443端口，因为我443端口已经使用了，所以需要用nginx stream反向代理的形式做443端口4层转发。<br>后文会进行详细说明。</li>
 <li>3478端口不能修改，因为走udp所以也不建议转发。</li>
 <li>如果使用DERP_VERIFY_CLIENTS则需要挂载tailscaled.sock，使容器能访问到外部机器derper进程。<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkdir -p /data/derper/certs<br>docker rm -f derper<br><br>docker run -d \<br>-p 3443:443 \<br>-p 3478:3478/udp \<br>--name derper \<br>--restart=always \<br>-v /data/derper/certs:/app/certs \<br>-v /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock \<br>-e DERP_ADDR=&quot;:443&quot; \<br>-e DERP_VERIFY_CLIENTS=true \<br>-e DERP_DOMAIN=&quot;derper.linshenkx.cn&quot; \<br>fredliang/derper<br><br>docker logs -f derper<br><br></code></pre></td></tr></table></figure>
-<img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652431206.png" srcset="/img/loading.gif" lazyload alt="derper服务器"><h3 id="三-nginx代理配置"><a href="#三-nginx代理配置" class="headerlink" title="三 nginx代理配置"></a>三 nginx代理配置</h3>虽然有些人说derper运行一段时间就会崩溃（<a target="_blank" rel="noopener" href="https://github.com/tailscale/tailscale/issues/4082">Derper TLS handshake error: remote error: tls: internal error </a>），<br>但我没有遇到过，按照<a target="_blank" rel="noopener" href="https://github.com/tailscale/tailscale/issues/4082">官方issue</a>和<a target="_blank" rel="noopener" href="https://leitalk.com/12245">TAILSCALE 的一些使用心得</a>里的说法，可能和墙/备案有关。</li>
+<img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652431206.png" srcset="/img/loading.gif" lazyload alt="derper服务器"></li>
 </ol>
+<h2 id="二-部署derper容器（ip）"><a href="#二-部署derper容器（ip）" class="headerlink" title="二 部署derper容器（ip）"></a>二 部署derper容器（ip）</h2><p>参考 <a target="_blank" rel="noopener" href="https://github.com/yangchuansheng/ip_derper">https://github.com/yangchuansheng/ip_derper</a></p>
+<p>另外，反正直接走ip了，直接端口也换掉，这里用33380<br>因为不走域名，也不需要nginx来根据域名分流了，直接把端口暴露出来就好</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker rm -f derper<br><br>docker run -d \<br>-p 3478:3478/udp \<br>-p 33380:33380 \<br>--name derper \<br>--restart=always \<br>-v /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock \<br>-e DERP_ADDR=&quot;:33380&quot; \<br>-e DERP_VERIFY_CLIENTS=true \<br>ghcr.io/yangchuansheng/ip_derper<br><br>docker logs -f derper<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="三-nginx代理配置（域名方式需要）"><a href="#三-nginx代理配置（域名方式需要）" class="headerlink" title="三 nginx代理配置（域名方式需要）"></a>三 nginx代理配置（域名方式需要）</h2><p>虽然有些人说derper运行一段时间就会崩溃（<a target="_blank" rel="noopener" href="https://github.com/tailscale/tailscale/issues/4082">Derper TLS handshake error: remote error: tls: internal error </a>），<br>但我没有遇到过，按照<a target="_blank" rel="noopener" href="https://github.com/tailscale/tailscale/issues/4082">官方issue</a>和<a target="_blank" rel="noopener" href="https://leitalk.com/12245">TAILSCALE 的一些使用心得</a>里的说法，可能和墙/备案有关。</p>
 <blockquote>
 <p>顺带一提，如腾讯云这样的国内云服务器提供商，会审查 TLS handshake 里的 SNI 信息， 如果发现 SNI 域名未备案，会阻断 TLS 握手。 所以，我曾经也尝试过用一个境外服务器的域名，然后指向到境内服务器 IP 的形式尝试绕过备案， 然而短暂的用了几分钟后，就遇到了 tls handshake reset 的问题。 目前看来，只要你想用境内服务器，那么备案就是绕不过的问题。<br>Ps. 如果你有备案域名，那么可以用 nginx stream 反向代理的形式做 443 端口 4 层转发。 nginx stream 可以在四层探测 SNI 信息，然后分发到不同的后端，这样你 derper 的 443 和其他域名的 443 就可以共存在同一个服务器上了。</p>
 </blockquote>
@@ -398,13 +356,32 @@
 <li>TLS handshake 里的 SNI 信息</li>
 <li>nginx四层负载均衡</li>
 </ol>
-<p>具体配置参考我的另外一篇文章：TODO</p>
-<h3 id="四-tailscale配置"><a href="#四-tailscale配置" class="headerlink" title="四 tailscale配置"></a>四 tailscale配置</h3><p>Access Contros配置内容参考如下：<br>主要是添加了derpMap，其他都保持默认。<br>如果有多个derper服务器，建议配置为多个region而非node。<br>因为延迟的比较是以region为单位的，会方便测试。</p>
+<p>具体配置参考如下：<br>在nginx.conf添加如下配置</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-section">stream</span> &#123;<br>    <span class="hljs-comment"># 这里就是 SNI 识别，将域名映射成一个配置名</span><br>    <span class="hljs-attribute">map</span> $ssl_preread_server_name $backend_name &#123;<br>    <span class="hljs-comment"># 把derper.linshenkx.cn的流量转到derper的upstream</span><br>        derper.linshenkx.<span class="hljs-attribute">cn</span> derper;<br>    <span class="hljs-comment"># 域名都不匹配情况下的默认值</span><br>        <span class="hljs-attribute">default</span> https_web;<br>    &#125;<br>    <span class="hljs-comment"># 监听 443 并开启 ssl_preread</span><br>    <span class="hljs-section">server</span> &#123;<br>        <span class="hljs-attribute">listen</span> <span class="hljs-number">443</span> reuseport;<br>        <span class="hljs-attribute">listen</span> [::]:<span class="hljs-number">443</span> reuseport;<br>        <span class="hljs-attribute">proxy_pass</span>  $backend_name;<br>        <span class="hljs-attribute">ssl_preread</span> <span class="hljs-literal">on</span>;<br>    &#125;<br>    <span class="hljs-attribute">upstream</span> derper &#123;<br>      <span class="hljs-attribute">server</span> <span class="hljs-number">127.0.0.1:3443</span>;<br>    &#125;<br>    <span class="hljs-attribute">upstream</span> https_web &#123;<br>      <span class="hljs-attribute">server</span> <span class="hljs-number">127.0.0.1:12443</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>然后再把default.conf里server的443换成12443，如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs shell">upstream xxx &#123;<br>  server 127.0.0.1:12345;<br>&#125;<br><span class="hljs-meta">#</span><span class="bash"> redirect all traffic to https</span><br>server &#123;<br>    listen 80 default_server;<br>    listen [::]:80 default_server;<br>    server_name _;<br>    return 301 https://$host$request_uri;<br>&#125;<br>server &#123;<br>    listen 12443 ssl http2 ;<br>    listen [::]:12443 ssl http2 ;<br><br>    server_name xxx.linshenkx.cn;<br><br>    include /config/nginx/proxy-confs/*.subfolder.conf;<br><br>    include /config/nginx/ssl.conf;<br><br>    client_max_body_size 0;<br><br>    location / &#123;<br>        proxy_pass http://xxx;<br>        proxy_set_header HOST $host;<br>        proxy_set_header X-Forwarded-Proto $scheme;<br>        proxy_set_header X-Real-IP $remote_addr;<br>        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;<br><br>    &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>这样访问 <a target="_blank" rel="noopener" href="https://derper.linshenkx.cn/">https://derper.linshenkx.cn</a> 的流程是 :</p>
+<ol>
+<li>443端口根据nginx.conf转到本地的3443</li>
+<li>由docker映射到derper容器内的443端口</li>
+</ol>
+<p>而访问 <a target="_blank" rel="noopener" href="https://xxx.linshenkx.cn/">https://xxx.linshenkx.cn</a> 的流程是 :</p>
+<ol>
+<li>443端口根据nginx.conf转到本地的12443</li>
+<li>12443端口根据nginx的default.conf转发到本地的12345</li>
+<li>12345是应用的暴露端口/docker的映射端口</li>
+</ol>
+<p>对于大部分的http应用，可以通过xxx的方式配置访问，自动套上https，并且避免泄露端口。<br>个别更底层协议的应用，如derper、gitlfs，则需在nginx.conf配置转发 </p>
+<h2 id="四-tailscale配置"><a href="#四-tailscale配置" class="headerlink" title="四 tailscale配置"></a>四 tailscale配置</h2><p>Access Contros配置内容参考如下：<br>主要是添加了derpMap，其他都保持默认。<br>如果有多个derper服务器，建议配置为多个region而非node。<br>因为延迟的比较是以region为单位的，会方便测试。</p>
 <p>一开始不确定derper是否运行正常的时候，建议先把OmitDefaultRegions设置为true，关闭默认的region。</p>
 <p>另外，修改Access Contros后，需要重启tailscale服务才能生效！</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs shell">// Example/default ACLs for unrestricted connections.<br>&#123;<br>  // Declare static groups of users beyond those in the identity service.<br>  &quot;groups&quot;: &#123;<br>    &quot;group:example&quot;: [ &quot;user1@example.com&quot;, &quot;user2@example.com&quot; ],<br>  &#125;,<br>  // Declare convenient hostname aliases to use in place of IP addresses.<br>  &quot;hosts&quot;: &#123;<br>    &quot;example-host-1&quot;: &quot;100.100.100.100&quot;,<br>  &#125;,<br>  // Access control lists.<br>  &quot;acls&quot;: [<br>    // Match absolutely everything. Comment out this section if you want<br>    // to define specific ACL restrictions.<br>    &#123; &quot;action&quot;: &quot;accept&quot;, &quot;users&quot;: [&quot;*&quot;], &quot;ports&quot;: [&quot;*:*&quot;] &#125;,<br>  ]<br>  ,<br>  &quot;derpMap&quot;: &#123;<br>    &quot;OmitDefaultRegions&quot;: false<br>    ,<br>    &quot;Regions&quot;: &#123;<br>      &quot;900&quot;: &#123;<br>      &quot;RegionID&quot;: 900,<br>      &quot;RegionCode&quot;: &quot;lian&quot;,<br>      &quot;RegionName&quot;: &quot;LIAN&quot;,<br>      &quot;Nodes&quot;: [&#123;<br>          &quot;Name&quot;: &quot;tx&quot;,<br>          &quot;RegionID&quot;: 900,<br>          &quot;HostName&quot;: &quot;derper.linshenkx.cn&quot;,<br>          &quot;DERPPort&quot;: 443<br>      &#125;<br>     ]<br>    &#125;<br>    //   ,<br>    //   &quot;901&quot;: &#123;<br>    //   &quot;RegionID&quot;: 901,<br>    //   &quot;RegionCode&quot;: &quot;lian2&quot;,<br>    //   &quot;RegionName&quot;: &quot;LIAN2&quot;,<br>    //   &quot;Nodes&quot;: [&#123;<br>    //       &quot;Name&quot;: &quot;uc&quot;,<br>    //       &quot;RegionID&quot;: 901,<br>    //       &quot;HostName&quot;: &quot;derper2.linshenkx.cn&quot;,<br>    //       &quot;DERPPort&quot;: 443<br>    //   &#125;<br>    //  ]<br>    // &#125;<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs shell">// Example/default ACLs for unrestricted connections.<br>&#123;<br>  // Declare static groups of users beyond those in the identity service.<br>  &quot;groups&quot;: &#123;<br>    &quot;group:example&quot;: [ &quot;user1@example.com&quot;, &quot;user2@example.com&quot; ],<br>  &#125;,<br>  // Declare convenient hostname aliases to use in place of IP addresses.<br>  &quot;hosts&quot;: &#123;<br>    &quot;example-host-1&quot;: &quot;100.100.100.100&quot;,<br>  &#125;,<br>  // Access control lists.<br>  &quot;acls&quot;: [<br>    // Match absolutely everything. Comment out this section if you want<br>    // to define specific ACL restrictions.<br>    &#123; &quot;action&quot;: &quot;accept&quot;, &quot;users&quot;: [&quot;*&quot;], &quot;ports&quot;: [&quot;*:*&quot;] &#125;,<br>  ]<br>  ,<br>  &quot;derpMap&quot;: &#123;<br>    &quot;OmitDefaultRegions&quot;: false<br>    ,<br>    &quot;Regions&quot;: &#123;<br>      &quot;900&quot;: &#123;<br>      &quot;RegionID&quot;: 900,<br>      &quot;RegionCode&quot;: &quot;lian&quot;,<br>      &quot;RegionName&quot;: &quot;LIAN&quot;,<br>      &quot;Nodes&quot;: [&#123;<br>          &quot;Name&quot;: &quot;tx&quot;,<br>          &quot;RegionID&quot;: 900,<br>          &quot;HostName&quot;: &quot;derper.linshenkx.cn&quot;,<br>          &quot;DERPPort&quot;: 443<br>      &#125;<br>     ]<br>    &#125;<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h3 id="五-测试使用derper"><a href="#五-测试使用derper" class="headerlink" title="五 测试使用derper"></a>五 测试使用derper</h3><p>相关命令</p>
+<p>如果是ip方式，则使用如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs shell">// Example/default ACLs for unrestricted connections.<br>&#123;<br>	// Access control lists.<br>	&quot;acls&quot;: [<br>		&#123;&quot;action&quot;: &quot;accept&quot;, &quot;src&quot;: [&quot;*&quot;], &quot;dst&quot;: [&quot;*:*&quot;]&#125;,<br>		// Match absolutely everything. Comment out this section if you want<br>		// to define specific ACL restrictions.<br>	],<br>	&quot;derpMap&quot;: &#123;<br>		&quot;OmitDefaultRegions&quot;: false,<br>		&quot;Regions&quot;: &#123;<br>			&quot;900&quot;: &#123;<br>				&quot;RegionID&quot;:   900,<br>				&quot;RegionCode&quot;: &quot;lian&quot;,<br>				&quot;RegionName&quot;: &quot;LIAN&quot;,<br>				&quot;Nodes&quot;: [<br>					&#123;<br>						&quot;Name&quot;:             &quot;tx&quot;,<br>						&quot;RegionID&quot;:         900,<br>						&quot;HostName&quot;:         &quot;你的ip&quot;,<br>						&quot;IPv4&quot;:             &quot;你的ip&quot;,<br>						&quot;DERPPort&quot;:         33380,<br>						# 这里要去掉检测<br>						&quot;InsecureForTests&quot;: true,<br>					&#125;,<br>				],<br>			&#125;,<br>		&#125;,<br>	&#125;,<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<h2 id="五-测试使用derper"><a href="#五-测试使用derper" class="headerlink" title="五 测试使用derper"></a>五 测试使用derper</h2><p>相关命令</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 显示集群状态</span><br>tailscale status<br><span class="hljs-meta">#</span><span class="bash"> 显示网络状态</span><br>tailscale netcheck<br>tailscale ping 节点<br><br></code></pre></td></tr></table></figure>
 <p>如下图，自定义的derper比默认的延迟要低不上。<br>（不过只有在极端情况下流量才会走derper，通常derper只要连得上就行，所以延迟影响不大）<br><img src="https://lian-gallery.oss-cn-guangzhou.aliyuncs.com/img/1652430906(1).png" srcset="/img/loading.gif" lazyload alt="tailscale netcheck"></p>
 <p>需要注意的是，这里显示一切正常，不代表derper就是在正常工作了。<br>只是说能访问到 <a target="_blank" rel="noopener" href="https://derper.linshenkx.cn/">https://derper.linshenkx.cn</a> 而已。</p>
@@ -486,7 +463,7 @@
       
         <div class="license-meta-item">
           <div>作者</div>
-          <div>林泽浩</div>
+          <div>John Doe</div>
         </div>
       
       

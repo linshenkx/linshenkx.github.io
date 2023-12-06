@@ -113,17 +113,17 @@ parsers: # array
         
   # 添加规则
       prepend-rules: # 规则由上往下遍历，如上面规则已经命中，则不再往下处理
-        - RULE-SET,Claude,🤖 Ai
-        - RULE-SET,OpenAI,🤖 Ai
-        - RULE-SET,Advertising,REJECT
-        - RULE-SET,Lan,DIRECT
-        - RULE-SET,Direct,DIRECT
-        - RULE-SET,applications,DIRECT
-        - RULE-SET,ChinaMax,DIRECT
-        - RULE-SET,Global,PROXY
-        - RULE-SET,GlobalMedia,PROXY
-        - GEOIP,LAN,DIRECT
-        - GEOIP,CN,DIRECT
+        - RULE-SET,Claude,🤖 Ai,no-resolve
+        - RULE-SET,OpenAI,🤖 Ai,no-resolve
+        - RULE-SET,Advertising,REJECT,no-resolve
+        - RULE-SET,Lan,DIRECT,no-resolve
+        - RULE-SET,Direct,DIRECT,no-resolve
+        - RULE-SET,applications,DIRECT,no-resolve
+        - RULE-SET,Global,PROXY,no-resolve
+        - RULE-SET,GlobalMedia,PROXY,no-resolve
+        - RULE-SET,ChinaMax,DIRECT,no-resolve
+        - GEOIP,LAN,DIRECT,no-resolve
+        - GEOIP,CN,DIRECT,no-resolve
 
         - MATCH,🔯 代理模式 # 规则之外的
   # 添加规则集
