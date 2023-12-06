@@ -31,9 +31,9 @@
     <category term="我的服务器系列" scheme="https://linshenkx.github.io/categories/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
     
     
-    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
-    
     <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
+    
+    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
@@ -71,13 +71,13 @@
     <category term="我的服务器系列" scheme="https://linshenkx.github.io/categories/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
     
     
-    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
-    
     <category term="clash-tracing" scheme="https://linshenkx.github.io/tags/clash-tracing/"/>
     
     <category term="tracing" scheme="https://linshenkx.github.io/tags/tracing/"/>
     
     <category term="clash" scheme="https://linshenkx.github.io/tags/clash/"/>
+    
+    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
@@ -103,15 +103,14 @@
   </entry>
   
   <entry>
-    <title>WSL开发系列-网络篇（wsl固定ip）</title>
-    <link href="https://linshenkx.github.io/wsl-dev-static-ip/"/>
-    <id>https://linshenkx.github.io/wsl-dev-static-ip/</id>
+    <title>WSL开发系列-基础篇</title>
+    <link href="https://linshenkx.github.io/wsl-dev-base/"/>
+    <id>https://linshenkx.github.io/wsl-dev-base/</id>
     <published>2023-02-11T14:54:20.000Z</published>
-    <updated>2023-04-06T03:55:35.803Z</updated>
+    <updated>2023-08-30T07:16:16.729Z</updated>
     
     
-    <summary type="html">&lt;p&gt;wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：&lt;br&gt;1.wsl自动获取宿主机ip的脚本。&lt;br&gt;2.wsl设置固定（静态）ip的配置方法。&lt;/p&gt;
-&lt;p&gt;2023.4更新：因wudo异常，wsl网段的windows静态ip的设置使用bat脚本+任务计划程序实现&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;本人使用win11+idea+docker+wsl2作为日常开发测试环境，&lt;br&gt;随着版本的迭代完善，加上本人丰富的踩坑经验，wsl已基本能满足我对linux单机使用的需求。&lt;br&gt;故重新整理wsl开发环境相关配置、优化、使用集成，形成本系列文章。&lt;br&gt;本文为WSL开发系列的开篇，也是目录，建议阅读此篇，再根据需求跳转。&lt;/p&gt;</summary>
     
     
     
@@ -125,14 +124,15 @@
   </entry>
   
   <entry>
-    <title>WSL开发系列-基础篇</title>
-    <link href="https://linshenkx.github.io/wsl-dev-base/"/>
-    <id>https://linshenkx.github.io/wsl-dev-base/</id>
+    <title>WSL开发系列-网络篇（wsl固定ip）</title>
+    <link href="https://linshenkx.github.io/wsl-dev-static-ip/"/>
+    <id>https://linshenkx.github.io/wsl-dev-static-ip/</id>
     <published>2023-02-11T14:54:20.000Z</published>
-    <updated>2023-08-30T07:16:16.729Z</updated>
+    <updated>2023-04-06T03:55:35.803Z</updated>
     
     
-    <summary type="html">&lt;p&gt;本人使用win11+idea+docker+wsl2作为日常开发测试环境，&lt;br&gt;随着版本的迭代完善，加上本人丰富的踩坑经验，wsl已基本能满足我对linux单机使用的需求。&lt;br&gt;故重新整理wsl开发环境相关配置、优化、使用集成，形成本系列文章。&lt;br&gt;本文为WSL开发系列的开篇，也是目录，建议阅读此篇，再根据需求跳转。&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：&lt;br&gt;1.wsl自动获取宿主机ip的脚本。&lt;br&gt;2.wsl设置固定（静态）ip的配置方法。&lt;/p&gt;
+&lt;p&gt;2023.4更新：因wudo异常，wsl网段的windows静态ip的设置使用bat脚本+任务计划程序实现&lt;/p&gt;</summary>
     
     
     
@@ -222,13 +222,13 @@
     <category term="我的服务器系列" scheme="https://linshenkx.github.io/categories/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
     
     
+    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
+    
     <category term="tailscale" scheme="https://linshenkx.github.io/tags/tailscale/"/>
     
     <category term="derper" scheme="https://linshenkx.github.io/tags/derper/"/>
     
     <category term="docker" scheme="https://linshenkx.github.io/tags/docker/"/>
-    
-    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   

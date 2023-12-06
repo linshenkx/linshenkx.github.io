@@ -328,7 +328,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">rngd -r /dev/urandom<br></code></pre></td></tr></table></figure>
 <p>生成公钥和私钥：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">gpg --gen-key<br></code></pre></td></tr></table></figure>
-<p>执行gpg会进入一些对话，其中要新建一个用户名username和相应的密码。<br>如 linshen <a href="mailto:&#108;&#x69;&#110;&#x73;&#x68;&#x65;&#x6e;&#64;&#x71;&#113;&#x2e;&#x63;&#x6f;&#x6d;">&#108;&#x69;&#110;&#x73;&#x68;&#x65;&#x6e;&#64;&#x71;&#113;&#x2e;&#x63;&#x6f;&#x6d;</a> 12345678</p>
+<p>执行gpg会进入一些对话，其中要新建一个用户名username和相应的密码。<br>如 linshen <a href="mailto:&#108;&#105;&#x6e;&#x73;&#104;&#x65;&#110;&#64;&#x71;&#x71;&#x2e;&#99;&#x6f;&#109;">&#108;&#105;&#x6e;&#x73;&#104;&#x65;&#110;&#64;&#x71;&#x71;&#x2e;&#99;&#x6f;&#109;</a> 12345678</p>
 <p>结束之后，输入命令，可以查看key：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">gpg --list-key<br></code></pre></td></tr></table></figure>
 <p>导出gpg公钥和私钥：私钥，供Server端，对release文件签名使用，好像不做也能签名</p>
