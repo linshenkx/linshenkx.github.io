@@ -63,7 +63,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":55,"cursorChar":"","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"ad1622eab3f6ab4b451267f7bd395819","google":"G-N483383J22","gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"9zURROtqHXQH27vMDxluwien-MdYXbMMI","app_key":"Z84p10rksspoUYThJoObesn5","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":55,"cursorChar":"","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"ad1622eab3f6ab4b451267f7bd395819","google":"G-N483383J22","tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"9zURROtqHXQH27vMDxluwien-MdYXbMMI","app_key":"Z84p10rksspoUYThJoObesn5","server_url":null,"path":"window.location.pathname","ignore_local":false},"gtag":null},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -90,19 +90,19 @@
   
 
   
-    <!-- Google Analytics -->
+    <!-- Google tag (gtag.js) -->
     <script async>
       if (!Fluid.ctx.dnt) {
-        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
-          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
-          ga.l = +new Date;
-          ga('create', 'G-N483383J22', 'auto');
-          ga('send', 'pageview');
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
         });
       }
     </script>
-  
-
   
 
   
@@ -150,9 +150,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/">
+              <a class="nav-link" href="/" target="_self">
                 <i class="iconfont icon-home-fill"></i>
-                首页
+                <span>首页</span>
               </a>
             </li>
           
@@ -162,9 +162,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/archives/">
+              <a class="nav-link" href="/archives/" target="_self">
                 <i class="iconfont icon-archive-fill"></i>
-                归档
+                <span>归档</span>
               </a>
             </li>
           
@@ -174,9 +174,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/categories/">
+              <a class="nav-link" href="/categories/" target="_self">
                 <i class="iconfont icon-category-fill"></i>
-                分类
+                <span>分类</span>
               </a>
             </li>
           
@@ -186,9 +186,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/tags/">
+              <a class="nav-link" href="/tags/" target="_self">
                 <i class="iconfont icon-tags-fill"></i>
-                标签
+                <span>标签</span>
               </a>
             </li>
           
@@ -196,15 +196,16 @@
         
           <li class="nav-item" id="search-btn">
             <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
-              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+              <i class="iconfont icon-search"></i>
             </a>
           </li>
           
         
         
           <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
-                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
           </li>
         
       </ul>
@@ -676,6 +677,75 @@
     
     <div class="category row nomargin-x">
       <a class="category-item collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="程序员杂记"
+        id="heading-41f9eba35b0b4589267668a650fa0cb8" role="tab" data-toggle="collapse" href="#collapse-41f9eba35b0b4589267668a650fa0cb8"
+        aria-expanded="false"
+      >
+        程序员杂记
+        <span class="list-group-count"></span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+        <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%9D%82%E8%AE%B0/" class="category-count col-2 col-md-1 col-xm-1">
+          <i class="iconfont icon-articles"></i>
+          <span>4</span>
+        </a>
+      
+      <div class="category-collapse collapse " id="collapse-41f9eba35b0b4589267668a650fa0cb8"
+           role="tabpanel" aria-labelledby="heading-41f9eba35b0b4589267668a650fa0cb8">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/github-private-repo-sync-from-public-repo/" title="GithubAction配置private仓库自动从public仓库同步的方法"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">GithubAction配置private仓库自动从public仓库同步的方法</span>
+        </a>
+      
+    
+      
+      
+        <a href="/my-blog-system-design/" title="个人博客系统设计(支持hexo和halo同步)"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">个人博客系统设计(支持hexo和halo同步)</span>
+        </a>
+      
+    
+      
+      
+        <a href="/wsl2_idea2021/" title="WSL开发系列-idea篇(WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑）)"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">WSL开发系列-idea篇(WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑）)</span>
+        </a>
+      
+    
+      
+      
+        <a href="/pc-optimize-notes/" title="个人电脑优化杂记"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">个人电脑优化杂记</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item collapsed
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="我的服务器系列"
         id="heading-6dcdff8128f3440a9c42a5d5e3c2e95f" role="tab" data-toggle="collapse" href="#collapse-6dcdff8128f3440a9c42a5d5e3c2e95f"
         aria-expanded="false"
@@ -736,66 +806,6 @@
     
     <div class="category row nomargin-x">
       <a class="category-item collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="程序员杂记"
-        id="heading-41f9eba35b0b4589267668a650fa0cb8" role="tab" data-toggle="collapse" href="#collapse-41f9eba35b0b4589267668a650fa0cb8"
-        aria-expanded="false"
-      >
-        程序员杂记
-        <span class="list-group-count"></span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-        <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%9D%82%E8%AE%B0/" class="category-count col-2 col-md-1 col-xm-1">
-          <i class="iconfont icon-articles"></i>
-          <span>3</span>
-        </a>
-      
-      <div class="category-collapse collapse " id="collapse-41f9eba35b0b4589267668a650fa0cb8"
-           role="tabpanel" aria-labelledby="heading-41f9eba35b0b4589267668a650fa0cb8">
-        
-        
-          
-  <div class="category-post-list">
-    
-    
-      
-      
-        <a href="/my-blog-system-design/" title="个人博客系统设计(支持hexo和halo同步)"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">个人博客系统设计(支持hexo和halo同步)</span>
-        </a>
-      
-    
-      
-      
-        <a href="/wsl2_idea2021/" title="WSL开发系列-idea篇(WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑）)"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">WSL开发系列-idea篇(WSL2配置与结合IDEA2021使用体验（及wsl-gui踩坑）)</span>
-        </a>
-      
-    
-      
-      
-        <a href="/pc-optimize-notes/" title="个人电脑优化杂记"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">个人电脑优化杂记</span>
-        </a>
-      
-    
-  </div>
-
-        
-      </div>
-    </div>
-  
-    
-    
-    
-    <div class="category row nomargin-x">
-      <a class="category-item collapsed
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="WSL开发系列"
         id="heading-1c38e37c9caefd422551c86cd47fac29" role="tab" data-toggle="collapse" href="#collapse-1c38e37c9caefd422551c86cd47fac29"
         aria-expanded="false"
@@ -820,6 +830,15 @@
     
       
       
+        <a href="/wsl-dev-static-ip/" title="WSL开发系列-网络篇（wsl固定ip）"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">WSL开发系列-网络篇（wsl固定ip）</span>
+        </a>
+      
+    
+      
+      
         <a href="/wsl-dev-wslg/" title="WSL开发系列-gui篇(wslg)"
            class="list-group-item list-group-item-action
            ">
@@ -833,15 +852,6 @@
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">WSL开发系列-基础篇</span>
-        </a>
-      
-    
-      
-      
-        <a href="/wsl-dev-static-ip/" title="WSL开发系列-网络篇（wsl固定ip）"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">WSL开发系列-网络篇（wsl固定ip）</span>
         </a>
       
     

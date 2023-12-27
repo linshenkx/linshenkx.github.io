@@ -31,9 +31,28 @@
     <category term="我的服务器系列" scheme="https://linshenkx.github.io/categories/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
     
     
+    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
+    
     <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
     
-    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
+  </entry>
+  
+  <entry>
+    <title>GithubAction配置private仓库自动从public仓库同步的方法</title>
+    <link href="https://linshenkx.github.io/github-private-repo-sync-from-public-repo/"/>
+    <id>https://linshenkx.github.io/github-private-repo-sync-from-public-repo/</id>
+    <published>2023-12-17T12:00:00.000Z</published>
+    <updated>2023-12-27T09:30:39.538Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文介绍一种基于github action的解决方案用于实现private项目自动从public项目同步&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="程序员杂记" scheme="https://linshenkx.github.io/categories/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%9D%82%E8%AE%B0/"/>
+    
+    
+    <category term="github" scheme="https://linshenkx.github.io/tags/github/"/>
     
   </entry>
   
@@ -71,13 +90,35 @@
     <category term="我的服务器系列" scheme="https://linshenkx.github.io/categories/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
     
     
+    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
+    
     <category term="clash-tracing" scheme="https://linshenkx.github.io/tags/clash-tracing/"/>
     
     <category term="tracing" scheme="https://linshenkx.github.io/tags/tracing/"/>
     
     <category term="clash" scheme="https://linshenkx.github.io/tags/clash/"/>
     
-    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
+  </entry>
+  
+  <entry>
+    <title>WSL开发系列-网络篇（wsl固定ip）</title>
+    <link href="https://linshenkx.github.io/wsl-dev-static-ip/"/>
+    <id>https://linshenkx.github.io/wsl-dev-static-ip/</id>
+    <published>2023-02-11T14:54:20.000Z</published>
+    <updated>2023-12-27T09:30:39.539Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：&lt;br&gt;1.wsl自动获取宿主机ip的脚本。&lt;br&gt;2.wsl设置固定（静态）ip的配置方法。&lt;/p&gt;
+&lt;p&gt;2023.4更新：因wudo异常，wsl网段的windows静态ip的设置使用bat脚本+任务计划程序实现&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="WSL开发系列" scheme="https://linshenkx.github.io/categories/WSL%E5%BC%80%E5%8F%91%E7%B3%BB%E5%88%97/"/>
+    
+    
+    <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
+    
+    <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
     
   </entry>
   
@@ -111,28 +152,6 @@
     
     
     <summary type="html">&lt;p&gt;本人使用win11+idea+docker+wsl2作为日常开发测试环境，&lt;br&gt;随着版本的迭代完善，加上本人丰富的踩坑经验，wsl已基本能满足我对linux单机使用的需求。&lt;br&gt;故重新整理wsl开发环境相关配置、优化、使用集成，形成本系列文章。&lt;br&gt;本文为WSL开发系列的开篇，也是目录，建议阅读此篇，再根据需求跳转。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="WSL开发系列" scheme="https://linshenkx.github.io/categories/WSL%E5%BC%80%E5%8F%91%E7%B3%BB%E5%88%97/"/>
-    
-    
-    <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
-    
-    <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>WSL开发系列-网络篇（wsl固定ip）</title>
-    <link href="https://linshenkx.github.io/wsl-dev-static-ip/"/>
-    <id>https://linshenkx.github.io/wsl-dev-static-ip/</id>
-    <published>2023-02-11T14:54:20.000Z</published>
-    <updated>2023-04-06T03:55:35.803Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;wsl网络情况较复杂，本篇除了官方的网络配置事项，主要添加了：&lt;br&gt;1.wsl自动获取宿主机ip的脚本。&lt;br&gt;2.wsl设置固定（静态）ip的配置方法。&lt;/p&gt;
-&lt;p&gt;2023.4更新：因wudo异常，wsl网段的windows静态ip的设置使用bat脚本+任务计划程序实现&lt;/p&gt;</summary>
     
     
     
@@ -211,7 +230,7 @@
     <link href="https://linshenkx.github.io/tailscale-derper-docker/"/>
     <id>https://linshenkx.github.io/tailscale-derper-docker/</id>
     <published>2022-04-16T14:54:20.000Z</published>
-    <updated>2023-11-30T16:38:47.775Z</updated>
+    <updated>2023-12-27T09:30:06.009Z</updated>
     
     
     <summary type="html">&lt;p&gt;使用docker部署tailscale私有中继服务器，并使用nginx四层代理与原有服务共用443端口，最后配置使用并检测。&lt;br&gt;derper-docker部署及使用较麻烦，本文分享踩坑记录及经验，建议阅读。&lt;/p&gt;
@@ -222,13 +241,13 @@
     <category term="我的服务器系列" scheme="https://linshenkx.github.io/categories/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
     
     
-    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
-    
     <category term="tailscale" scheme="https://linshenkx.github.io/tags/tailscale/"/>
     
     <category term="derper" scheme="https://linshenkx.github.io/tags/derper/"/>
     
     <category term="docker" scheme="https://linshenkx.github.io/tags/docker/"/>
+    
+    <category term="我的服务器系列" scheme="https://linshenkx.github.io/tags/%E6%88%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
@@ -386,7 +405,7 @@
     <link href="https://linshenkx.github.io/household_k8s_bigdata/"/>
     <id>https://linshenkx.github.io/household_k8s_bigdata/</id>
     <published>2021-10-24T09:00:20.000Z</published>
-    <updated>2021-10-24T09:10:50.268Z</updated>
+    <updated>2023-12-27T09:30:39.538Z</updated>
     
     
     <summary type="html">&lt;p&gt;使用3台废旧笔记本搭建k8s集群，部署大数据组件，利用路由器进行异地组网，配合wsl作为管理和客户端，&lt;br&gt;实现随时随地，在工作笔记本上以本地访问的体验使用自建家庭大数据平台进行学习、开发、测试。&lt;/p&gt;</summary>
@@ -409,10 +428,10 @@
     <link href="https://linshenkx.github.io/my-blog-system-design/"/>
     <id>https://linshenkx.github.io/my-blog-system-design/</id>
     <published>2021-09-13T15:40:20.000Z</published>
-    <updated>2022-11-28T02:25:00.115Z</updated>
+    <updated>2023-12-27T09:30:39.540Z</updated>
     
     
-    <summary type="html">&lt;p&gt;本文主要介绍自己的博客系统是如何设计的，并使用&lt;a href=&quot;https://github.com/linshenkx/haloSyncServer&quot;&gt;Halo博客同步器&lt;/a&gt; 将hexo（git pages: &lt;a href=&quot;https://linshenkx.github.io/&quot;&gt;https://linshenkx.github.io&lt;/a&gt; ）文章自动同步到halo( &lt;a href=&quot;http://linshenkx.cn/&quot;&gt;http://linshenkx.cn&lt;/a&gt; )。&lt;br&gt;实现一次编写、两套博客系统并存、多个网址访问的效果。&lt;br&gt;2022.11 更新：因其审核问题删除gitee个人主页（无标准无原因，你永远不知道为什么无法发布）&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;本文主要介绍自己的博客系统是如何设计的，并使用&lt;a href=&quot;https://github.com/linshenkx/haloSyncServer&quot;&gt;Halo博客同步器&lt;/a&gt; 将hexo（git pages: &lt;a href=&quot;https://linshenkx.github.io/&quot;&gt;https://linshenkx.github.io&lt;/a&gt; ）文章自动同步到halo( &lt;a href=&quot;http://linshenkx.cn/&quot;&gt;http://linshenkx.cn&lt;/a&gt; )。&lt;br&gt;实现一次编写、两套博客系统并存、多个网址访问的效果。&lt;br&gt;2023 更新：放弃halo，单纯使用hexo&lt;br&gt;2022.11 更新：因其审核问题删除gitee个人主页（无标准无原因，你永远不知道为什么无法发布）&lt;/p&gt;</summary>
     
     
     
@@ -426,23 +445,6 @@
     <category term="hexo" scheme="https://linshenkx.github.io/tags/hexo/"/>
     
     <category term="halo" scheme="https://linshenkx.github.io/tags/halo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ubuntu制作离线源</title>
-    <link href="https://linshenkx.github.io/ubuntu-offline-sources/"/>
-    <id>https://linshenkx.github.io/ubuntu-offline-sources/</id>
-    <published>2021-08-14T14:11:26.000Z</published>
-    <updated>2022-11-04T08:35:59.114Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;自用笔记：ubuntu（18.04）制作离线源&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="运维部署" scheme="https://linshenkx.github.io/categories/%E8%BF%90%E7%BB%B4%E9%83%A8%E7%BD%B2/"/>
-    
     
   </entry>
   

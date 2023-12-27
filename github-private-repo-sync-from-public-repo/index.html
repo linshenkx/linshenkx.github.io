@@ -1,0 +1,768 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/header.jpg">
+  <link rel="icon" href="/img/header.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="大数据">
+  
+    <meta name="description" content="本文介绍一种基于github action的解决方案用于实现private项目自动从public项目同步">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GithubAction配置private仓库自动从public仓库同步的方法">
+<meta property="og:url" content="https://linshenkx.github.io/github-private-repo-sync-from-public-repo/index.html">
+<meta property="og:site_name" content="且炼时光">
+<meta property="og:description" content="本文介绍一种基于github action的解决方案用于实现private项目自动从public项目同步">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-17T12:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-27T09:30:39.538Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="github">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>GithubAction配置private仓库自动从public仓库同步的方法 - 且炼时光</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"linshenkx.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":55,"cursorChar":"","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"ad1622eab3f6ab4b451267f7bd395819","google":"G-N483383J22","tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"9zURROtqHXQH27vMDxluwien-MdYXbMMI","app_key":"Z84p10rksspoUYThJoObesn5","server_url":null,"path":"window.location.pathname","ignore_local":false},"gtag":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?ad1622eab3f6ab4b451267f7bd395819";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="且炼时光" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>且炼时光</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="GithubAction配置private仓库自动从public仓库同步的方法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-17 20:00" pubdate>
+          2023年12月17日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/@waline/client@v2/dist/waline.css"
+  />
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">GithubAction配置private仓库自动从public仓库同步的方法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文介绍一种基于github action的解决方案用于实现private项目自动从public项目同步</p>
+<span id="more"></span>
+<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p>GitHub 提供了许多用于实现仓库同步的 Action，有些只支持 fork，而有些则支持两个独立的仓库。<br>对于 fork 项目，建议直接使用 <a target="_blank" rel="noopener" href="https://github.com/apps/pull">GitHub Pull</a>。本文将讨论非 fork 项目的同步问题。</p>
+<p>有些开源项目，出于备份或私有部署的目的，需要克隆一份。 然而，由于 fork 的项目不能设置为 private，这就引发了隐私问题， 因为你可能不希望所有人知道你 fork 了某个项目。 一般的做法是将 public 项目克隆下来，然后推送到自己的 private 仓库。 这一过程可以直接使用 GitHub 的 import repository 功能实现。但这样由于失去了 fork 关系，导致无法使用 “Sync fork” 进行项目同步。</p>
+<p>为了解决这个问题，我们可以使用 <a target="_blank" rel="noopener" href="https://github.com/aormsby/Fork-Sync-With-Upstream-action">aormsby/Fork-Sync-With-Upstream-action</a> 来实现独立项目的同步。 虽然有很多独立项目同步的 Action，但它们大多基于 Git 实现，这导致上游项目的所有变更都会同步到下游，包括 <code>.github/workflows</code> 下的文件。 这可能会导致 GitHub 任务在对 Action 进行操作时报错，因为这超出了默认的 GITHUB_TOKEN 的权限范围。</p>
+<p>如果是 fork 项目，可以直接手动执行 “Sync Fork” 操作。否则，就需要创建更高权限的 token。</p>
+<p>独立项目的同步action还有很多，不过都有一个问题，因为他们的实现都是基于git的，所以上游项目的所有变更都会同步到下游，这其中就包括了 .github/workflows 下的文件。会导致github认为该action在对action进行操作，这超出了默认的GITHUB_TOKEN的权限范围</p>
+<p>缺少权限时的报错信息：(refusing to allow a GitHub App to create or update workflow <code>.github/workflows/xxx.yml</code> without <code>workflows</code> permission)<br>这时应使用有workflow权限的自定义token</p>
+<h3 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h3><p>仓库同步可以基于 <a target="_blank" rel="noopener" href="https://github.com/aormsby/Fork-Sync-With-Upstream-action">aormsby/Fork-Sync-With-Upstream-action</a> 实现。<br>由于不想在 Action 中配置源仓库的地址，可以约定仓库名称为 <code>$&#123;repoName&#125;-syncfrom-$&#123;userName&#125;</code>，将远程库的信息存在项目名中，实现 Action 的通用化。<br>当然，这取决于个人需求。</p>
+<h3 id="ACTION-TOKEN-配置说明"><a href="#ACTION-TOKEN-配置说明" class="headerlink" title="ACTION_TOKEN 配置说明"></a>ACTION_TOKEN 配置说明</h3><ol>
+<li>在个人设置中创建具有完整 repo、workflow 权限的 Personal Access Token。</li>
+<li>在仓库的设置中，添加名为 <code>ACTION_TOKEN</code> 的 secret，值为上一步获取的 Personal Access Token。</li>
+</ol>
+<p>此外，需要在项目的设置中配置 Action：</p>
+<ol>
+<li>将 Actions 权限设置为 Allow all actions and reusable workflows。</li>
+<li>将 Workflow 权限设置为 Read and write permissions。</li>
+</ol>
+<h3 id="action示例"><a href="#action示例" class="headerlink" title="action示例"></a>action示例</h3><p>Action 文件的名称应独特，不与上游仓库的 Action 文件名重复，例如 <code>.github/workflows/super-sync-from.yml</code>。<br>如果上游仓库对 <code>.github/workflows/</code> 下的文件进行变更，则需要在 <code>actions/checkout</code> 步骤中使用具有 workflow 权限的 token。</p>
+<h4 id="无需修改版本（适用于项目名-repoName-syncfrom-userName-）"><a href="#无需修改版本（适用于项目名-repoName-syncfrom-userName-）" class="headerlink" title="无需修改版本（适用于项目名${repoName}-syncfrom-${userName}）"></a>无需修改版本（适用于项目名${repoName}-syncfrom-${userName}）</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">name:</span> <span class="hljs-string">Public</span> <span class="hljs-string">Upstream</span> <span class="hljs-string">Sync</span><br><br><span class="hljs-attr">on:</span><br>  <span class="hljs-attr">schedule:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">cron:</span> <span class="hljs-string">&quot;0 0 * * *&quot;</span><br>  <span class="hljs-attr">workflow_dispatch:</span><br><span class="hljs-attr">jobs:</span><br>  <span class="hljs-attr">sync_latest_from_upstream:</span><br>    <span class="hljs-attr">name:</span> <span class="hljs-string">Sync</span> <span class="hljs-string">latest</span> <span class="hljs-string">commits</span> <span class="hljs-string">from</span> <span class="hljs-string">upstream</span> <span class="hljs-string">repo</span><br>    <span class="hljs-attr">runs-on:</span> <span class="hljs-string">ubuntu-latest</span><br><br>    <span class="hljs-attr">steps:</span><br>      <span class="hljs-comment"># 标准签出</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Checkout</span> <span class="hljs-string">target</span> <span class="hljs-string">repo</span><br>        <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/checkout@v4</span><br><span class="hljs-comment"># 如果上游仓库有对.github/workflows/下的文件进行变更，则需要使用有workflow权限的token</span><br><span class="hljs-comment">#        with:</span><br><span class="hljs-comment">#          token: $&#123;&#123; secrets.ACTION_TOKEN &#125;&#125;</span><br>        <br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Extract</span> <span class="hljs-string">Repo</span> <span class="hljs-string">and</span> <span class="hljs-string">User</span><br>        <span class="hljs-attr">id:</span> <span class="hljs-string">extract</span><br>        <span class="hljs-attr">run:</span> <span class="hljs-string">|</span><br><span class="hljs-string">          repository_name=$&#123;&#123; github.event.repository.name &#125;&#125;</span><br><span class="hljs-string">          if echo &quot;$repository_name&quot; | grep -qE &#x27;(.+)-syncfrom-(.+)&#x27;; then</span><br><span class="hljs-string">            repoName=$(echo &quot;$repository_name&quot; | sed -E &#x27;s/(.+)-syncfrom-(.+)/\1/&#x27;)</span><br><span class="hljs-string">            userName=$(echo &quot;$repository_name&quot; | sed -E &#x27;s/(.+)-syncfrom-(.+)/\2/&#x27;)</span><br><span class="hljs-string">            echo &quot;RepoName: $repoName&quot;</span><br><span class="hljs-string">            echo &quot;UserName: $userName&quot;</span><br><span class="hljs-string">            echo &quot;repoName=$repoName&quot; &gt;&gt; $GITHUB_ENV</span><br><span class="hljs-string">            echo &quot;userName=$userName&quot; &gt;&gt; $GITHUB_ENV</span><br><span class="hljs-string">          else</span><br><span class="hljs-string">            echo &#x27;无法从仓库名中提取 repoName 和 userName，格式应为 $&#123;repoName&#125;-syncfrom-$&#123;userName&#125;，当前为：&#x27;$GITHUB_REPOSITORY</span><br><span class="hljs-string">            exit 1</span><br><span class="hljs-string">          fi</span><br><span class="hljs-string"></span><br>      <span class="hljs-comment"># 获取分支名</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Get</span> <span class="hljs-string">branch</span> <span class="hljs-string">name</span> <span class="hljs-string">(merge)</span><br>        <span class="hljs-attr">if:</span> <span class="hljs-string">github.event_name</span> <span class="hljs-type">!=</span> <span class="hljs-string">&#x27;pull_request&#x27;</span><br>        <span class="hljs-attr">shell:</span> <span class="hljs-string">bash</span><br>        <span class="hljs-attr">run:</span> <span class="hljs-string">echo</span> <span class="hljs-string">&quot;BRANCH_NAME=$(echo $&#123;GITHUB_REF#refs/heads/&#125; | tr / -)&quot;</span> <span class="hljs-string">&gt;&gt;</span> <span class="hljs-string">$GITHUB_ENV</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Get</span> <span class="hljs-string">branch</span> <span class="hljs-string">name</span> <span class="hljs-string">(pull</span> <span class="hljs-string">request)</span><br>        <span class="hljs-attr">if:</span> <span class="hljs-string">github.event_name</span> <span class="hljs-string">==</span> <span class="hljs-string">&#x27;pull_request&#x27;</span><br>        <span class="hljs-attr">shell:</span> <span class="hljs-string">bash</span><br>        <span class="hljs-attr">run:</span> <span class="hljs-string">echo</span> <span class="hljs-string">&quot;BRANCH_NAME=$(echo $&#123;GITHUB_HEAD_REF&#125; | tr / -)&quot;</span> <span class="hljs-string">&gt;&gt;</span> <span class="hljs-string">$GITHUB_ENV</span><br><br>      <span class="hljs-comment"># 运行同步动作</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Sync</span> <span class="hljs-string">upstream</span> <span class="hljs-string">changes</span><br>        <span class="hljs-attr">id:</span> <span class="hljs-string">sync</span><br>        <span class="hljs-attr">uses:</span> <span class="hljs-string">aormsby/Fork-Sync-With-Upstream-action@v3.4</span><br>        <span class="hljs-attr">with:</span><br>          <span class="hljs-attr">upstream_sync_repo:</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">env.userName</span> <span class="hljs-string">&#125;&#125;/$&#123;&#123;</span> <span class="hljs-string">env.repoName</span> <span class="hljs-string">&#125;&#125;</span><br>          <span class="hljs-attr">upstream_sync_branch:</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">env.BRANCH_NAME</span> <span class="hljs-string">&#125;&#125;</span><br>          <span class="hljs-attr">upstream_pull_args:</span> <span class="hljs-string">--allow-unrelated-histories</span> <span class="hljs-string">--no-edit</span><br>          <span class="hljs-attr">target_sync_branch:</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">env.BRANCH_NAME</span> <span class="hljs-string">&#125;&#125;</span><br>          <span class="hljs-attr">target_repo_token:</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">secrets.GITHUB_TOKEN</span> <span class="hljs-string">&#125;&#125;</span><br>          <span class="hljs-attr">test_mode:</span> <span class="hljs-literal">false</span><br><br></code></pre></td></tr></table></figure>
+<h4 id="定制化版本"><a href="#定制化版本" class="headerlink" title="定制化版本"></a>定制化版本</h4><p>对于已有的不想改名的，直接配置上流仓库名即可</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">name:</span> <span class="hljs-string">Public</span> <span class="hljs-string">Upstream</span> <span class="hljs-string">Sync</span><br><br><span class="hljs-attr">on:</span><br>  <span class="hljs-attr">schedule:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">cron:</span> <span class="hljs-string">&quot;0 0 * * *&quot;</span><br>  <span class="hljs-attr">workflow_dispatch:</span><br><span class="hljs-attr">jobs:</span><br>  <span class="hljs-attr">sync_latest_from_upstream:</span><br>    <span class="hljs-attr">name:</span> <span class="hljs-string">Sync</span> <span class="hljs-string">latest</span> <span class="hljs-string">commits</span> <span class="hljs-string">from</span> <span class="hljs-string">upstream</span> <span class="hljs-string">repo</span><br>    <span class="hljs-attr">runs-on:</span> <span class="hljs-string">ubuntu-latest</span><br><br>    <span class="hljs-attr">steps:</span><br>      <span class="hljs-comment"># 标准签出</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Checkout</span> <span class="hljs-string">target</span> <span class="hljs-string">repo</span><br>        <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/checkout@v4</span><br><span class="hljs-comment"># 如果上游仓库有对.github/workflows/下的文件进行变更，则需要使用有workflow权限的token</span><br><span class="hljs-comment">#        with:</span><br><span class="hljs-comment">#          token: $&#123;&#123; secrets.ACTION_TOKEN &#125;&#125;</span><br>   <br>      <span class="hljs-comment"># 获取分支名</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Get</span> <span class="hljs-string">branch</span> <span class="hljs-string">name</span> <span class="hljs-string">(merge)</span><br>        <span class="hljs-attr">if:</span> <span class="hljs-string">github.event_name</span> <span class="hljs-type">!=</span> <span class="hljs-string">&#x27;pull_request&#x27;</span><br>        <span class="hljs-attr">shell:</span> <span class="hljs-string">bash</span><br>        <span class="hljs-attr">run:</span> <span class="hljs-string">echo</span> <span class="hljs-string">&quot;BRANCH_NAME=$(echo $&#123;GITHUB_REF#refs/heads/&#125; | tr / -)&quot;</span> <span class="hljs-string">&gt;&gt;</span> <span class="hljs-string">$GITHUB_ENV</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Get</span> <span class="hljs-string">branch</span> <span class="hljs-string">name</span> <span class="hljs-string">(pull</span> <span class="hljs-string">request)</span><br>        <span class="hljs-attr">if:</span> <span class="hljs-string">github.event_name</span> <span class="hljs-string">==</span> <span class="hljs-string">&#x27;pull_request&#x27;</span><br>        <span class="hljs-attr">shell:</span> <span class="hljs-string">bash</span><br>        <span class="hljs-attr">run:</span> <span class="hljs-string">echo</span> <span class="hljs-string">&quot;BRANCH_NAME=$(echo $&#123;GITHUB_HEAD_REF&#125; | tr / -)&quot;</span> <span class="hljs-string">&gt;&gt;</span> <span class="hljs-string">$GITHUB_ENV</span><br><br>      <span class="hljs-comment"># 运行同步动作</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Sync</span> <span class="hljs-string">upstream</span> <span class="hljs-string">changes</span><br>        <span class="hljs-attr">id:</span> <span class="hljs-string">sync</span><br>        <span class="hljs-attr">uses:</span> <span class="hljs-string">aormsby/Fork-Sync-With-Upstream-action@v3.4</span><br>        <span class="hljs-attr">with:</span><br>          <span class="hljs-attr">upstream_sync_repo:</span> [<span class="hljs-string">替换成目标仓库名称</span>]<br>          <span class="hljs-attr">upstream_sync_branch:</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">env.BRANCH_NAME</span> <span class="hljs-string">&#125;&#125;</span><br>          <span class="hljs-attr">target_sync_branch:</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">env.BRANCH_NAME</span> <span class="hljs-string">&#125;&#125;</span><br>          <span class="hljs-attr">target_repo_token:</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">secrets.ACTION_TOKEN</span> <span class="hljs-string">&#125;&#125;</span><br>          <span class="hljs-attr">upstream_pull_args:</span> <span class="hljs-string">--allow-unrelated-histories</span> <span class="hljs-string">--no-edit</span> <br>          <span class="hljs-attr">test_mode:</span> <span class="hljs-literal">false</span><br><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%9D%82%E8%AE%B0/" class="category-chain-item">程序员杂记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/github/" class="print-no-link">#github</a>
+      
+    </div>
+  
+</div>
+
+  <div id="article-info">
+        页面热度:<span class="waline-pageview-count" />
+  </div>
+<script type="module">
+  import { pageviewCount } from 'https://unpkg.com/@waline/client/dist/pageview.mjs';
+
+  pageviewCount({
+    serverURL: 'https://waline.linshenkx.cn',
+    path: window.location.pathname,
+  });
+</script>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>GithubAction配置private仓库自动从public仓库同步的方法</div>
+      <div>https://linshenkx.github.io/github-private-repo-sync-from-public-repo/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/my-server-overall-design/" title="我的服务器系列：总体设计">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">我的服务器系列：总体设计</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/kafka-jaas-benchmark-command-examples/" title="kafka-jaas环境下常用命令示例（含压测）">
+                        <span class="hidden-mobile">kafka-jaas环境下常用命令示例（含压测）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <div id="waline"></div>
+
+  <script type="module">
+    import { init } from 'https://unpkg.com/@waline/client@v2/dist/waline.mjs';
+
+    init({
+      el: '#waline',
+      serverURL: 'https://waline.linshenkx.cn',
+//      pageview: true, // 浏览量统计
+      reaction: true, // 开启反应
+      dark: 'html[data-user-color-scheme="dark"]'
+    });
+  </script>
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       韶华未褪，且炼时光 <div id="visitor-info"> <span id="ip-address"></span><span id="location"></span> <script src="/js/visitor.js"></script> </div> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"./live2d_models/崩坏学院2/Kiro/model.json"},"display":{"position":"right","width":300,"height":400},"mobile":{"show":false},"react":{"opacity":1},"log":false});</script></body>
+</html>
