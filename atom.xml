@@ -38,6 +38,27 @@
   </entry>
   
   <entry>
+    <title>基于k3s-helm-controller实现k8s api离线部署helm chart的方案</title>
+    <link href="https://linshenkx.github.io/k3s-helm-controller-k8s-api-offline-helm-chart-deploy/"/>
+    <id>https://linshenkx.github.io/k3s-helm-controller-k8s-api-offline-helm-chart-deploy/</id>
+    <published>2024-01-06T15:00:00.000Z</published>
+    <updated>2024-01-03T03:20:07.819Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文介绍了在内网环境下，使用k8s api(java fabric8io/kubernetes-client)实现helm组件部署的方法。使用k3s-helm-controller规避helm命令行操作。并记录helm仓库的简易&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Kubernetes" scheme="https://linshenkx.github.io/categories/Kubernetes/"/>
+    
+    
+    <category term="helm" scheme="https://linshenkx.github.io/tags/helm/"/>
+    
+    <category term="api" scheme="https://linshenkx.github.io/tags/api/"/>
+    
+  </entry>
+  
+  <entry>
     <title>GithubAction配置private仓库自动从public仓库同步的方法</title>
     <link href="https://linshenkx.github.io/github-private-repo-sync-from-public-repo/"/>
     <id>https://linshenkx.github.io/github-private-repo-sync-from-public-repo/</id>
@@ -420,31 +441,6 @@
     <category term="大数据" scheme="https://linshenkx.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     <category term="WSL" scheme="https://linshenkx.github.io/tags/WSL/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>个人博客系统设计(支持hexo和halo同步)</title>
-    <link href="https://linshenkx.github.io/my-blog-system-design/"/>
-    <id>https://linshenkx.github.io/my-blog-system-design/</id>
-    <published>2021-09-13T15:40:20.000Z</published>
-    <updated>2023-12-27T09:30:39.540Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;本文主要介绍自己的博客系统是如何设计的，并使用&lt;a href=&quot;https://github.com/linshenkx/haloSyncServer&quot;&gt;Halo博客同步器&lt;/a&gt; 将hexo（git pages: &lt;a href=&quot;https://linshenkx.github.io/&quot;&gt;https://linshenkx.github.io&lt;/a&gt; ）文章自动同步到halo( &lt;a href=&quot;http://linshenkx.cn/&quot;&gt;http://linshenkx.cn&lt;/a&gt; )。&lt;br&gt;实现一次编写、两套博客系统并存、多个网址访问的效果。&lt;br&gt;2023 更新：放弃halo，单纯使用hexo&lt;br&gt;2022.11 更新：因其审核问题删除gitee个人主页（无标准无原因，你永远不知道为什么无法发布）&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="程序员杂记" scheme="https://linshenkx.github.io/categories/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%9D%82%E8%AE%B0/"/>
-    
-    
-    <category term="生产力" scheme="https://linshenkx.github.io/tags/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
-    
-    <category term="博客" scheme="https://linshenkx.github.io/tags/%E5%8D%9A%E5%AE%A2/"/>
-    
-    <category term="hexo" scheme="https://linshenkx.github.io/tags/hexo/"/>
-    
-    <category term="halo" scheme="https://linshenkx.github.io/tags/halo/"/>
     
   </entry>
   
